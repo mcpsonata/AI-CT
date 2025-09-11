@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #0078d4;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .session-controls {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+        }
+        #download-chat {
+            background-color: #1b5e20;
+            transition: background-color 0.3s;
+        }
+        #download-chat:hover {
+            background-color: #2e7d32;
+        }
+        .chat-container {
+            display: flex;
+            flex-grow: 1;
+            gap: 20px;
+        }
+        .chat-area {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .sidebar {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 350px;
+            overflow-y: auto;
+        }
+        .messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 250px);
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #e6f7ff;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .assistant-message {
+            background-color: #f0f0f0;
+            align-self: flex-start;
+            font-size: 16px;
+        }
+        .assistant-message h1, 
+        .assistant-message h2, 
+        .assistant-message h3, 
+        .assistant-message h4, 
+        .assistant-message h5, 
+        .assistant-message h6 {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        .tool-message {
+            background-color: #fffacd;
+            align-self: flex-start;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        .tool-message h1, 
+        .tool-message h2, 
+        .tool-message h3, 
+        .tool-message h4, 
+        .tool-message h5, 
+        .tool-message h6 {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        .input-area {
+            padding: 15px;
+            background-color: #f9f9f9;
+            display: flex;
+            gap: 10px;
+        }
+        .input-area textarea {
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            resize: none;
+        }
+        .input-area button {
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .tool-selection {
+            margin-bottom: 20px;
+        }
+        .tool-params {
+            margin-top: 10px;
+            display: none;
+        }
+        .param-field {
+            margin-bottom: 10px;
+        }
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .loading {
+            text-align: center;
+            margin: 15px 0;
+            font-style: italic;
+            color: #666;
+        }
+        .tool-button {
+            margin-top: 10px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #e6f7ff;
+            color: #0078d4;
+        }
+        /* For code blocks within messages */
+        pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+        }
+        .message p, 
+        .message span, 
+        .message div, 
+        .message li,
+        .message a {
+            font-size: 16px !important;
+            line-height: 1.5;
+            margin: 0 0 8px 0;
+        }
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+        .param-hint {
+            cursor: pointer;
+            color: #0078d4;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+        .param-hint:hover {
+            text-decoration: underline;
+        }
+        #token-usage {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-left: 5px;
+        }
+        .token-info {
+            font-size: 0.8em;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Power BI Assistant</h1>
+        <div class="session-controls">
+            <button id="new-session" class="btn btn-sm btn-outline-light mx-2">New Conversation</button>
+            <button id="download-chat" class="btn btn-sm btn-outline-light mx-2">Download Chat</button>
+            <span class="text-light small">Session ID: <span id="current-session-id"></span></span>
+            <span class="text-light small ms-3">Token Usage: <span id="token-usage">0 input / 0 output</span></span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-area">
+                <div class="messages" id="messages">
+                    <div class="message assistant-message">
+                        Hello! I'm your Power BI Assistant. How can I help you with your dataset today?
+                    </div>
+                </div>
+                <div id="loading" class="loading" style="display: none;">
+                    Thinking...
+                </div>
+                <div class="input-area">
+                    <textarea id="user-input" placeholder="Type your message here..." rows="2"></textarea>
+                    <button id="send-button">Send</button>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <h4>Available Tools</h4>
+                <p>You can directly use these MCP tools to interact with your dataset:</p>
+                
+                <div class="accordion" id="toolsAccordion">
+                    {% for tool_name, tool_info in tools.items() %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" 
+                                    aria-controls="collapse{{ loop.index }}">
+                                {{ tool_name }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" 
+                             aria-labelledby="heading{{ loop.index }}" data-bs-parent="#toolsAccordion">
+                            <div class="accordion-body">
+                                <p>{{ tool_info.description }}</p>
+                                
+                                {% if tool_info.required_params %}
+                                <h6>Required Parameters:</h6>
+                                <ul>
+                                    {% for param in tool_info.required_params %}
+                                    <li>{{ param }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                
+                                <button class="tool-button" data-tool="{{ tool_name }}">Use this tool</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="tool-params" id="tool-params">
+                    <h5 id="selected-tool-name">Tool Parameters</h5>
+                    <div id="param-fields"></div>
+                    <button id="execute-tool" class="tool-button">Execute Tool</button>
+                    <button id="cancel-tool" class="btn btn-secondary mt-2 w-100">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messagesContainer = document.getElementById('messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const loadingIndicator = document.getElementById('loading');
+            const toolParams = document.getElementById('tool-params');
+            const paramFields = document.getElementById('param-fields');
+            const selectedToolName = document.getElementById('selected-tool-name');
+            const executeToolButton = document.getElementById('execute-tool');
+            const cancelToolButton = document.getElementById('cancel-tool');
+            const tokenUsageDisplay = document.getElementById('token-usage');
+            const currentSessionIdDisplay = document.getElementById('current-session-id');
+            
+            let toolsInfo = {};
+            let currentToolName = null;
+            let inputTokens = 0;
+            let outputTokens = 0;
+            
+            // Session management
+            let sessionId = localStorage.getItem('sessionId') || generateSessionId();
+            let conversationHistory = JSON.parse(localStorage.getItem('conversationHistory') || '[]');
+            
+            // Update the session ID display
+            currentSessionIdDisplay.textContent = sessionId;
+            
+            // Update token usage display
+            function updateTokenUsageDisplay() {
+                tokenUsageDisplay.textContent = `${inputTokens} input / ${outputTokens} output`;
+            }
+            
+            // Fetch token usage for current session
+            function fetchTokenUsage() {
+                fetch(`/api/sessions/${sessionId}/token-usage`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch token usage');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        inputTokens = data.input_tokens;
+                        outputTokens = data.output_tokens;
+                        updateTokenUsageDisplay();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching token usage:', error);
+                    });
+            }
+            
+            // Initialize token usage
+            fetchTokenUsage();
+            
+            // Display existing conversation if any
+            if (conversationHistory.length > 0) {
+                // Clear default welcome message
+                messagesContainer.innerHTML = '';
+                
+                // Rebuild conversation from history
+                conversationHistory.forEach(msg => {
+                    if (msg.type) {
+                        addMessage(msg.content, msg.type);
+                    }
+                });
+            } else if (sessionId) {
+                // Try to fetch conversation history from the server
+                fetchSessionHistory(sessionId);
+            }
+            
+            // Fetch session history from server
+            function fetchSessionHistory(sessionId) {
+                fetch(`/api/sessions/${sessionId}/history`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Session not found');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.history && data.history.length > 0) {
+                            // Clear default welcome message
+                            messagesContainer.innerHTML = '';
+                            
+                            // Rebuild conversation from server history
+                            data.history.forEach(msg => {
+                                if (msg.role === 'user') {
+                                    addMessage(msg.content, 'user');
+                                } else if (msg.role === 'assistant') {
+                                    addMessage(msg.content, 'assistant');
+                                } else if (msg.role === 'system' && msg.content.includes('Tool result')) {
+                                    addMessage(msg.content.replace('Tool result:', ''), 'tool');
+                                }
+                            });
+                            
+                            console.log(`Loaded ${data.message_count} messages from server for session ${sessionId}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Could not fetch session history:', error.message);
+                        // If no history found, this is a new session
+                    });
+            }
+            
+            // Generate a unique session ID
+            function generateSessionId() {
+                const id = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('sessionId', id);
+                return id;
+            }
+            
+            // Save message to conversation history
+            function saveMessageToHistory(content, type) {
+                conversationHistory.push({ content, type });
+                localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+            }
+            
+            // Fetch the tools information
+            fetch('/api/tools')
+                .then(response => response.json())
+                .then(data => {
+                    toolsInfo = data;
+                })
+                .catch(error => console.error('Error fetching tools:', error));
+            
+                // Set up event listeners for tool buttons
+            document.querySelectorAll('.tool-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const toolName = this.getAttribute('data-tool');
+                    
+                    // Check if this is a "Use this tool" button (in the accordion body)
+                    if (this.textContent.trim() === "Use this tool") {
+                        // Get the tool description from the accordion item
+                        const accordionBody = this.closest('.accordion-body');
+                        if (accordionBody) {
+                            const description = accordionBody.querySelector('p').textContent;
+                            // Insert the description into the message input
+                            userInput.value = `Use ${toolName} tool: ${description}`;
+                            userInput.focus();
+                        }
+                    }
+                    
+                    showToolParams(toolName);
+                });
+            });            // Handle tool execution
+            executeToolButton.addEventListener('click', function() {
+                const params = {};
+                let missingRequired = false;
+                
+                document.querySelectorAll('.param-input').forEach(input => {
+                    const paramName = input.getAttribute('data-param');
+                    const paramValue = input.value.trim();
+                    
+                    if (input.required && !paramValue) {
+                        input.classList.add('is-invalid');
+                        missingRequired = true;
+                    } else {
+                        input.classList.remove('is-invalid');
+                        params[paramName] = paramValue;
+                    }
+                });
+                
+                if (missingRequired) {
+                    alert('Please fill in all required parameters');
+                    return;
+                }
+                
+                // Create a well-formatted message for the tool execution
+                let formattedMessage = `Execute ${currentToolName} with parameters: \n`;
+                Object.keys(params).forEach(key => {
+                    if (params[key]) {
+                        formattedMessage += `- ${key}: ${params[key]}\n`;
+                    }
+                });
+                
+                // Update the user input with the formatted message
+                userInput.value = formattedMessage;
+                
+                executeTool(currentToolName, params);
+            });
+            
+            // Cancel tool execution
+            cancelToolButton.addEventListener('click', function() {
+                toolParams.style.display = 'none';
+                
+                // Clear any tool-related content from the user input
+                if (userInput.value.includes(`Using ${currentToolName}`) || 
+                    userInput.value.includes(`Execute ${currentToolName}`)) {
+                    userInput.value = '';
+                }
+                
+                // Clear any validation styles
+                document.querySelectorAll('.param-input').forEach(input => {
+                    input.classList.remove('is-invalid');
+                });
+            });
+            
+            // Handle user message submission
+            sendButton.addEventListener('click', sendMessage);
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            function showToolParams(toolName) {
+                if (!toolsInfo[toolName]) return;
+                
+                currentToolName = toolName;
+                selectedToolName.textContent = `Parameters for ${toolName}`;
+                
+                // Clear previous fields
+                paramFields.innerHTML = '';
+                
+                // Build a message that describes the required parameters
+                let paramMessage = `Using ${toolName} with the following parameters:\n`;
+                
+                // Create input fields for required parameters
+                const requiredParams = toolsInfo[toolName].required_params || [];
+                requiredParams.forEach(param => {
+                    const div = document.createElement('div');
+                    div.className = 'param-field';
+                    
+                    const label = document.createElement('label');
+                    label.textContent = param + ' (required):';
+                    label.setAttribute('for', `param-${param}`);
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'form-control param-input';
+                    input.id = `param-${param}`;
+                    input.setAttribute('data-param', param);
+                    input.required = true;
+                    
+                    // Add event listener to update message as user types
+                    input.addEventListener('input', function() {
+                        updateMessageWithParams(toolName);
+                    });
+                    
+                    div.appendChild(label);
+                    div.appendChild(input);
+                    paramFields.appendChild(div);
+                    
+                    paramMessage += `- ${param} (required)\n`;
+                });
+                
+                // Create input fields for optional parameters
+                const optionalParams = toolsInfo[toolName].optional_params || [];
+                optionalParams.forEach(param => {
+                    const div = document.createElement('div');
+                    div.className = 'param-field';
+                    
+                    const label = document.createElement('label');
+                    label.textContent = param + ' (optional):';
+                    label.setAttribute('for', `param-${param}`);
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'form-control param-input';
+                    input.id = `param-${param}`;
+                    input.setAttribute('data-param', param);
+                    
+                    // Add event listener to update message as user types
+                    input.addEventListener('input', function() {
+                        updateMessageWithParams(toolName);
+                    });
+                    
+                    div.appendChild(label);
+                    div.appendChild(input);
+                    paramFields.appendChild(div);
+                    
+                    paramMessage += `- ${param} (optional)\n`;
+                });
+                
+                // Update the message input with parameter information
+                if (userInput.value.trim() === '') {
+                    userInput.value = paramMessage;
+                }
+                
+                toolParams.style.display = 'block';
+            }
+            
+            // Helper function to update message with current parameter values
+            function updateMessageWithParams(toolName) {
+                let paramMessage = `Using ${toolName} with the following parameters:\n`;
+                let hasValues = false;
+                
+                document.querySelectorAll('.param-input').forEach(input => {
+                    const paramName = input.getAttribute('data-param');
+                    const paramValue = input.value.trim();
+                    const isRequired = input.required;
+                    
+                    if (paramValue) {
+                        paramMessage += `- ${paramName}: ${paramValue}\n`;
+                        hasValues = true;
+                    } else {
+                        paramMessage += `- ${paramName} ${isRequired ? '(required)' : '(optional)'}\n`;
+                    }
+                });
+                
+                if (hasValues) {
+                    userInput.value = paramMessage;
+                }
+            }
+            
+            function executeTool(toolName, params) {
+                // Validate required parameters
+                const requiredParams = toolsInfo[toolName].required_params || [];
+                const missingParams = requiredParams.filter(param => !params[param]);
+                
+                if (missingParams.length > 0) {
+                    alert(`Missing required parameters: ${missingParams.join(', ')}`);
+                    return;
+                }
+                
+                // Add user message about tool execution
+                addMessage(`I want to execute the ${toolName} tool with these parameters: ${JSON.stringify(params)}`, 'user');
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                
+                // Send the tool execution request
+                fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Execute the ${toolName} tool with parameters: ${JSON.stringify(params)}`,
+                        tool_name: toolName,
+                        tool_params: params,
+                        session_id: sessionId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingIndicator.style.display = 'none';
+                    
+                    if (data.error) {
+                        addMessage(`Error: ${data.error}`, 'assistant');
+                    } else {
+                        // Display tool results if available
+                        if (data.tool_results && data.tool_results.length > 0) {
+                            for (const toolResult of data.tool_results) {
+                                let toolName = toolResult.tool_name;
+                                let resultStr = toolResult.result;
+                                let explanation = toolResult.explanation;
+                                
+                                let toolHeader = `## Results from ${toolName}\n`;
+                                if (explanation) {
+                                    toolHeader += `*${explanation}*\n\n`;
+                                }
+                                
+                                if (resultStr && resultStr.trim()) {
+                                    addMessage(`${toolHeader}\`\`\`json\n${resultStr}\n\`\`\``, 'tool');
+                                }
+                            }
+                        }
+                        
+                        // Display assistant message
+                        addMessage(data.message, 'assistant');
+                        
+                        // Update session ID if returned
+                        if (data.session_id) {
+                            sessionId = data.session_id;
+                            localStorage.setItem('sessionId', sessionId);
+                        }
+                        
+                        // Update token usage if available
+                        if (data.token_usage) {
+                            inputTokens += data.token_usage.input_tokens || 0;
+                            outputTokens += data.token_usage.output_tokens || 0;
+                            updateTokenUsageDisplay();
+                        } else {
+                            // Fetch latest token usage if not provided in response
+                            fetchTokenUsage();
+                        }
+                    }
+                    
+                    // Hide tool params
+                    toolParams.style.display = 'none';
+                })
+                .catch(error => {
+                    loadingIndicator.style.display = 'none';
+                    addMessage(`Error: ${error.message}`, 'assistant');
+                    toolParams.style.display = 'none';
+                });
+            }
+            
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (!message) return;
+                
+                // Add user message to the chat
+                addMessage(message, 'user');
+                
+                // Clear input
+                userInput.value = '';
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                
+                // Send the message to the API
+                fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        message: message,
+                        session_id: sessionId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingIndicator.style.display = 'none';
+                    
+                    if (data.error) {
+                        addMessage(`Error: ${data.error}`, 'assistant');
+                    } else {
+                        // Display auto-executed tool results
+                        if (data.tool_results && data.tool_results.length > 0) {
+                            for (const toolResult of data.tool_results) {
+                                let toolName = toolResult.tool_name;
+                                let resultStr = toolResult.result;
+                                let explanation = toolResult.explanation;
+                                
+                                let toolHeader = `## Results from ${toolName}\n`;
+                                if (explanation) {
+                                    toolHeader += `*${explanation}*\n\n`;
+                                }
+                                
+                                if (resultStr && resultStr.trim()) {
+                                    addMessage(`${toolHeader}\`\`\`json\n${resultStr}\n\`\`\``, 'tool');
+                                }
+                            }
+                        }
+                        
+                        // Display assistant message
+                        addMessage(data.message, 'assistant');
+                        
+                        // Update session ID if returned
+                        if (data.session_id) {
+                            sessionId = data.session_id;
+                            localStorage.setItem('sessionId', sessionId);
+                        }
+                        
+                        // Update token usage if available
+                        if (data.token_usage) {
+                            inputTokens += data.token_usage.input_tokens || 0;
+                            outputTokens += data.token_usage.output_tokens || 0;
+                            updateTokenUsageDisplay();
+                        } else {
+                            // Fetch latest token usage if not provided in response
+                            fetchTokenUsage();
+                        }
+                    }
+                })
+                .catch(error => {
+                    loadingIndicator.style.display = 'none';
+                    addMessage(`Error: ${error.message}`, 'assistant');
+                });
+            }
+            
+            function addMessage(content, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                // Process markdown for assistant and tool messages
+                if (sender === 'assistant' || sender === 'tool') {
+                    messageDiv.innerHTML = marked.parse(content);
+                    
+                    // Ensure consistent text size for all elements in the message
+                    const headings = messageDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                    headings.forEach(heading => {
+                        heading.style.fontSize = '16px';
+                        heading.style.fontWeight = 'bold';
+                        heading.style.margin = '8px 0';
+                    });
+                } else {
+                    messageDiv.textContent = content;
+                }
+                
+                messagesContainer.appendChild(messageDiv);
+                
+                // Save to conversation history
+                saveMessageToHistory(content, sender);
+                
+                // Scroll to the bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            // Session controls are already defined in HTML
+            // Update the session ID in the existing UI
+            document.getElementById('current-session-id').textContent = sessionId;
+            
+            // Add event listener for new session button
+            document.getElementById('new-session').addEventListener('click', function() {
+                if (confirm('Start a new conversation? This will clear the current chat history.')) {
+                    // Generate new session ID
+                    sessionId = generateSessionId();
+                    document.getElementById('current-session-id').textContent = sessionId;
+                    
+                    // Clear conversation history
+                    conversationHistory = [];
+                    localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+                    
+                    // Reset token usage
+                    inputTokens = 0;
+                    outputTokens = 0;
+                    updateTokenUsageDisplay();
+                    
+                    // Clear chat display
+                    messagesContainer.innerHTML = '';
+                    
+                    // Add welcome message
+                    addMessage('Hello! I\'m your Power BI Assistant. How can I help you with your dataset today?', 'assistant');
+                }
+            });
+
+            // Add event listener for download chat button
+            document.getElementById('download-chat').addEventListener('click', function() {
+                downloadConversation();
+            });
+
+            // Function to download conversation history as a text file
+            function downloadConversation() {
+                // Check if we have a valid session
+                if (!sessionId) {
+                    alert('No active session to download.');
+                    return;
+                }
+                
+                // Determine download method based on history source
+                if (conversationHistory.length > 0) {
+                    // Client-side download if we have history in browser
+                    downloadFromLocalHistory();
+                } else {
+                    // Server-side download - better for persisted history
+                    downloadFromServer();
+                }
+            }
+            
+            // Download conversation from local browser history
+            function downloadFromLocalHistory() {
+                if (conversationHistory.length === 0) {
+                    alert('No conversation to download.');
+                    return;
+                }
+                
+                // Format the conversation into a readable text format
+                let conversationText = `Power BI Assistant Chat - Session: ${sessionId}\n`;
+                conversationText += `Downloaded on: ${new Date().toLocaleString()}\n\n`;
+                
+                conversationHistory.forEach((msg, index) => {
+                    const sender = msg.type === 'user' ? 'You' : 
+                                  msg.type === 'assistant' ? 'Assistant' : 'Tool';
+                    
+                    conversationText += `${sender}:\n`;
+                    
+                    // Clean up markdown code blocks for better readability in text
+                    let content = msg.content;
+                    content = content.replace(/```(json|python|sql|dax)?\n/g, ''); // Remove code block start
+                    content = content.replace(/```/g, ''); // Remove code block end
+                    
+                    conversationText += `${content}\n\n`;
+                });
+                
+                // Create a Blob with the text content
+                const blob = new Blob([conversationText], { type: 'text/plain' });
+                
+                // Create a temporary link to download the file
+                const a = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                a.href = url;
+                a.download = `PowerBI_Assistant_Chat_${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 0);
+            }
+            
+            // Download conversation from server
+            function downloadFromServer() {
+                // Use the server's download endpoint which handles formatting
+                const downloadUrl = `/api/sessions/${sessionId}/download`;
+                
+                // Create a hidden link and trigger download
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = `PowerBI_Assistant_Chat_${sessionId}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                }, 0);
+            }
+        });
+    </script>
+</body>
+</html>

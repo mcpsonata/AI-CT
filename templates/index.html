@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI Assistant - Autonomous Debugging Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #0078d4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .chat-container {
+            display: flex;
+            height: calc(100vh - 180px);
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chat-window {
+            flex: 2;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        .debug-window {
+            flex: 1;
+            background-color: #f0f0f0;
+            border-left: 1px solid #ddd;
+            padding: 15px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+        }
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #e1f5fe;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .assistant-message {
+            background-color: #f1f1f1;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+        #message-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+        }
+        button {
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0 20px;
+            margin-left: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #106ebe;
+        }
+        .tool-result {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .debug-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0078d4;
+        }
+        .debug-log {
+            padding: 5px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            font-size: 90%;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Power BI Assistant - Autonomous Debugging Demo</h1>
+    </header>
+    
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-window">
+                <div class="messages" id="messages">
+                    <div class="message assistant-message">
+                        Hello! I'm the Power BI Assistant with autonomous debugging capabilities. I can help you with SQL queries and Power BI tasks. Try asking me to:
+                        <ul>
+                            <li>Initialize a SQL connection: <code>Initialize SQL connection to sqlendpoint.fabric.microsoft.com and mydatabase</code></li>
+                            <li>List available tables: <code>Show me the available tables</code></li>
+                            <li>Execute a SQL query: <code>Execute SQL query: SELECT * FROM dbo.customers LIMIT 5</code></li>
+                            <li>Try a query with an invalid table name (will trigger autonomous debugging): <code>Execute SQL query: SELECT * FROM customer LIMIT 5</code></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="message-input" placeholder="Type your message here..." autocomplete="off">
+                    <button id="send-button">Send</button>
+                </div>
+            </div>
+            <div class="debug-window" id="debug-window">
+                <div class="debug-title">Debug Information</div>
+                <div class="debug-log">Waiting for interaction...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Client-side JavaScript code for the chat interface
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const debugWindow = document.getElementById('debug-window');
+        
+        // Generate a unique session ID
+        const sessionId = 'session_' + Math.random().toString(36).substring(2, 10);
+        
+        // Function to add a message to the chat
+        function addMessage(content, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerHTML = content;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Function to update debug information
+        function updateDebugInfo(info) {
+            debugWindow.innerHTML = '<div class="debug-title">Debug Information</div>';
+            
+            // Add session ID
+            const sessionDiv = document.createElement('div');
+            sessionDiv.className = 'debug-log';
+            sessionDiv.textContent = `Session ID: ${info.session_id || 'Unknown'}`;
+            debugWindow.appendChild(sessionDiv);
+            
+            // Add executed tools
+            if (info.auto_executed_tools && info.auto_executed_tools.length > 0) {
+                const toolsDiv = document.createElement('div');
+                toolsDiv.className = 'debug-log';
+                toolsDiv.innerHTML = `<strong>Executed Tools:</strong><br>` + 
+                    info.auto_executed_tools.map(tool => `- ${tool}`).join('<br>');
+                debugWindow.appendChild(toolsDiv);
+            }
+            
+            // Add debug logs
+            if (info.debug_logs && info.debug_logs.length > 0) {
+                const logsTitle = document.createElement('div');
+                logsTitle.className = 'debug-log';
+                logsTitle.innerHTML = '<strong>Autonomous Debugging Logs:</strong>';
+                debugWindow.appendChild(logsTitle);
+                
+                info.debug_logs.forEach(log => {
+                    const logDiv = document.createElement('div');
+                    logDiv.className = 'debug-log';
+                    logDiv.textContent = log;
+                    debugWindow.appendChild(logDiv);
+                });
+            }
+            
+            // Add tool results
+            if (info.tool_results && info.tool_results.length > 0) {
+                const resultsTitle = document.createElement('div');
+                resultsTitle.className = 'debug-log';
+                resultsTitle.innerHTML = '<strong>Tool Results:</strong>';
+                debugWindow.appendChild(resultsTitle);
+                
+                info.tool_results.forEach(result => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'debug-log';
+                    
+                    let resultText = `Tool: ${result.tool_name}<br>`;
+                    resultText += `Params: ${JSON.stringify(result.params)}<br>`;
+                    
+                    // Format the result based on type
+                    if (Array.isArray(result.result)) {
+                        if (result.result.length > 3) {
+                            resultText += `Result: Array with ${result.result.length} items<br>`;
+                            resultText += `First 3 items: ${JSON.stringify(result.result.slice(0, 3), null, 2)}...`;
+                        } else {
+                            resultText += `Result: ${JSON.stringify(result.result, null, 2)}`;
+                        }
+                    } else {
+                        resultText += `Result: ${JSON.stringify(result.result, null, 2)}`;
+                    }
+                    
+                    resultDiv.innerHTML = resultText;
+                    debugWindow.appendChild(resultDiv);
+                });
+            }
+        }
+        
+        // Function to send a message
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // Add user message to the chat
+            addMessage(message, 'user');
+            
+            // Clear input
+            messageInput.value = '';
+            
+            // Add loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'Processing...';
+            messagesContainer.appendChild(loadingDiv);
+            
+            try {
+                // Send message to the API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        session_id: sessionId
+                    })
+                });
+                
+                // Remove loading indicator
+                messagesContainer.removeChild(loadingDiv);
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const data = await response.json();
+                
+                // Add assistant's response to the chat
+                let assistantContent = data.message;
+                
+                // Add tool results if available
+                if (data.tool_results && data.tool_results.length > 0) {
+                    assistantContent += '<div class="tool-result">';
+                    assistantContent += `<strong>Results:</strong> `;
+                    
+                    // Format results based on type
+                    const lastToolResult = data.tool_results[data.tool_results.length - 1];
+                    if (lastToolResult && lastToolResult.result) {
+                        if (Array.isArray(lastToolResult.result)) {
+                            if (lastToolResult.result.length > 3) {
+                                assistantContent += `Found ${lastToolResult.result.length} items. Here are the first 3:<br>`;
+                                assistantContent += `<pre>${JSON.stringify(lastToolResult.result.slice(0, 3), null, 2)}...</pre>`;
+                            } else {
+                                assistantContent += `<pre>${JSON.stringify(lastToolResult.result, null, 2)}</pre>`;
+                            }
+                        } else {
+                            assistantContent += `<pre>${JSON.stringify(lastToolResult.result, null, 2)}</pre>`;
+                        }
+                    }
+                    
+                    assistantContent += '</div>';
+                }
+                
+                // If autonomous debugging was performed, add a note
+                if (data.debug_logs && data.debug_logs.length > 0) {
+                    assistantContent += '<div class="tool-result" style="background-color: #e6f7ff; border-color: #91d5ff;">';
+                    assistantContent += '<strong>Note:</strong> Autonomous debugging was performed to fix an issue with your request.';
+                    assistantContent += '</div>';
+                }
+                
+                addMessage(assistantContent, 'assistant');
+                
+                // Update debug information
+                updateDebugInfo(data);
+                
+            } catch (error) {
+                // Remove loading indicator if still present
+                if (messagesContainer.contains(loadingDiv)) {
+                    messagesContainer.removeChild(loadingDiv);
+                }
+                
+                console.error('Error:', error);
+                addMessage('Sorry, there was an error processing your request. Please try again.', 'assistant');
+            }
+        }
+        
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

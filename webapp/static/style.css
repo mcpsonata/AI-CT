@@ -1,0 +1,31 @@
+/* Custom styles for the Power BI Assistant */
+.message pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.message code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+}
+
+.chat-container {
+    height: calc(100vh - 150px);
+}
+
+@media (max-width: 768px) {
+    .chat-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        max-width: 100%;
+        order: 2;
+    }
+    
+    .chat-area {
+        order: 1;
+    }
+}
