@@ -1,0 +1,902 @@
+Table,Measure,Expression,Description,Issue_Severity,Has_Duplicate,Duplicate_Measure_Names,Has_Qualified_Measure_References,Qualified_Referenced_Measures,Has_All_Measure_References,All_Referenced_Measures,Measure_Complexity_Level,Measure_Complexity_Explanation,Calculation_Type,Complexity_Recommendations,Has_Commonly_Used_Measure,Commonly_Used_Explanation,DAX_Recommendations,Self_Explanatory_Explanation,Name_Reflects_Explanation,Abbreviations_Explanation,Unqualified_Measures_Score,Unqualified_Measures_Max_Score,Unique_Measure_Calculation_Score,Unique_Measure_Calculation_Max_Score,Commonly_Used_Measure_Score,Commonly_Used_Measure_Max_Score,Measure_Complexity_Score,Measure_Complexity_Max_Score,Is_Self_Explanatory_Score,Is_Self_Explanatory_Max_Score,Name_Reflects_Expression_Score,Name_Reflects_Expression_Max_Score,Avoid_Abbreviations_Score,Avoid_Abbreviations_Max_Score,Overall_Score,Max_Overall_Score,Confidence_Score
+User,Filters Applied Icon,"""🗸""",,issue,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,,The name 'Filters Applied Icon' is self-explanatory as it clearly indicates that the measure represents an icon related to applied filters.,The name 'Filters Applied Icon' reflects the calculation as the context shows it returns a specific icon (🗸) to represent applied filters.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+User,Last Refresh Date,"""🕘""",,issue,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,,The name 'Last Refresh Date' is self-explanatory as it clearly indicates it represents the last refresh date.,The name 'Last Refresh Date' reflects the calculation as the context shows it returns an icon (🕘) representing the last refresh date.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+User,Information Icon,"""i""",,issue,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,,The name 'Information Icon' is self-explanatory as it clearly indicates it represents an information icon.,"The name 'Information Icon' reflects the calculation as the context shows it returns the character 'i', which is commonly used as an information icon.",There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+User,CURRENT_USER,"LEFT(USERPRINCIPALNAME(),FIND(""@"",USERPRINCIPALNAME())-1)",,issue,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern; Moderate function nesting (4 nested functions)",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,,The name 'CURRENT_USER' is self-explanatory as it clearly indicates it retrieves the current user.,The name 'CURRENT_USER' reflects the calculation as the context shows it extracts the current user's alias from their email address.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Close Rates,Average Close Rate,"DIVIDE((DIVIDE(SUM('Close Rates'[Q-1CloseRateNumerator]),SUM('Close Rates'[Q-1CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-2CloseRateNumerator]),SUM('Close Rates'[Q-2CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-3CloseRateNumerator]),SUM('Close Rates'[Q-3CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-4CloseRateNumerator]),SUM('Close Rates'[Q-4CloseRateDenominator]),0)),4,0)",,good,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Ratio or percentage calculation with clear business logic; Long expression (400 characters); Excessive function nesting (14 nested functions); Well-formatted with line breaks",ratio_percentage,CRITICAL - High complexity measure needs restructuring and simplification,Yes,"Referenced by 2 measure(s): Pipeline Target Unround, QPC Goal",,The name 'Average Close Rate' is self-explanatory as it clearly indicates it calculates the average close rate.,The name 'Average Close Rate' reflects the calculation as the context shows it calculates the average of close rates over four quarters.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Close Rates,Pipeline Target, [QPC Goal],,warning,Yes,Direct reference to: qpc goal,No,,Yes,qpc goal,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,"Referenced by 6 measure(s): QPC to Budget KPI, QPC to Forecast KPI, WW_QPC KPI and 3 more",DIRECT REFERENCE: This measure is a simple reference to another measure (Direct reference to: qpc goal) - which will cause confusion to data agents. Please consider removing this measure.,The name 'Pipeline Target' is self-explanatory as it clearly indicates it calculates a target related to the pipeline.,The name 'Pipeline Target' reflects the calculation as the context shows it calculates a target based on the QPC Goal and other factors.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.0,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+Close Rates,Pipeline Target Unround,"IF(CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)>3,3,CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0))",,good,No,,No,,Yes,average close rate,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic; Moderate length expression (249 characters); Moderate function nesting (7 nested functions); Single-line format reduces readability,ratio_percentage,"Break long formula into multiple lines for readability; Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",Yes,"Referenced by 4 measure(s): Additional Pipeline Needed Latest Week, Additional Pipeline Needed Forecast Latest Week, Additional Pipeline Needed and 1 more",,The name 'Pipeline Target Unround' is self-explanatory as it clearly indicates it calculates an unrounded version of the pipeline target.,The name 'Pipeline Target Unround' reflects the calculation as the context shows it calculates an unrounded version of the pipeline target.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Close Rates,QPC Goal," IF(CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)>3,3,CALCULATE(ROUND(DIVIDE(1,[Average Close Rate],BLANK()),2),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)) ",,good,No,,No,,Yes,average close rate,Medium,Medium complexity due to moderate business logic or formatting. Details: Ratio or percentage calculation with clear business logic; Moderate length expression (266 characters); High function nesting (9 nested functions); Single-line format reduces readability,ratio_percentage,"Break long formula into multiple lines for readability; Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",Yes,Referenced by 1 measure(s): Pipeline Target,,"The name 'QPC Goal' is self-explanatory as QPC is a standard abbreviation for Qualified Pipeline Coverage, and the name indicates it calculates a goal related to QPC.",The name 'QPC Goal' reflects the calculation as the context shows it calculates a goal based on the average close rate and other conditions.,The abbreviation 'QPC' is a standard Microsoft business term and is acceptable.,0.2,0.2,0.2,0.2,0.3,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.85,2.0,0.925
+Trending,Qualified Pipeline Coverage to Budget,"VAR X = [Billed Budget]- SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = SUM ( 'Trending'[QualifiedPipeline]  ) + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",,good,No,,No,,Yes,billed budget,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (264 characters); High function nesting (8 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,"Referenced by 5 measure(s): Qualified Pipeline Coverage to Budget MoM, Qualified Pipeline Coverage to Budget WoW, Qualified Pipeline Coverage to Budget YoY and 2 more",,The name 'Qualified Pipeline Coverage to Budget' is self-explanatory as it clearly indicates it calculates the coverage of the qualified pipeline relative to the budget.,The name 'Qualified Pipeline Coverage to Budget' reflects the calculation as the context shows it calculates the ratio of qualified pipeline and run rate projections to the difference between billed budget and actual/scheduled billed revenue.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Qualified Pipeline Coverage to Forecast,"VAR X = [Billed Forecast] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = SUM ( 'Trending'[QualifiedPipeline]  ) + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",,good,No,,No,,Yes,billed forecast,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (267 characters); High function nesting (8 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,"Referenced by 4 measure(s): Qualified Pipeline Coverage to Forecast WoW, Qualified Pipeline Coverage to Forecast MoM, Qualified Pipeline Coverage to Forecast YoY and 1 more",,The name 'Qualified Pipeline Coverage to Forecast' is self-explanatory as it clearly indicates it calculates the coverage of the qualified pipeline relative to the forecast.,The name 'Qualified Pipeline Coverage to Forecast' reflects the calculation as the context shows it calculates the ratio of qualified pipeline and run rate projections to the difference between billed forecast and actual/scheduled billed revenue.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,% Committed,"DIVIDE([Committed + Risk Pipeline],[Qualified Pipeline],BLANK())",,good,No,,No,,Yes,"committed + risk pipeline, qualified pipeline",Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name '% Committed' is self-explanatory as it clearly indicates it calculates the percentage of committed pipeline.,The name '% Committed' reflects the calculation as the context shows it calculates the percentage of committed and at-risk pipeline relative to the qualified pipeline.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,% Upside,"DIVIDE([Uncommitted + Upside Pipeline],[Qualified Pipeline],BLANK())",,good,No,,No,,Yes,"qualified pipeline, uncommitted + upside pipeline",Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name '% Upside' is self-explanatory as it clearly indicates it calculates the percentage of upside pipeline.,The name '% Upside' reflects the calculation as the context shows it calculates the percentage of uncommitted and upside pipeline relative to the qualified pipeline.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Actual + Schedule,SUM(Trending[ActualBilledRevenue])+SUM(Trending[ScheduledBilledRevenue]),,good,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.)",simple_aggregation,Format SUM expressions with line breaks when part of complex calculations,No,Not referenced by any other measures in the model,,The name 'Actual + Schedule' is self-explanatory as it clearly indicates it sums actual and scheduled billed revenue.,The name 'Actual + Schedule' reflects the calculation as the context shows it sums actual billed revenue and scheduled billed revenue.,There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,DBF VTB $,[Total DBF] - [Billed Budget],,warning,No,,No,,Yes,"billed budget, total dbf",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,Referenced by 1 measure(s): DBF VTB %,,The name 'DBF VTB $' is not self-explanatory as it uses abbreviations that are not immediately clear without additional context.,"The name 'DBF VTB $' reflects the calculation as the context shows it calculates the difference between total DBF and billed budget, which aligns with the name.",The abbreviations 'DBF' and 'VTB' are standard Microsoft business terms and are acceptable.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.0,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+Trending,DBF VTF $,[Total DBF] - [Billed Forecast],,warning,No,,No,,Yes,"billed forecast, total dbf",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,Referenced by 1 measure(s): DBF VTF %,,The name 'DBF VTF $' is not self-explanatory as it uses abbreviations that are not immediately clear without additional context.,"The name 'DBF VTF $' reflects the calculation as the context shows it calculates the difference between total DBF and billed forecast, which aligns with the name.",The abbreviations 'DBF' and 'VTF' are standard Microsoft business terms and are acceptable.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.0,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+Trending,Qualified Pipeline with Close Plan Attach,"DIVIDE (
+    SUM ( Trending[QPClosePlanAttach_Num] ),
+    SUM ( Trending[QPClosePlanAttach_Den] ),
+    BLANK ()
+)",,good,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern; Moderate length expression (113 characters); Moderate function nesting (4 nested functions); Well-formatted with line breaks",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,"Referenced by 3 measure(s): Close Plan Attach WoW, Close Plan Attach MoM, Close Plan Attach Latest Week",,The name 'Qualified Pipeline with Close Plan Attach' is self-explanatory as it clearly indicates it relates to a qualified pipeline with a close plan attachment.,"The name reflects the calculation as the context shows it calculates a ratio involving 'QPClosePlanAttach_Num' and 'QPClosePlanAttach_Den', which aligns with the name.",There are no problematic abbreviations in the name. The term 'QPC' is not present in the measure name itself.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,% Cloud,"VAR X = CALCULATE( [Qualified Pipeline], KEEPFILTERS(Product[Commercial Cloud Flag] = ""Commercial Cloud"" ) )
+
+RETURN DIVIDE(X,[Qualified Pipeline],BLANK())",,good,No,,No,,Yes,qualified pipeline,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic; Moderate length expression (155 characters); Moderate function nesting (4 nested functions); Well-formatted with line breaks,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,"The name '% Cloud' is self-explanatory as it indicates a percentage related to 'Cloud', which is clarified in the context as the proportion of 'Qualified Pipeline' for 'Commercial Cloud'.",The name reflects the calculation as the context shows it calculates the percentage of the qualified pipeline for 'Commercial Cloud'.,There are no problematic abbreviations in the name. The name is clear and concise.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,% Non Cloud,"VAR X = CALCULATE( [Qualified Pipeline], KEEPFILTERS(Product[Commercial Cloud Flag] <> ""Commercial Cloud"" ) )
+
+RETURN DIVIDE(X,[Qualified Pipeline],BLANK())",,good,No,,No,,Yes,qualified pipeline,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic; Moderate length expression (156 characters); Moderate function nesting (4 nested functions); Well-formatted with line breaks,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,"The name '% Non Cloud' is self-explanatory as it indicates a percentage related to 'Non Cloud', which is clarified in the context as the proportion of 'Qualified Pipeline' not in 'Commercial Cloud'.",The name reflects the calculation as the context shows it calculates the percentage of the qualified pipeline not in 'Commercial Cloud'.,There are no problematic abbreviations in the name. The name is clear and concise.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,DBF VTB %,"DIVIDE([DBF VTB $],[Billed Budget],BLANK())",,warning,No,,No,,Yes,"billed budget, dbf vtb $",Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'DBF VTB %' is not self-explanatory as it uses abbreviations ('DBF' and 'VTB') that are not immediately clear without additional context.,"The name reflects the calculation as the context shows it calculates the percentage of 'DBF VTB $' to 'Billed Budget', which aligns with the name.",The abbreviations 'DBF' and 'VTB' are acceptable as they are standard Microsoft business terms.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.0,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+Trending,Qualified Pipeline in High Stage,"DIVIDE (
+    SUM ( Trending[QualifiedPipeline60] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+
+",,good,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern; Moderate length expression (108 characters); Moderate function nesting (4 nested functions); Well-formatted with line breaks",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,"Referenced by 3 measure(s): Qualified Pipeline in High Stage Latest Week, Qualified Pipeline in High Stage MoM, Qualified Pipeline in High Stage WoW",,The name 'Qualified Pipeline in High Stage' is self-explanatory as it indicates it relates to the qualified pipeline in high stages.,"The name reflects the calculation as the context shows it calculates the ratio of 'QualifiedPipeline60' to 'QualifiedPipeline', which aligns with the name.",There are no problematic abbreviations in the name. The name is clear and descriptive.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Qualified Pipeline in Low Stages,"DIVIDE (
+    SUM ( Trending[QualifiedPipeline] ) - SUM ( Trending[QualifiedPipeline60] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+",,issue,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern; Moderate length expression (145 characters); Moderate function nesting (5 nested functions); Well-formatted with line breaks",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline in Low Stages' is self-explanatory as it indicates it relates to the qualified pipeline in low stages.,"The name reflects the calculation as the context shows it calculates the ratio of the difference between 'QualifiedPipeline' and 'QualifiedPipeline60' to 'QualifiedPipeline', which aligns with the name.",There are no problematic abbreviations in the name. The name is clear and descriptive.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Uncommitted + Upside Pipeline,[Uncommitted Pipeline] + [Uncommitted Upside Pipeline],,good,No,,No,,Yes,"uncommitted pipeline, uncommitted upside pipeline",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,Referenced by 1 measure(s): % Upside,,The name 'Uncommitted + Upside Pipeline' is self-explanatory as it indicates it relates to the sum of uncommitted and upside pipelines.,"The name reflects the calculation as the context shows it sums 'Uncommitted Pipeline' and 'Uncommitted Upside Pipeline', which aligns with the name.",There are no problematic abbreviations in the name. The name is clear and descriptive.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,CPC to Budget,"VAR X = [Billed Budget] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = [Committed + Risk Pipeline] + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",,warning,No,,No,,Yes,"billed budget, committed + risk pipeline",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (254 characters); Moderate function nesting (7 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,"Referenced by 4 measure(s): CPC to Budget MoM, CPC to Budget WoW, CPC to Budget Latest Week and 1 more",,The name 'CPC to Budget' is not self-explanatory as 'CPC' is an unclear abbreviation without additional context.,"The name reflects the calculation as the context shows it calculates a ratio involving 'Billed Budget', 'ActualBilledRevenue', and 'Committed + Risk Pipeline', which aligns with the name.",The abbreviation 'CPC' is acceptable as it is a standard Microsoft business term.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.0,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+Trending,CPC to Forecast,"VAR X = [Billed Forecast] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = [Committed + Risk Pipeline] + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",,warning,No,,No,,Yes,"billed forecast, committed + risk pipeline",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (256 characters); Moderate function nesting (7 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,"Referenced by 4 measure(s): CPC to Forecast MoM, CPC to Forecast WoW, CPC to Forecast YoY and 1 more",,The name 'CPC to Forecast' is not self-explanatory as 'CPC' is an unclear abbreviation without additional context.,"The name reflects the calculation as the context shows it calculates a ratio involving 'Billed Forecast', 'ActualBilledRevenue', and 'Committed + Risk Pipeline', which aligns with the name.",The abbreviation 'CPC' is acceptable as it is a standard Microsoft business term.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.0,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+Trending,CPC to Forecast Latest Week KPI,[CPC to Forecast Latest Week] * 100,,issue,No,,No,,Yes,cpc to forecast latest week,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,,The name 'CPC to Forecast Latest Week KPI' is not self-explanatory as 'CPC' is an unclear abbreviation without additional context.,"The name reflects the calculation as the context shows it calculates 'CPC to Forecast Latest Week' multiplied by 100, which aligns with the name.",The abbreviation 'CPC' is acceptable as it is a standard Microsoft business term.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.4,0.4,0.4,0.4,1.2000000000000002,2.0,0.6000000000000001
+Trending,CPC to Budget MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,cpc to budget,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (583 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'CPC to Budget MoM' is not self-explanatory as 'CPC' is an unclear abbreviation without additional context.,"The name reflects the calculation as the context shows it calculates the month-over-month change in 'CPC to Budget', which aligns with the name.",The abbreviation 'CPC' is acceptable as it is a standard Microsoft business term.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.4,0.4,0.4,0.4,1.2000000000000002,2.0,0.6000000000000001
+Trending,CPC to Budget WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,cpc to budget,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (581 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'CPC to Budget WoW' is not self-explanatory as 'CPC' is an unclear abbreviation without additional context.,"The name reflects the calculation as the context shows it calculates the week-over-week change in 'CPC to Budget', which aligns with the name.",The abbreviation 'CPC' is acceptable as it is a standard Microsoft business term.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.4,0.4,0.4,0.4,1.2000000000000002,2.0,0.6000000000000001
+Trending,Qualified Pipeline Coverage to Budget MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,qualified pipeline coverage to budget,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (631 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline Coverage to Budget MoM' is self-explanatory as it indicates it calculates the month-over-month change in the qualified pipeline coverage to budget.,"The name reflects the calculation as the context shows it calculates the month-over-month change in 'Qualified Pipeline Coverage to Budget', which aligns with the name.",There are no problematic abbreviations in the name. The name is clear and descriptive.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Qualified Pipeline Coverage to Budget WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,qualified pipeline coverage to budget,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (629 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline Coverage to Budget WoW' is self-explanatory as it indicates it calculates the week-over-week change in the qualified pipeline coverage to budget.,"The name reflects the calculation as the context shows it calculates the week-over-week change in 'Qualified Pipeline Coverage to Budget', which aligns with the name.",There are no problematic abbreviations in the name. The name is clear and descriptive.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Additional Pipeline Needed Latest Week,"VAR  A = CALCULATE( ( [Pipeline Target Unround] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    ,KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))
+
+RETURN IF(OR(A <= 0,[QPC to Budget KPI] > 0.995),BLANK(),A)",,good,No,,No,,Yes,"billed budget, pipeline target unround, qpc to budget kpi",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Long expression (360 characters); Excessive function nesting (12 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,Referenced by 1 measure(s): WW_Additional Pipeline Needed Latest Week,,The name 'Additional Pipeline Needed Latest Week' is self-explanatory as it indicates it calculates the additional pipeline needed for the latest week.,"The name reflects the calculation as the context shows it calculates the additional pipeline needed based on 'Pipeline Target Unround', 'Billed Budget', and other factors for the latest week.",There are no problematic abbreviations in the name. The name is clear and descriptive.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Additional Pipeline Needed MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR Latest =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PW =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+RETURN
+    IF(Latest <= 0, 0, Latest) - IF(PW <= 0, 0, PW)
+",,issue,No,,No,,Yes,additional pipeline needed base,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (599 characters); High function nesting (10 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Additional Pipeline Needed MoM' is self-explanatory as it clearly indicates that the measure calculates the additional pipeline needed month-over-month.,The name reflects the calculation as the context shows it calculates the difference in additional pipeline needed between the current and previous month.,There are no problematic abbreviations in the name. 'MoM' is a standard abbreviation for 'Month-over-Month' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Additional Pipeline Needed WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR Latest =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PW =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(Latest <= 0, 0, Latest) - IF(PW <= 0, 0, PW)
+",,issue,No,,No,,Yes,additional pipeline needed base,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (597 characters); High function nesting (10 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Additional Pipeline Needed WoW' is self-explanatory as it clearly indicates that the measure calculates the additional pipeline needed week-over-week.,The name reflects the calculation as the context shows it calculates the difference in additional pipeline needed between the current and previous week.,There are no problematic abbreviations in the name. 'WoW' is a standard abbreviation for 'Week-over-Week' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,STU Owned Pipeline MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR B =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(
+        OR(X <= 0, Y <= 0),
+        BLANK(),
+        X - Y
+    )
+",,issue,No,,No,,Yes,stu owned pipeline base,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (639 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'STU Owned Pipeline MoM' is self-explanatory as it indicates that the measure calculates the month-over-month change in the STU-owned pipeline.,The name reflects the calculation as the context shows it calculates the difference in STU-owned pipeline between the current and previous month.,There are no problematic abbreviations in the name. 'STU' and 'MoM' are standard abbreviations and are widely understood in the business context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,STU Owned Pipeline WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR B =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(
+        OR(X <= 0, Y <= 0),
+        BLANK(),
+        X - Y
+    )
+",,issue,No,,No,,Yes,stu owned pipeline base,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (637 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'STU Owned Pipeline WoW' is self-explanatory as it indicates that the measure calculates the week-over-week change in the STU-owned pipeline.,The name reflects the calculation as the context shows it calculates the difference in STU-owned pipeline between the current and previous week.,There are no problematic abbreviations in the name. 'STU' and 'WoW' are standard abbreviations and are widely understood in the business context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,STU Owned Pipeline Latest Week,"CALCULATE([STU Owned Pipeline Base],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,warning,No,,No,,Yes,stu owned pipeline base,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Consider simplifying business logic or adding better documentation",No,Not referenced by any other measures in the model,,The name 'STU Owned Pipeline Latest Week' is self-explanatory as it indicates that the measure calculates the STU-owned pipeline for the latest week.,The name reflects the calculation as the context shows it retrieves the STU-owned pipeline for the latest week.,There are no problematic abbreviations in the name. 'STU' is a standard abbreviation and is widely understood in the business context.,0.2,0.2,0.2,0.2,0.0,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5499999999999998,2.0,0.7749999999999999
+Trending,Close Plan Attach WoW,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR B =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",,issue,No,,No,,Yes,qualified pipeline with close plan attach,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (580 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Close Plan Attach WoW' is self-explanatory as it indicates that the measure calculates the week-over-week change in close plan attachment.,The name reflects the calculation as the context shows it calculates the difference in close plan attachment between the current and previous week.,There are no problematic abbreviations in the name. 'WoW' is a standard abbreviation for 'Week-over-Week' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Close Plan Attach MoM,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR B =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",,issue,No,,No,,Yes,qualified pipeline with close plan attach,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (582 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Close Plan Attach MoM' is self-explanatory as it indicates that the measure calculates the month-over-month change in close plan attachment.,The name reflects the calculation as the context shows it calculates the difference in close plan attachment between the current and previous month.,There are no problematic abbreviations in the name. 'MoM' is a standard abbreviation for 'Month-over-Month' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Qualified Pipeline Coverage to Forecast WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,qualified pipeline coverage to forecast,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (639 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline Coverage to Forecast WoW' is self-explanatory as it indicates that the measure calculates the week-over-week change in qualified pipeline coverage to forecast.,The name reflects the calculation as the context shows it calculates the difference in qualified pipeline coverage to forecast between the current and previous week.,There are no problematic abbreviations in the name. 'WoW' is a standard abbreviation for 'Week-over-Week' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Qualified Pipeline Coverage to Forecast MoM,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,qualified pipeline coverage to forecast,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (641 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline Coverage to Forecast MoM' is self-explanatory as it indicates that the measure calculates the month-over-month change in qualified pipeline coverage to forecast.,The name reflects the calculation as the context shows it calculates the difference in qualified pipeline coverage to forecast between the current and previous month.,There are no problematic abbreviations in the name. 'MoM' is a standard abbreviation for 'Month-over-Month' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,CPC to Forecast MoM,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,cpc to forecast,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (592 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'CPC to Forecast MoM' is self-explanatory as it indicates that the measure calculates the month-over-month change in committed pipeline coverage to forecast.,The name reflects the calculation as the context shows it calculates the difference in committed pipeline coverage to forecast between the current and previous month.,There are no problematic abbreviations in the name. 'CPC' and 'MoM' are standard abbreviations and are widely understood in the business context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,CPC to Forecast WoW,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,cpc to forecast,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (590 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'CPC to Forecast WoW' is self-explanatory as it indicates that the measure calculates the week-over-week change in committed pipeline coverage to forecast.,The name reflects the calculation as the context shows it calculates the difference in committed pipeline coverage to forecast between the current and previous week.,There are no problematic abbreviations in the name. 'CPC' and 'WoW' are standard abbreviations and are widely understood in the business context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,CPC to Budget Latest Week,"CALCULATE( [CPC to Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )",,good,No,,No,,Yes,cpc to budget,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Consider simplifying business logic or adding better documentation",Yes,"Referenced by 2 measure(s): WW_CPC Check Icon, CPC to Budget Latest Week KPI",,The name 'CPC to Budget Latest Week' is self-explanatory as it indicates that the measure calculates the committed pipeline coverage to budget for the latest week.,The name reflects the calculation as the context shows it retrieves the committed pipeline coverage to budget for the latest week.,There are no problematic abbreviations in the name. 'CPC' is a standard abbreviation and is widely understood in the business context.,0.2,0.2,0.2,0.2,0.3,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.85,2.0,0.925
+Trending,Additional Pipeline Needed Forecast Latest Week,"VAR  A = CALCULATE( ( [Pipeline Target Unround] * ( [Billed Forecast] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    ,KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))
+
+RETURN IF(OR(A <= 0,[QPC to Forecast KPI] > 0.995),BLANK(),A)",,good,No,,No,,Yes,"billed forecast, pipeline target unround, qpc to forecast kpi",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Long expression (364 characters); Excessive function nesting (12 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,Referenced by 1 measure(s): WW_Additional Pipeline Needed Forecast Latest Week,,The name 'Additional Pipeline Needed Forecast Latest Week' is self-explanatory as it indicates that the measure calculates the additional pipeline needed for the forecast in the latest week.,The name reflects the calculation as the context shows it calculates the additional pipeline needed for the forecast in the latest week.,There are no problematic abbreviations in the name. The name is clear and descriptive.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Qualified Pipeline Coverage to Budget YoY,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,"qualified pipeline coverage to budget, qualified pipeline coverage to budget py",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (599 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline Coverage to Budget YoY' is self-explanatory as it indicates that the measure calculates the year-over-year change in qualified pipeline coverage to budget.,The name reflects the calculation as the context shows it calculates the difference in qualified pipeline coverage to budget between the current and previous year.,There are no problematic abbreviations in the name. 'YoY' is a standard abbreviation for 'Year-over-Year' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,CPC to Budget YoY,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed Pipeline Coverage to Budget PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,"committed pipeline coverage to budget py, cpc to budget",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (575 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'CPC to Budget YoY' is self-explanatory as it indicates that the measure calculates the year-over-year change in committed pipeline coverage to budget.,The name reflects the calculation as the context shows it calculates the difference in committed pipeline coverage to budget between the current and previous year.,There are no problematic abbreviations in the name. 'CPC' and 'YoY' are standard abbreviations and are widely understood in the business context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,CPC to Forecast YoY,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed Pipeline Coverage to Forecast PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,"committed pipeline coverage to forecast py, cpc to forecast",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (583 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'CPC to Forecast YoY' is self-explanatory as it indicates a year-over-year comparison of 'Committed Pipeline Coverage' to forecast.,The name reflects the calculation as the context shows it calculates the difference between the current and previous year's 'Committed Pipeline Coverage to Forecast'.,The name uses 'CPC' which is a standard abbreviation for 'Committed Pipeline Coverage' and is widely understood in the business context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Qualified Pipeline Coverage to Forecast YoY,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,issue,No,,No,,Yes,"qualified pipeline coverage to forecast, qualified pipeline coverage to forecast py",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (608 characters); Excessive function nesting (15 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline Coverage to Forecast YoY' is self-explanatory as it indicates a year-over-year comparison of 'Qualified Pipeline Coverage' to forecast.,The name reflects the calculation as the context shows it calculates the difference between the current and previous year's 'Qualified Pipeline Coverage to Forecast'.,There are no problematic abbreviations in the name. It is clear and uses no cryptic terms.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,CPC to Forecast Latest Week,"CALCULATE( [CPC to Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )",,good,No,,No,,Yes,cpc to forecast,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Consider simplifying business logic or adding better documentation",Yes,"Referenced by 2 measure(s): CPC to Forecast Latest Week KPI, WW_CPCForecast Check Icon",,The name 'CPC to Forecast Latest Week' is self-explanatory as it indicates the 'Committed Pipeline Coverage' to forecast for the latest week.,The name reflects the calculation as the context shows it calculates 'CPC to Forecast' filtered for the latest week.,The abbreviation 'CPC' is a standard business term for 'Committed Pipeline Coverage' and is widely understood.,0.2,0.2,0.2,0.2,0.3,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.85,2.0,0.925
+Trending,QPC to Budget KPI,"DIVIDE([Qualified Pipeline Coverage to Budget Latest Week],[Pipeline Target],BLANK())",,good,No,,No,,Yes,"pipeline target, qualified pipeline coverage to budget latest week",Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,Yes,"Referenced by 2 measure(s): Additional Pipeline Needed Latest Week, Additional Pipeline Needed",,The name 'QPC to Budget KPI' is self-explanatory as it indicates a KPI for 'Qualified Pipeline Coverage' to budget.,"The name reflects the calculation as the context shows it divides 'Qualified Pipeline Coverage to Budget Latest Week' by 'Pipeline Target', which aligns with the name.",The abbreviation 'QPC' is a standard business term for 'Qualified Pipeline Coverage' and is widely understood.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Trending,QPC to Forecast KPI,"DIVIDE([Qualified Pipeline Coverage to Forecast Latest Week],[Pipeline Target],BLANK())",,good,No,,No,,Yes,"pipeline target, qualified pipeline coverage to forecast latest week",Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,Yes,"Referenced by 2 measure(s): Additional Pipeline Needed Forecast Latest Week, Additional Pipeline Needed Forecast",,The name 'QPC to Forecast KPI' is self-explanatory as it indicates a KPI for 'Qualified Pipeline Coverage' to forecast.,"The name reflects the calculation as the context shows it divides 'Qualified Pipeline Coverage to Forecast Latest Week' by 'Pipeline Target', which aligns with the name.",The abbreviation 'QPC' is a standard business term for 'Qualified Pipeline Coverage' and is widely understood.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Trending,Qualified Pipeline WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    CurrentVal - PrevVal
+",,issue,No,,No,,Yes,qualified pipeline,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (558 characters); High function nesting (8 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline WoW' is self-explanatory as it indicates a week-over-week change in 'Qualified Pipeline'.,The name reflects the calculation as the context shows it calculates the difference in 'Qualified Pipeline' between the current and previous week.,The abbreviation 'WoW' is a standard term for 'Week over Week' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Committed Pipeline WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Committed + Risk Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed + Risk Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    CurrentVal - PrevVal
+",,issue,No,,No,,Yes,committed + risk pipeline,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (572 characters); High function nesting (8 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Committed Pipeline WoW' is self-explanatory as it indicates a week-over-week change in 'Committed Pipeline'.,The name reflects the calculation as the context shows it calculates the difference in 'Committed Pipeline' between the current and previous week.,The abbreviation 'WoW' is a standard term for 'Week over Week' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,WW_Co-Sell Prioritized Partner Sharing, [Co-Sell Prioritized Partner Sharing %],,warning,Yes,Direct reference to: co-sell prioritized partner sharing %,No,,Yes,co-sell prioritized partner sharing %,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,DIRECT REFERENCE: This measure is a simple reference to another measure (Direct reference to: co-sell prioritized partner sharing %) - which will cause confusion to data agents. Please consider removing this measure.,The name 'WW_Co-Sell Prioritized Partner Sharing' is self-explanatory as it indicates a measure related to worldwide co-sell partner sharing.,The name reflects the calculation as the context shows it calculates a percentage of co-sell prioritized partner sharing.,The abbreviation 'WW' is a standard term for 'Worldwide' and is widely understood.,0.2,0.2,0.0,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+Trending,WW_Forecast VTB,"DIVIDE(CALCULATE ([Billed Forecast] - [Billed Budget],KEEPFILTERS('Trending Week'[Week Type] = ""Latest Week"")),1000)",,good,No,,No,,Yes,"billed budget, billed forecast",Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic; Moderate length expression (116 characters); Single-line format reduces readability,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'WW_Forecast VTB' is self-explanatory as it indicates a worldwide forecast variance to budget.,The name reflects the calculation as the context shows it calculates the variance between billed forecast and billed budget.,The abbreviation 'VTB' is a standard term for 'Variance to Budget' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,WW_Additional Pipeline Needed Latest Week,"DIVIDE([Additional Pipeline Needed Latest Week],1000)",,good,No,,No,,Yes,additional pipeline needed latest week,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'WW_Additional Pipeline Needed Latest Week' is self-explanatory as it indicates the additional pipeline needed for the latest week.,The name reflects the calculation as the context shows it calculates the additional pipeline needed for the latest week based on pipeline targets and billed budget.,The abbreviation 'WW' is a standard term for 'Worldwide' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,WW_Additional Pipeline Needed Forecast Latest Week,"DIVIDE([Additional Pipeline Needed Forecast Latest Week],1000)",,good,No,,No,,Yes,additional pipeline needed forecast latest week,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'WW_Additional Pipeline Needed Forecast Latest Week' is self-explanatory as it indicates the additional pipeline needed for the latest week based on forecast.,The name reflects the calculation as the context shows it calculates the additional pipeline needed for the latest week based on forecast and pipeline targets.,The abbreviation 'WW' is a standard term for 'Worldwide' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,WW_SolutionAreaSelect," IF(ISFILTERED('Product'[Solution Area]),SELECTEDVALUE('Product'[Solution Area]),BLANK())",,good,No,,No,,No,,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate function nesting (4 nested functions),calculated_measure,Consider simplifying business logic or adding better documentation,Yes,Referenced by 1 measure(s): WW_SolutionAreaHeader,,The name 'WW_SolutionAreaSelect' is self-explanatory as it indicates a selection for solution areas worldwide.,"The name reflects the calculation as the context shows it selects the solution area if filtered, otherwise returns blank.",The abbreviation 'WW' is a standard term for 'Worldwide' and is widely understood.,0.2,0.2,0.2,0.2,0.3,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.85,2.0,0.925
+Trending,WW_SolutionAreaHeader," if(ISBLANK([WW_SolutionAreaSelect]),""All Up Business"",[WW_SolutionAreaSelect] & "" All Up"")",,warning,No,,No,,Yes,ww_solutionareaselect,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,Consider simplifying business logic or adding better documentation,No,Not referenced by any other measures in the model,,The name 'WW_SolutionAreaHeader' is self-explanatory as it indicates a header for solution areas worldwide.,The name reflects the calculation as the context shows it creates a header based on the selected solution area or defaults to 'All Up Business'.,The abbreviation 'WW' is a standard term for 'Worldwide' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5499999999999998,2.0,0.7749999999999999
+Trending,WW_SolutionAreaBackgroundColour," SWITCH(SELECTEDVALUE('Product'[Solution Area]),""Modern Work"",1
+,""Business Applications"",2
+,""Applications and Infrastructure"",3
+,""Data and AI"",4,0)",,warning,No,,No,,No,,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate length expression (147 characters); Well-formatted with line breaks,calculated_measure,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'WW_SolutionAreaBackgroundColour' is self-explanatory as it indicates a background color for solution areas worldwide.,The name reflects the calculation as the context shows it assigns a background color based on the selected solution area.,The abbreviation 'WW' is a standard term for 'Worldwide' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.18,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.58,2.0,0.79
+Trending,WW_QPC KPI,"
+DIVIDE (
+    [Qualified Pipeline Coverage to Budget Latest Week],
+    [Pipeline Target],
+    """"
+)",,good,No,,No,,Yes,"pipeline target, qualified pipeline coverage to budget latest week",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,Referenced by 1 measure(s): WW_QPC KPI Icon,,The name 'WW_QPC KPI' is self-explanatory as it indicates a KPI for worldwide 'Qualified Pipeline Coverage'.,The name reflects the calculation as the context shows it calculates a KPI for 'Qualified Pipeline Coverage' to budget.,"The abbreviations 'WW' and 'QPC' are standard terms for 'Worldwide' and 'Qualified Pipeline Coverage', respectively, and are widely understood.",0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,WW_QPC KPI Icon," 
+var perfQPC = [WW_QPC KPI]
+RETURN
+SWITCH( TRUE()
+                    , perfQPC >= 0.995 && perfQPC < 100, 1
+                    , perfQPC >= 0.895 && perfQPC < 0.995,2
+                    , perfQPC > 0 && perfQPC < 0.895, 3
+)",,issue,No,,No,,Yes,ww_qpc kpi,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (227 characters); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'WW_QPC KPI Icon' is self-explanatory as it indicates that the measure returns an icon related to the QPC KPI for Worldwide (WW).,The name reflects the calculation as the measure evaluates the QPC KPI and returns an icon based on performance thresholds.,"The abbreviations 'WW' and 'QPC' are standard and well-understood in the business context, so they are acceptable.",0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,WW_CPC Check Icon," 
+var cpcVar = [CPC to Budget Latest Week]
+RETURN
+SWITCH( TRUE(),
+                        cpcVar >= 0.995, 1,
+                        cpcVar >= 0.895 && cpcVar < 0.995 , 2, 
+                        cpcVar < 0.895 && cpcVar<>0, 3
+)",,issue,No,,No,,Yes,cpc to budget latest week,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (230 characters); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'WW_CPC Check Icon' is self-explanatory as it indicates that the measure returns an icon related to the CPC check for Worldwide (WW).,The name reflects the calculation as the measure evaluates the CPC to Budget Latest Week and returns an icon based on performance thresholds.,"The abbreviations 'WW' and 'CPC' are standard and well-understood in the business context, so they are acceptable.",0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,WW_QPAT60 KPI,"
+DIVIDE ( [Qualified Pipeline in High Stage Latest Week], [Formats], """" )",,critical,No,,No,,Yes,"formats, qualified pipeline in high stage latest week",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,,The name 'WW_QPAT60 KPI' is not self-explanatory as it does not provide sufficient context about what 'QPAT60' represents.,The name does not reflect the calculation as it is unclear what 'QPAT60' means in the context of dividing Qualified Pipeline in High Stage by Formats.,"The abbreviation 'QPAT60' is cryptic and not a standard or well-understood term, making the name unclear.",0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,0.4,2.0,0.2
+Trending,Close Plan Attach Latest Week,"CALCULATE([Qualified Pipeline with Close Plan Attach],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,warning,No,,No,,Yes,qualified pipeline with close plan attach,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate length expression (112 characters); Single-line format reduces readability,calculated_measure,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Consider simplifying business logic or adding better documentation",No,Not referenced by any other measures in the model,,The name 'Close Plan Attach Latest Week' is self-explanatory as it indicates the measure relates to Close Plan Attachments for the latest week.,The name reflects the calculation as it calculates the Qualified Pipeline with Close Plan Attach for the latest week.,"There are no cryptic abbreviations in the name, and it is clear and descriptive.",0.2,0.2,0.2,0.2,0.0,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5499999999999998,2.0,0.7749999999999999
+Trending,WW_QPCForecast KPI Icon," 
+var perfQPC = [WW_QPCForecast KPI]
+RETURN
+IF([GreyOutSelect] = 0,
+SWITCH( TRUE()
+                    , perfQPC >= 0.995 && perfQPC < 100, 1
+                    , perfQPC >= 0.895 && perfQPC < 0.995,2
+                    , perfQPC > 0 && perfQPC < 0.895, 3
+),4)",,issue,No,,No,,Yes,"greyoutselect, ww_qpcforecast kpi",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (262 characters); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'WW_QPCForecast KPI Icon' is self-explanatory as it indicates that the measure returns an icon related to the QPC forecast KPI for Worldwide (WW).,The name reflects the calculation as the measure evaluates the QPC forecast KPI and returns an icon based on performance thresholds.,"The abbreviations 'WW' and 'QPC' are standard and well-understood in the business context, so they are acceptable.",0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,WW_CPCForecast Check Icon," 
+var cpcVar = [CPC to Forecast Latest Week]
+RETURN
+IF([GreyOutSelect] = 0,
+SWITCH( TRUE(),
+                        cpcVar >= 0.995, 1,
+                        cpcVar >= 0.895 && cpcVar < 0.995 , 2, 
+                        cpcVar < 0.895 && cpcVar<>0, 3
+),4)",,issue,No,,No,,Yes,"cpc to forecast latest week, greyoutselect",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (259 characters); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'WW_CPCForecast Check Icon' is self-explanatory as it indicates that the measure returns an icon related to the CPC forecast check for Worldwide (WW).,The name reflects the calculation as the measure evaluates the CPC to Forecast Latest Week and returns an icon based on performance thresholds.,"The abbreviations 'WW' and 'CPC' are standard and well-understood in the business context, so they are acceptable.",0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,WW_QPCForecast KPI,"
+DIVIDE (
+    [Qualified Pipeline Coverage to Forecast Latest Week],
+    [Pipeline Target],
+    """"
+)",,good,No,,No,,Yes,"pipeline target, qualified pipeline coverage to forecast latest week",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,Referenced by 1 measure(s): WW_QPCForecast KPI Icon,,The name 'WW_QPCForecast KPI' is self-explanatory as it indicates that the measure relates to the QPC forecast KPI for Worldwide (WW).,The name reflects the calculation as it calculates the ratio of Qualified Pipeline Coverage to Forecast Latest Week to the Pipeline Target.,"The abbreviations 'WW' and 'QPC' are standard and well-understood in the business context, so they are acceptable.",0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Total DBF Latest Week,"CALCULATE([Total DBF],KEEPFILTERS('Trending Week'[Week Type] = ""Latest Week""),ALL('Trending Week'))",,good,No,,No,,Yes,total dbf,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Consider simplifying business logic or adding better documentation",Yes,Referenced by 1 measure(s): DBF YoY,,The name 'Total DBF Latest Week' is self-explanatory as it indicates the measure calculates the total DBF for the latest week.,The name reflects the calculation as it calculates the total DBF for the latest week by summing various revenue components.,"The abbreviation 'DBF' is a standard Microsoft business term (Deal Based Forecast), so it is acceptable.",0.2,0.2,0.2,0.2,0.3,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.85,2.0,0.925
+Trending,DBF VTB $ Latest Week,"VAR X = CALCULATE([Total DBF] - [Billed Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ),ALL('Trending Week') )
+
+RETURN IFERROR(X,BLANK())",,good,No,,No,,Yes,"billed budget, total dbf",Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate length expression (156 characters); Moderate function nesting (5 nested functions); Well-formatted with line breaks,calculated_measure,Formula follows measure complexity best practices,Yes,Referenced by 1 measure(s): WW_DBF VTB $,,The name 'DBF VTB $ Latest Week' is self-explanatory as it indicates the measure calculates the variance to budget (VTB) for DBF in the latest week.,The name reflects the calculation as it calculates the difference between Total DBF and Billed Budget for the latest week.,"The abbreviations 'DBF' and 'VTB' are standard Microsoft business terms, so they are acceptable.",0.2,0.2,0.2,0.2,0.3,0.3,0.18,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.88,2.0,0.94
+Trending,Co-Sell Prioritized Partner Sharing %,"DIVIDE (
+    CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[Cosell_Num] > 0, Trending[OpportunityID] <> ""NA""),
+    CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[Cosell_Den] > 0, Trending[OpportunityID] <> ""NA"")
+,BLANK()
+)",,good,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (246 characters); Moderate function nesting (6 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,Referenced by 1 measure(s): WW_Co-Sell Prioritized Partner Sharing,,The name 'Co-Sell Prioritized Partner Sharing %' is self-explanatory as it indicates the measure calculates the percentage of prioritized partner sharing for co-sell opportunities.,The name reflects the calculation as it calculates the percentage of prioritized partner sharing based on distinct counts of opportunities.,"There are no cryptic abbreviations in the name, and it is clear and descriptive.",0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Partner Sharing %,"
+    DIVIDE (
+        CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[PartnerSharing_Num] > 0, Trending[OpportunityID] <> ""NA"" ),
+        CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[PartnerSharing_Den] > 0, Trending[OpportunityID] <> ""NA""),
+        BLANK()
+    )",,issue,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (288 characters); Moderate function nesting (6 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Partner Sharing %' is self-explanatory as it indicates the measure calculates the percentage of partner sharing.,The name reflects the calculation as it calculates the percentage of partner sharing based on distinct counts of opportunities.,"There are no cryptic abbreviations in the name, and it is clear and descriptive.",0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,DBF VTF $ Latest Week,"VAR X = CALCULATE([Total DBF] - [Billed Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) ,ALL('Trending Week'))
+
+RETURN IFERROR(X,BLANK())",,good,No,,No,,Yes,"billed forecast, total dbf",Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate length expression (158 characters); Moderate function nesting (5 nested functions); Well-formatted with line breaks,calculated_measure,Formula follows measure complexity best practices,Yes,Referenced by 1 measure(s): WW_DBF VTF $,,The name 'DBF VTF $ Latest Week' is self-explanatory as it indicates the measure calculates the variance to forecast (VTF) for DBF in the latest week.,The name reflects the calculation as it calculates the difference between Total DBF and Billed Forecast for the latest week.,"The abbreviations 'DBF' and 'VTF' are standard Microsoft business terms, so they are acceptable.",0.2,0.2,0.2,0.2,0.3,0.3,0.18,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.88,2.0,0.94
+Trending,WW_DBF VTB $," DIVIDE([DBF VTB $ Latest Week],1000,BLANK())",,good,No,,No,,Yes,dbf vtb $ latest week,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'WW_DBF VTB $' is self-explanatory as it indicates the measure calculates the variance to budget (VTB) for DBF on a worldwide (WW) scale.,The name reflects the calculation as it divides the DBF VTB $ Latest Week by 1000.,"The abbreviations 'WW', 'DBF', and 'VTB' are standard Microsoft business terms, so they are acceptable.",0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,WW_DBF VTF $," DIVIDE([DBF VTF $ Latest Week],1000,BLANK())",,good,No,,No,,Yes,dbf vtf $ latest week,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'WW_DBF VTF $' is self-explanatory as it indicates the measure calculates the variance to forecast (VTF) for DBF on a worldwide (WW) scale.,The name reflects the calculation as it divides the DBF VTF $ Latest Week by 1000.,"The abbreviations 'WW', 'DBF', and 'VTF' are standard Microsoft business terms, so they are acceptable.",0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Uncommitted Upside Pipeline Latest Week,"CALCULATE([Uncommitted Upside Pipeline],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,good,No,,No,,Yes,uncommitted upside pipeline,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Consider simplifying business logic or adding better documentation",Yes,Referenced by 1 measure(s): WW_Upside Pipeline Latest Week,,The name 'Uncommitted Upside Pipeline Latest Week' is self-explanatory as it indicates the measure calculates the uncommitted upside pipeline for the latest week.,The name reflects the calculation as it calculates the sum of Uncommitted Upside Pipeline for the latest week.,"There are no cryptic abbreviations in the name, and it is clear and descriptive.",0.2,0.2,0.2,0.2,0.3,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.85,2.0,0.925
+Trending,Uncommitted Pipeline Latest Week,"CALCULATE([Uncommitted Pipeline],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,warning,No,,No,,Yes,uncommitted pipeline,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Consider simplifying business logic or adding better documentation",No,Not referenced by any other measures in the model,,"The name clearly indicates it calculates the uncommitted pipeline for the latest week, which aligns with the context.","The name reflects the calculation as it specifies 'Uncommitted Pipeline' and 'Latest Week', which matches the context.",There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.0,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5499999999999998,2.0,0.7749999999999999
+Trending,Qualified Pipeline in High Stage Latest Week,"CALCULATE([Qualified Pipeline in High Stage],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,good,No,,No,,Yes,qualified pipeline in high stage,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate length expression (103 characters); Single-line format reduces readability,calculated_measure,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Consider simplifying business logic or adding better documentation",Yes,Referenced by 1 measure(s): WW_QPAT60 KPI,,"The name is self-explanatory as it specifies the qualified pipeline in high stage for the latest week, which aligns with the context.","The name reflects the calculation as it mentions 'Qualified Pipeline in High Stage' and 'Latest Week', which matches the context.",There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.3,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.85,2.0,0.925
+Trending,Qualified Pipeline in High Stage MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+)
+
+VAR B = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+)
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",,issue,No,,No,,Yes,qualified pipeline in high stage,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (523 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,"The name is self-explanatory as it specifies the month-over-month change in the qualified pipeline in high stage, which aligns with the context.","The name reflects the calculation as it mentions 'Qualified Pipeline in High Stage' and 'MoM', which matches the context.",The abbreviation 'MoM' is a standard business term for 'Month-over-Month' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Qualified Pipeline in High Stage WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+)
+
+VAR B = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+)
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",,issue,No,,No,,Yes,qualified pipeline in high stage,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (521 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,"The name is self-explanatory as it specifies the week-over-week change in the qualified pipeline in high stage, which aligns with the context.","The name reflects the calculation as it mentions 'Qualified Pipeline in High Stage' and 'WoW', which matches the context.",The abbreviation 'WoW' is a standard business term for 'Week-over-Week' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,WW_Upside Pipeline Latest Week," DIVIDE([Uncommitted Upside Pipeline Latest Week], 1000, BLANK())",,good,No,,No,,Yes,uncommitted upside pipeline latest week,Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,"The name is self-explanatory as it specifies the worldwide upside pipeline for the latest week, which aligns with the context.","The name reflects the calculation as it mentions 'WW_Upside Pipeline' and 'Latest Week', which matches the context.",The abbreviation 'WW' is a standard business term for 'Worldwide' and is widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,DBF VTF WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",,critical,No,,No,,Yes,"billed forecast, total dbf",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (666 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name is not self-explanatory as 'DBF VTF WoW' is not immediately clear without additional context.,"The name does not clearly reflect the calculation, as 'DBF VTF WoW' is ambiguous without further explanation.",The abbreviations 'DBF' and 'VTF' are not standard or widely understood without additional context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,0.4,2.0,0.2
+Trending,DBF VTF MoM,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",,critical,No,,No,,Yes,"billed forecast, total dbf",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (668 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name is not self-explanatory as 'DBF VTF MoM' is not immediately clear without additional context.,"The name does not clearly reflect the calculation, as 'DBF VTF MoM' is ambiguous without further explanation.",The abbreviations 'DBF' and 'VTF' are not standard or widely understood without additional context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,0.4,2.0,0.2
+Trending,DBF VTB WoW,"VAR SelectedKey = 
+        SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",,critical,No,,No,,Yes,"billed budget, total dbf",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (666 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name is not self-explanatory as 'DBF VTB WoW' is not immediately clear without additional context.,"The name does not clearly reflect the calculation, as 'DBF VTB WoW' is ambiguous without further explanation.",The abbreviations 'DBF' and 'VTB' are not standard or widely understood without additional context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,0.4,2.0,0.2
+Trending,DBF VTB MoM,"VAR SelectedKey = 
+        SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevmonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevmonthKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",,critical,No,,No,,Yes,"billed budget, total dbf",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Excessively long expression (668 characters); Excessive function nesting (13 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name is not self-explanatory as 'DBF VTB MoM' is not immediately clear without additional context.,"The name does not clearly reflect the calculation, as 'DBF VTB MoM' is ambiguous without further explanation.",The abbreviations 'DBF' and 'VTB' are not standard or widely understood without additional context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,0.4,2.0,0.2
+Trending,DBF YoY," 
+VAR  A = CALCULATE(
+    SUM( 'PY Trending'[Actual Billed Revenue] ) + SUM( 'PY Trending'[Scheduled Billed Revenue] ) + SUM( 'PY Trending'[CommittedPipeline] ) + SUM( 'PY Trending'[CommittedatRiskPipeline] ) + SUM( 'PY Trending'[Run Rate Projections] )
+    , KEEPFILTERS( 'Trending Week'[Snapshot Week] = ""PY"" )
+)
+RETURN IFERROR([Total DBF Latest Week] - A,BLANK())",,critical,No,,No,,Yes,total dbf latest week,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Long expression (366 characters); High function nesting (9 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name is not self-explanatory as 'DBF YoY' is not immediately clear without additional context.,"The name does not clearly reflect the calculation, as 'DBF YoY' is ambiguous without further explanation.",The abbreviation 'DBF' is not standard or widely understood without additional context.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,0.4,2.0,0.2
+Trending,Additional Pipeline Needed Base,"VAR  A =( [Pipeline Target] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    
+
+RETURN IFERROR(A,0)",,good,No,,No,,Yes,"billed budget, pipeline target",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (241 characters); High function nesting (8 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,"Referenced by 2 measure(s): Additional Pipeline Needed MoM, Additional Pipeline Needed WoW",,"The name is self-explanatory as it specifies the additional pipeline needed as a base, which aligns with the context.","The name reflects the calculation as it mentions 'Additional Pipeline Needed Base', which matches the context.",There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Committed + Risk Pipeline,SUM(Trending[CommittedPipeline]) + SUM(Trending[CommittedatRiskPipeline]),,good,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.)",simple_aggregation,Format SUM expressions with line breaks when part of complex calculations,Yes,"Referenced by 4 measure(s): % Committed, CPC to Budget, CPC to Forecast and 1 more",,"The name is self-explanatory as it specifies the committed and at-risk pipeline, which aligns with the context.","The name reflects the calculation as it mentions 'Committed + Risk Pipeline', which matches the context.",There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Trending,CPC to Budget Latest Week KPI,[CPC to Budget Latest Week] * 100,,issue,No,,No,,Yes,cpc to budget latest week,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,,"The name is self-explanatory as it specifies the CPC to budget for the latest week as a KPI, which aligns with the context.","The name reflects the calculation as it mentions 'CPC to Budget Latest Week KPI', which matches the context.",The abbreviation 'CPC' is acceptable as it is a standard business term.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,Total DBF,SUM(Trending[ActualBilledRevenue]) + SUM(Trending[ScheduledBilledRevenue]) + SUM(Trending[CommittedPipeline]) + SUM(Trending[CommittedatRiskPipeline]) + SUM(Trending[RunRateProjections]) ,,critical,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern; Moderate length expression (187 characters); Moderate function nesting (5 nested functions); Single-line format reduces readability",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; Format SUM expressions with line breaks when part of complex calculations; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,"Referenced by 9 measure(s): DBF VTB $, DBF VTF $, Total DBF Latest Week and 6 more",,The name is not self-explanatory as 'Total DBF' is not immediately clear without additional context.,"The name does not clearly reflect the calculation, as 'Total DBF' is ambiguous without further explanation.",The abbreviation 'DBF' is not standard or widely understood without additional context.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,0.7,2.0,0.35
+Trending,Billed Budget,"SUMX(
+    VALUES('Trending Week'[Week Name]),
+    CALCULATE(SUM('Budget'[BilledBudget]))
+)
+",,good,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.); Moderate function nesting (4 nested functions)",simple_aggregation,Formula follows measure complexity best practices,Yes,"Referenced by 15 measure(s): Qualified Pipeline Coverage to Budget, DBF VTB $, DBF VTB % and 12 more",,"The name is self-explanatory as it specifies the billed budget, which aligns with the context.","The name reflects the calculation as it mentions 'Billed Budget', which matches the context.",There are no cryptic abbreviations in the measure name.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Trending,Billed Forecast,"SUMX(
+    VALUES('Trending Week'[Week Name]),
+    CALCULATE(SUM('CFO Forecast'[BilledForecast]))
+)
+",,good,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.); Moderate function nesting (4 nested functions)",simple_aggregation,Formula follows measure complexity best practices,Yes,"Referenced by 13 measure(s): Qualified Pipeline Coverage to Forecast, DBF VTF $, CPC to Forecast and 10 more",,The name 'Billed Forecast' is self-explanatory as it clearly indicates that the measure relates to forecasting billed amounts.,The name reflects the calculation as the context shows it sums billed forecast values from the CFO Forecast table.,There are no problematic abbreviations in the name 'Billed Forecast'.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Trending,Qualified Pipeline,SUM(Trending[QualifiedPipeline]) ,,good,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.)",simple_aggregation,Formula follows measure complexity best practices,Yes,"Referenced by 7 measure(s): % Committed, % Upside, % Cloud and 4 more",,The name 'Qualified Pipeline' is self-explanatory as it indicates the measure relates to qualified pipeline amounts.,The name reflects the calculation as the context shows it sums the 'QualifiedPipeline' column in the Trending table.,There are no problematic abbreviations in the name 'Qualified Pipeline'.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Trending,STU Owned Pipeline Base,"
+DIVIDE (
+    SUM ( Trending[QualifiedPipelineSTU] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+
+",,good,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern; Moderate length expression (110 characters); Moderate function nesting (4 nested functions); Well-formatted with line breaks",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,"Referenced by 3 measure(s): STU Owned Pipeline MoM, STU Owned Pipeline WoW, STU Owned Pipeline Latest Week",,The name 'STU Owned Pipeline Base' is self-explanatory as it indicates the measure relates to a base calculation for STU-owned pipeline.,The name reflects the calculation as the context shows it divides STU-qualified pipeline by total qualified pipeline.,The abbreviation 'STU' is acceptable as it is a standard business term.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Uncommitted Pipeline,SUM(Trending[UncommittedPipeline]),,good,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.)",simple_aggregation,Formula follows measure complexity best practices,Yes,"Referenced by 2 measure(s): Uncommitted + Upside Pipeline, Uncommitted Pipeline Latest Week",,The name 'Uncommitted Pipeline' is self-explanatory as it indicates the measure relates to uncommitted pipeline amounts.,The name reflects the calculation as the context shows it sums the 'UncommittedPipeline' column in the Trending table.,There are no problematic abbreviations in the name 'Uncommitted Pipeline'.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Trending,Uncommitted Upside Pipeline,SUM(Trending[UncommittedUpsidePipeline]),,good,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.)",simple_aggregation,Formula follows measure complexity best practices,Yes,"Referenced by 2 measure(s): Uncommitted + Upside Pipeline, Uncommitted Upside Pipeline Latest Week",,The name 'Uncommitted Upside Pipeline' is self-explanatory as it indicates the measure relates to uncommitted upside pipeline amounts.,The name reflects the calculation as the context shows it sums the 'UncommittedUpsidePipeline' column in the Trending table.,There are no problematic abbreviations in the name 'Uncommitted Upside Pipeline'.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,2.0,2.0,1.0
+Trending,Additional Pipeline Needed,"VAR A = ( [Pipeline Target Unround] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) ) 
+    
+    
+RETURN IF(OR(A <= 0,[QPC to Budget KPI] > 0.995),BLANK(),A)",,issue,No,,No,,Yes,"billed budget, pipeline target unround, qpc to budget kpi",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (294 characters); High function nesting (10 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Additional Pipeline Needed' is self-explanatory as it indicates the measure calculates additional pipeline required to meet a target.,The name reflects the calculation as the context shows it calculates the difference between pipeline targets and actual/scheduled billed revenue.,There are no problematic abbreviations in the name 'Additional Pipeline Needed'.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Trending,DBF VTF %,"DIVIDE([DBF VTF $], [Billed Forecast],BLANK())",,critical,No,,No,,Yes,"billed forecast, dbf vtf $",Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'DBF VTF %' is not self-explanatory as it uses abbreviations that are not immediately clear without additional context.,"The name does not reflect the calculation as the context shows it calculates a percentage based on DBF and Billed Forecast, but the abbreviations are unclear.","The abbreviations 'DBF' and 'VTF' are unclear and not standard, making the name cryptic.",0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.0,0.2,0.0,0.4,0.0,0.4,0.7,2.0,0.35
+Trending,Forecast VTB $,"IFERROR([Billed Forecast]-[Billed Budget],0)",,good,No,,No,,Yes,"billed budget, billed forecast",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,Yes,Referenced by 1 measure(s): Forecast VTB %,,The name 'Forecast VTB $' is self-explanatory as it indicates the measure relates to forecast variance to budget in dollar terms.,The name reflects the calculation as the context shows it calculates the difference between billed forecast and billed budget.,The abbreviation 'VTB' is acceptable as it is a standard Microsoft business term.,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Forecast VTB %,"DIVIDE([Forecast VTB $],[Billed Budget],0)",,good,No,,No,,Yes,"billed budget, forecast vtb $",Low,Low complexity due to simple structure and clear purpose. Details: Ratio or percentage calculation with clear business logic,ratio_percentage,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'Forecast VTB %' is self-explanatory as it indicates the measure relates to forecast variance to budget in percentage terms.,The name reflects the calculation as the context shows it calculates the percentage variance between forecast and budget.,The abbreviation 'VTB' is acceptable as it is a standard Microsoft business term.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Pipeline Goal,[Pipeline Target],,issue,Yes,Direct reference to: pipeline target,No,,Yes,pipeline target,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Undocumented or unclear calculation pattern",undocumented,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Add clear business documentation and consider simplifying unclear calculation pattern,No,Not referenced by any other measures in the model,DIRECT REFERENCE: This measure is a simple reference to another measure (Direct reference to: pipeline target) - which will cause confusion to data agents. Please consider removing this measure.,The name 'Pipeline Goal' is self-explanatory as it indicates the measure relates to a pipeline target or goal.,The name reflects the calculation as the context shows it references the 'Pipeline Target' measure.,There are no problematic abbreviations in the name 'Pipeline Goal'.,0.2,0.2,0.0,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.2000000000000002,2.0,0.6000000000000001
+Trending,Refresh Date,"CONCATENATE(""Last Refresh (PST) : "",MAX('Fiscal Period'[Refresh Date]))
+",,good,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.)",simple_aggregation,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'Refresh Date' is self-explanatory as it indicates the measure relates to the last refresh date of the dataset.,The name reflects the calculation as the context shows it concatenates a string with the maximum refresh date.,There are no problematic abbreviations in the name 'Refresh Date'.,0.2,0.2,0.2,0.2,0.0,0.3,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.6999999999999997,2.0,0.8499999999999999
+Trending,Qualified Pipeline Coverage to Budget Latest Week,"VAR X = CALCULATE( [Qualified Pipeline Coverage to Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )
+
+RETURN ROUND(X,2)",,good,No,,No,,Yes,qualified pipeline coverage to budget,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate length expression (138 characters); Well-formatted with line breaks,calculated_measure,Formula follows measure complexity best practices,Yes,"Referenced by 2 measure(s): QPC to Budget KPI, WW_QPC KPI",,The name 'Qualified Pipeline Coverage to Budget Latest Week' is self-explanatory as it indicates the measure calculates pipeline coverage to budget for the latest week.,The name reflects the calculation as the context shows it calculates pipeline coverage to budget for the latest week.,There are no problematic abbreviations in the name 'Qualified Pipeline Coverage to Budget Latest Week'.,0.2,0.2,0.2,0.2,0.3,0.3,0.18,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.88,2.0,0.94
+Trending,Qualified Pipeline Coverage to Forecast Latest Week,"VAR X = CALCULATE( [Qualified Pipeline Coverage to Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )
+
+RETURN ROUND(X,2)",,good,No,,No,,Yes,qualified pipeline coverage to forecast,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate length expression (140 characters); Well-formatted with line breaks,calculated_measure,Formula follows measure complexity best practices,Yes,"Referenced by 2 measure(s): QPC to Forecast KPI, WW_QPCForecast KPI",,The name 'Qualified Pipeline Coverage to Forecast Latest Week' is self-explanatory as it indicates the measure calculates pipeline coverage to forecast for the latest week.,The name reflects the calculation as the context shows it calculates pipeline coverage to forecast for the latest week.,There are no problematic abbreviations in the name 'Qualified Pipeline Coverage to Forecast Latest Week'.,0.2,0.2,0.2,0.2,0.3,0.3,0.18,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.88,2.0,0.94
+Trending,Qualified Pipeline Coverage to Budget Selected Week,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey])
+RETURN 
+CALCULATE(
+    [Qualified Pipeline Coverage to Budget],'Trending'[DatasetVersionKey] = SelectedKey)",,warning,No,,No,,Yes,qualified pipeline coverage to budget,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic; Moderate length expression (175 characters); Well-formatted with line breaks,calculated_measure,Formula follows measure complexity best practices,No,Not referenced by any other measures in the model,,The name 'Qualified Pipeline Coverage to Budget Selected Week' is self-explanatory as it indicates the measure calculates pipeline coverage to budget for a selected week.,The name reflects the calculation as the context shows it calculates pipeline coverage to budget for a selected week.,There are no problematic abbreviations in the name 'Qualified Pipeline Coverage to Budget Selected Week'.,0.2,0.2,0.2,0.2,0.0,0.3,0.18,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.58,2.0,0.79
+Trending,Additional Pipeline Needed Forecast,"VAR  A = ( [Pipeline Target Unround] * ( [Billed Forecast] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+
+RETURN IF(OR(A <= 0,[QPC to Forecast KPI] > 0.995),BLANK(),A)",,issue,No,,No,,Yes,"billed forecast, pipeline target unround, qpc to forecast kpi",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (289 characters); High function nesting (10 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'Additional Pipeline Needed Forecast' is self-explanatory as it indicates the measure calculates additional pipeline required to meet a forecast.,The name reflects the calculation as the context shows it calculates the difference between pipeline targets and actual/scheduled billed revenue for a forecast.,There are no problematic abbreviations in the name 'Additional Pipeline Needed Forecast'.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+PY Trending,Qualified Pipeline Coverage to Budget PY,"VAR X = SUM ( 'PY Trending'[Billed Budget] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[Qualified Pipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",,warning,No,,Yes,"billed budget, qualified pipeline",Yes,"billed budget, qualified pipeline",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Long expression (308 characters); High function nesting (9 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,Referenced by 1 measure(s): Qualified Pipeline Coverage to Budget YoY,"Please use unqualified measures references i.e., [Measure Name] instead of Fully Qualified reference i.e., Table[MeasureName] or 'Table'[MeasureName]. Referenced measures: billed budget, qualified pipeline",The name 'Qualified Pipeline Coverage to Budget PY' is self-explanatory as it clearly indicates it calculates the coverage of the qualified pipeline to the budget for the prior year (PY).,"The name accurately reflects the calculation in the context, which involves dividing the qualified pipeline and run rate projections by the difference between billed budget and actual/scheduled billed revenue.",There are no problematic abbreviations in the name. 'PY' is a standard abbreviation for 'Prior Year' and is widely understood.,0.0,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+PY Trending,Committed Pipeline Coverage to Budget PY,"VAR X = SUM ( 'PY Trending'[Billed Budget] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[CommittedPipeline]  ) + SUM ( 'PY Trending'[CommittedatRiskPipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",,warning,No,,Yes,billed budget,Yes,billed budget,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Long expression (357 characters); High function nesting (10 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,Referenced by 1 measure(s): CPC to Budget YoY,"Please use unqualified measures references i.e., [Measure Name] instead of Fully Qualified reference i.e., Table[MeasureName] or 'Table'[MeasureName]. Referenced measures: billed budget",The name 'Committed Pipeline Coverage to Budget PY' is self-explanatory as it clearly indicates it calculates the coverage of the committed pipeline to the budget for the prior year (PY).,"The name accurately reflects the calculation in the context, which involves dividing the committed pipeline, committed-at-risk pipeline, and run rate projections by the difference between billed budget and actual/scheduled billed revenue.",There are no problematic abbreviations in the name. 'PY' is a standard abbreviation for 'Prior Year' and is widely understood.,0.0,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+PY Trending,Qualified Pipeline Coverage to Forecast PY,"VAR X = SUM ( 'PY Trending'[Billed Forecast] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[Qualified Pipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",,warning,No,,Yes,"billed forecast, qualified pipeline",Yes,"billed forecast, qualified pipeline",High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Long expression (310 characters); High function nesting (9 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,Referenced by 1 measure(s): Qualified Pipeline Coverage to Forecast YoY,"Please use unqualified measures references i.e., [Measure Name] instead of Fully Qualified reference i.e., Table[MeasureName] or 'Table'[MeasureName]. Referenced measures: billed forecast, qualified pipeline",The name 'Qualified Pipeline Coverage to Forecast PY' is self-explanatory as it clearly indicates it calculates the coverage of the qualified pipeline to the forecast for the prior year (PY).,"The name accurately reflects the calculation in the context, which involves dividing the qualified pipeline and run rate projections by the difference between billed forecast and actual/scheduled billed revenue.",There are no problematic abbreviations in the name. 'PY' is a standard abbreviation for 'Prior Year' and is widely understood.,0.0,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+PY Trending,Committed Pipeline Coverage to Forecast PY,"VAR X = SUM ( 'PY Trending'[Billed Forecast] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[CommittedPipeline]  ) + SUM ( 'PY Trending'[CommittedatRiskPipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",,warning,No,,Yes,billed forecast,Yes,billed forecast,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Long expression (359 characters); High function nesting (10 nested functions); Well-formatted with line breaks",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,Yes,Referenced by 1 measure(s): CPC to Forecast YoY,"Please use unqualified measures references i.e., [Measure Name] instead of Fully Qualified reference i.e., Table[MeasureName] or 'Table'[MeasureName]. Referenced measures: billed forecast",The name 'Committed Pipeline Coverage to Forecast PY' is self-explanatory as it clearly indicates it calculates the coverage of the committed pipeline to the forecast for the prior year (PY).,"The name accurately reflects the calculation in the context, which involves dividing the committed pipeline, committed-at-risk pipeline, and run rate projections by the difference between billed forecast and actual/scheduled billed revenue.",There are no problematic abbreviations in the name. 'PY' is a standard abbreviation for 'Prior Year' and is widely understood.,0.0,0.2,0.2,0.2,0.3,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5,2.0,0.75
+Fiscal Period,GreyOutSelect," IF(FIRSTNONBLANK('Fiscal Period'[Fiscal Quarter], 1) = ""FY23-Q1"", 1, 0)",,good,No,,No,,No,,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,Consider simplifying business logic or adding better documentation,Yes,"Referenced by 2 measure(s): WW_QPCForecast KPI Icon, WW_CPCForecast Check Icon",,"The name 'GreyOutSelect' is self-explanatory as it suggests a visual element (grey out) based on a selection, which aligns with the context of the measure.","The name reflects the calculation in the context, which determines whether to grey out a selection based on the fiscal quarter being 'FY23-Q1'.",There are no problematic abbreviations in the name. The name is clear and does not use any cryptic abbreviations.,0.2,0.2,0.2,0.2,0.3,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.85,2.0,0.925
+Fiscal Period,Formats,"CALCULATE(MIN('Fiscal Period'[FormatValue]),'Trending Week'[Week Name] = """")",,issue,No,,No,,No,,Low,"Low complexity due to simple structure and clear purpose. Details: Simple aggregation function (SUM, COUNT, AVERAGE, etc.)",simple_aggregation,"Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",Yes,Referenced by 1 measure(s): WW_QPAT60 KPI,,The name 'Formats' is not self-explanatory as it does not provide enough context to understand its purpose or what it calculates.,"The name 'Formats' does not reflect the calculation in the context, which involves calculating the minimum 'FormatValue' for a specific condition. The name is too generic and does not indicate this purpose.",There are no problematic abbreviations in the name. The name is clear and does not use any cryptic abbreviations.,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.0,0.2,0.0,0.4,0.4,0.4,1.4,2.0,0.7
+Fiscal Period,YoYCFOGreyOut,"IF(OR(OR(FIRSTNONBLANK('Trend Type'[Trend Type],1) = ""Security"", FIRSTNONBLANK('Field Geography'[Subsidiary],1) = ""Netherlands""),FIRSTNONBLANK('Field Geography'[Subsidiary],1) = ""Switzerland""),1,0)",,issue,No,,No,,No,,High,"High complexity due to complex logic, poor structure, or unclear purpose. Details: Complex calculation with multiple operations and conditions; Moderate length expression (197 characters); Moderate function nesting (6 nested functions); Single-line format reduces readability",complex_calculation,CRITICAL - High complexity measure needs restructuring and simplification; CRITICAL - Break complex calculation into multiple simpler measures for better maintainability,No,Not referenced by any other measures in the model,,The name 'YoYCFOGreyOut' is self-explanatory as it suggests a visual element (grey out) related to Year-over-Year (YoY) CFO data.,"The name reflects the calculation in the context, which involves greying out based on specific conditions related to 'Trend Type' and 'Subsidiary'.",There are no problematic abbreviations in the name. 'YoY' and 'CFO' are standard abbreviations and widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.4,2.0,0.7
+Fiscal Period,YoYGreyOut,"IF(FIRSTNONBLANK('Trend Type'[Trend Type],1) = ""Security"",1,0)",,warning,No,,No,,No,,Medium,Medium complexity due to moderate business logic or formatting. Details: Calculated measure with intermediate business logic,calculated_measure,Consider simplifying business logic or adding better documentation,No,Not referenced by any other measures in the model,,The name 'YoYGreyOut' is self-explanatory as it suggests a visual element (grey out) related to Year-over-Year (YoY) data.,"The name reflects the calculation in the context, which involves greying out based on a specific 'Trend Type' condition.",There are no problematic abbreviations in the name. 'YoY' is a standard abbreviation and widely understood.,0.2,0.2,0.2,0.2,0.0,0.3,0.15,0.3,0.2,0.2,0.4,0.4,0.4,0.4,1.5499999999999998,2.0,0.7749999999999999

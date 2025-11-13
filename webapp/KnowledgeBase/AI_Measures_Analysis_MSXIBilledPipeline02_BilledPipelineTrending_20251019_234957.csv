@@ -1,0 +1,902 @@
+Table,Measure,Expression,Description,Has_Duplicate,Duplicate_Measure_Names,Uses_IFERROR,Uses_INTERSECT,Uses_Division_Instead_Of_DIVIDE,Uses_FILTER_In_CALCULATE,Uses_FILTER_With_Measure,Uses_Percentage_Syntax,Direct_Measure_Reference,Has_Qualified_Measure_References,Qualified_Referenced_Measures,Has_All_Measure_References,All_Referenced_Measures,DAX_Recommendations,Critical_Score,Max_Critical_Score,Issue_Score,Max_Issue_Score,Warning_Score,Max_Warning_Score,Total_DAX_Score,Max_Total_DAX_Score,Is_Self_Explanatory_Score,Why_Not_Self_Explanatory,Name_Reflects_Expression_Score,Why_Is_Name_Not_Reflecting_Expression,Avoid_Abbreviations_Score,Why_Cryptic_Abbreviated,Total_AI_Quality_Score,Combined_Naming_Score,Overall_Quality_Average,Issue_Severity,Severity_Priority,Severity_Color_Code,Severity_Hex_Color
+User,Filters Applied Icon,"""🗸""",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+User,Last Refresh Date,"""🕘""",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+User,Information Icon,"""i""",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+User,CURRENT_USER,"LEFT(USERPRINCIPALNAME(),FIND(""@"",USERPRINCIPALNAME())-1)",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,"The name does not clearly indicate what the measure calculates (e.g., username, email, or something else).",0.0,"The name does not clearly reflect the expression, which extracts the username from the email address.",0.0,The name uses an abbreviation ('USER') which is not fully descriptive.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Close Rates,Average Close Rate,"DIVIDE((DIVIDE(SUM('Close Rates'[Q-1CloseRateNumerator]),SUM('Close Rates'[Q-1CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-2CloseRateNumerator]),SUM('Close Rates'[Q-2CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-3CloseRateNumerator]),SUM('Close Rates'[Q-3CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-4CloseRateNumerator]),SUM('Close Rates'[Q-4CloseRateDenominator]),0)),4,0)",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Close Rates,Pipeline Target, [QPC Goal],,No,,No,No,No,No,No,No,Yes,No,,Yes,qpc goal,DIRECT REFERENCE: This measure is a simple reference to another measure - consider consolidating or adding business logic,0.5,0.5,0.25,0.35,0.15,0.15,0.9,1.0,1.0,,0.5,,0.5,,2.0,1.0,0.9666666666666667,good,4,GREEN,#00FF00
+Close Rates,Pipeline Target Unround,"IF(CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)>3,3,CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0))",,No,,No,No,No,No,No,No,No,No,,Yes,average close rate,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Close Rates,QPC Goal," IF(CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)>3,3,CALCULATE(ROUND(DIVIDE(1,[Average Close Rate],BLANK()),2),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)) ",,No,,No,No,No,No,No,No,No,No,,Yes,average close rate,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'QPC Goal' is not self-explanatory without additional context.,0.0,"The name does not clearly reflect the calculation, which involves close rate targets.",0.0,The name uses an abbreviation ('QPC') which is not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Qualified Pipeline Coverage to Budget,"VAR X = [Billed Budget]- SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = SUM ( 'Trending'[QualifiedPipeline]  ) + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",,No,,No,No,No,No,No,No,No,No,,Yes,billed budget,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline Coverage to Forecast,"VAR X = [Billed Forecast] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = SUM ( 'Trending'[QualifiedPipeline]  ) + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",,No,,No,No,No,No,No,No,No,No,,Yes,billed forecast,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,% Committed,"DIVIDE([Committed + Risk Pipeline],[Qualified Pipeline],BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,"committed + risk pipeline, qualified pipeline",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name '% Committed' is not self-explanatory without understanding the referenced measures.,0.0,"The name does not clearly reflect the calculation, which involves dividing 'Committed + Risk Pipeline' by 'Qualified Pipeline'.",0.0,The '%' symbol is not descriptive enough to explain the measure.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,% Upside,"DIVIDE([Uncommitted + Upside Pipeline],[Qualified Pipeline],BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,"qualified pipeline, uncommitted + upside pipeline",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name '% Upside' is not self-explanatory without understanding the referenced measures.,0.0,"The name does not clearly reflect the calculation, which involves dividing 'Uncommitted + Upside Pipeline' by 'Qualified Pipeline'.",0.0,The '%' symbol is not descriptive enough to explain the measure.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Actual + Schedule,SUM(Trending[ActualBilledRevenue])+SUM(Trending[ScheduledBilledRevenue]),,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,DBF VTB $,[Total DBF] - [Billed Budget],,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, total dbf",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'DBF VTB $' is not self-explanatory without understanding the referenced measures.,0.0,"The name does not clearly reflect the calculation, which involves subtracting 'Billed Budget' from 'Total DBF'.",0.0,The name uses abbreviations ('DBF' and 'VTB') that are not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,DBF VTF $,[Total DBF] - [Billed Forecast],,No,,No,No,No,No,No,No,No,No,,Yes,"billed forecast, total dbf",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'DBF VTF $' is not self-explanatory without understanding the referenced measures.,0.0,"The name does not clearly reflect the calculation, which involves subtracting 'Billed Forecast' from 'Total DBF'.",0.0,The name uses abbreviations ('DBF' and 'VTF') that are not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Qualified Pipeline with Close Plan Attach,"DIVIDE (
+    SUM ( Trending[QPClosePlanAttach_Num] ),
+    SUM ( Trending[QPClosePlanAttach_Den] ),
+    BLANK ()
+)",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,% Cloud,"VAR X = CALCULATE( [Qualified Pipeline], KEEPFILTERS(Product[Commercial Cloud Flag] = ""Commercial Cloud"" ) )
+
+RETURN DIVIDE(X,[Qualified Pipeline],BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The '%' symbol is an abbreviation and 'Cloud' is not descriptive enough.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,% Non Cloud,"VAR X = CALCULATE( [Qualified Pipeline], KEEPFILTERS(Product[Commercial Cloud Flag] <> ""Commercial Cloud"" ) )
+
+RETURN DIVIDE(X,[Qualified Pipeline],BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The '%' symbol is an abbreviation and 'Non Cloud' is not descriptive enough.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,DBF VTB %,"DIVIDE([DBF VTB $],[Billed Budget],BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, dbf vtb $",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'DBF VTB %' is cryptic and does not explain what it calculates.,0.0,The name does not clearly reflect the calculation of dividing 'DBF VTB $' by 'Billed Budget'.,0.0,The name contains cryptic abbreviations like 'DBF' and 'VTB'.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Qualified Pipeline in High Stage,"DIVIDE (
+    SUM ( Trending[QualifiedPipeline60] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+
+",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline in Low Stages,"DIVIDE (
+    SUM ( Trending[QualifiedPipeline] ) - SUM ( Trending[QualifiedPipeline60] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Uncommitted + Upside Pipeline,[Uncommitted Pipeline] + [Uncommitted Upside Pipeline],,No,,No,No,No,No,No,No,No,No,,Yes,"uncommitted pipeline, uncommitted upside pipeline",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,CPC to Budget,"VAR X = [Billed Budget] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = [Committed + Risk Pipeline] + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, committed + risk pipeline",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'CPC to Budget' is not self-explanatory without additional context.,0.0,"The name does not clearly reflect the calculation involving 'Billed Budget', 'Actual Billed Revenue', and 'Committed + Risk Pipeline'.",0.0,The abbreviation 'CPC' is not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,CPC to Forecast,"VAR X = [Billed Forecast] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = [Committed + Risk Pipeline] + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",,No,,No,No,No,No,No,No,No,No,,Yes,"billed forecast, committed + risk pipeline",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'CPC to Forecast' is not self-explanatory without additional context.,0.0,"The name does not clearly reflect the calculation involving 'Billed Forecast', 'Actual Billed Revenue', and 'Committed + Risk Pipeline'.",0.0,The abbreviation 'CPC' is not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,CPC to Forecast Latest Week KPI,[CPC to Forecast Latest Week] * 100,,No,,No,No,No,No,No,No,No,No,,Yes,cpc to forecast latest week,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'CPC to Forecast Latest Week KPI' is not self-explanatory without additional context.,0.0,The name does not clearly reflect the calculation involving 'CPC to Forecast Latest Week'.,0.0,The abbreviation 'CPC' is not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,CPC to Budget MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,cpc to budget,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'CPC to Budget MoM' is not self-explanatory without additional context.,0.0,The name does not clearly reflect the calculation involving 'CPC to Budget' over months.,0.0,The abbreviation 'CPC' and 'MoM' are not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,CPC to Budget WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,cpc to budget,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'CPC to Budget WoW' is not self-explanatory without additional context.,0.0,The name does not clearly reflect the calculation involving 'CPC to Budget' over weeks.,0.0,The abbreviation 'CPC' and 'WoW' are not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Qualified Pipeline Coverage to Budget MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline coverage to budget,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'Qualified Pipeline Coverage to Budget MoM' is not self-explanatory without additional context.,0.0,The name does not clearly reflect the calculation involving 'Qualified Pipeline Coverage to Budget' over months.,0.5,,0.5,0.5,0.5,critical,1,RED,#FF0000
+Trending,Qualified Pipeline Coverage to Budget WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline coverage to budget,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'Qualified Pipeline Coverage to Budget WoW' is not self-explanatory without additional context.,0.0,The name does not clearly reflect the calculation involving 'Qualified Pipeline Coverage to Budget' over weeks.,0.5,,0.5,0.5,0.5,critical,1,RED,#FF0000
+Trending,Additional Pipeline Needed Latest Week,"VAR  A = CALCULATE( ( [Pipeline Target Unround] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    ,KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))
+
+RETURN IF(OR(A <= 0,[QPC to Budget KPI] > 0.995),BLANK(),A)",,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, pipeline target unround, qpc to budget kpi",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Additional Pipeline Needed MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR Latest =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PW =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+RETURN
+    IF(Latest <= 0, 0, Latest) - IF(PW <= 0, 0, PW)
+",,No,,No,No,No,No,No,No,No,No,,Yes,additional pipeline needed base,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Additional Pipeline Needed WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR Latest =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PW =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(Latest <= 0, 0, Latest) - IF(PW <= 0, 0, PW)
+",,No,,No,No,No,No,No,No,No,No,,Yes,additional pipeline needed base,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,STU Owned Pipeline MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR B =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(
+        OR(X <= 0, Y <= 0),
+        BLANK(),
+        X - Y
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,stu owned pipeline base,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The term 'STU' is not clear without additional context.,0.0,The name does not clarify what 'STU Owned Pipeline' represents.,0.0,The abbreviation 'STU' is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,STU Owned Pipeline WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR B =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(
+        OR(X <= 0, Y <= 0),
+        BLANK(),
+        X - Y
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,stu owned pipeline base,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The term 'STU' is not clear without additional context.,0.0,The name does not clarify what 'STU Owned Pipeline' represents.,0.0,The abbreviation 'STU' is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,STU Owned Pipeline Latest Week,"CALCULATE([STU Owned Pipeline Base],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,No,,No,No,No,No,No,No,No,No,,Yes,stu owned pipeline base,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The term 'STU' is not clear without additional context.,0.0,The name does not clarify what 'STU Owned Pipeline' represents.,0.0,The abbreviation 'STU' is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Close Plan Attach WoW,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR B =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline with close plan attach,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Close Plan Attach MoM,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR B =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline with close plan attach,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline Coverage to Forecast WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline coverage to forecast,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline Coverage to Forecast MoM,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline coverage to forecast,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,CPC to Forecast MoM,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,cpc to forecast,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The abbreviation 'CPC' is not clear without additional context.,0.0,The name does not clarify what 'CPC to Forecast' represents.,0.0,The abbreviation 'CPC' is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,CPC to Forecast WoW,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,cpc to forecast,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The abbreviation 'CPC' is not clear without additional context.,0.0,The name does not clarify what 'CPC to Forecast' represents.,0.0,The abbreviation 'CPC' is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,CPC to Budget Latest Week,"CALCULATE( [CPC to Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )",,No,,No,No,No,No,No,No,No,No,,Yes,cpc to budget,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The abbreviation 'CPC' is not clear without additional context.,0.0,The name does not clarify what 'CPC to Budget' represents.,0.0,The abbreviation 'CPC' is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Additional Pipeline Needed Forecast Latest Week,"VAR  A = CALCULATE( ( [Pipeline Target Unround] * ( [Billed Forecast] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    ,KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))
+
+RETURN IF(OR(A <= 0,[QPC to Forecast KPI] > 0.995),BLANK(),A)",,No,,No,No,No,No,No,No,No,No,,Yes,"billed forecast, pipeline target unround, qpc to forecast kpi",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline Coverage to Budget YoY,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,"qualified pipeline coverage to budget, qualified pipeline coverage to budget py",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,CPC to Budget YoY,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed Pipeline Coverage to Budget PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,"committed pipeline coverage to budget py, cpc to budget",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The abbreviation 'CPC' is not clear without additional context.,0.0,The name does not clarify what 'CPC to Budget' represents.,0.0,The abbreviation 'CPC' is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,CPC to Forecast YoY,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed Pipeline Coverage to Forecast PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,"committed pipeline coverage to forecast py, cpc to forecast",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'CPC' is not clear without additional context.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,Qualified Pipeline Coverage to Forecast YoY,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,"qualified pipeline coverage to forecast, qualified pipeline coverage to forecast py",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,CPC to Forecast Latest Week,"CALCULATE( [CPC to Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )",,No,,No,No,No,No,No,No,No,No,,Yes,cpc to forecast,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'CPC' is not clear without additional context.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,QPC to Budget KPI,"DIVIDE([Qualified Pipeline Coverage to Budget Latest Week],[Pipeline Target],BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,"pipeline target, qualified pipeline coverage to budget latest week",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'QPC' is not clear without additional context.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,QPC to Forecast KPI,"DIVIDE([Qualified Pipeline Coverage to Forecast Latest Week],[Pipeline Target],BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,"pipeline target, qualified pipeline coverage to forecast latest week",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'QPC' is not clear without additional context.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,Qualified Pipeline WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    CurrentVal - PrevVal
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Committed Pipeline WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Committed + Risk Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed + Risk Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    CurrentVal - PrevVal
+",,No,,No,No,No,No,No,No,No,No,,Yes,committed + risk pipeline,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,WW_Co-Sell Prioritized Partner Sharing, [Co-Sell Prioritized Partner Sharing %],,No,,No,No,No,No,No,No,Yes,No,,Yes,co-sell prioritized partner sharing %,DIRECT REFERENCE: This measure is a simple reference to another measure - consider consolidating or adding business logic,0.5,0.5,0.25,0.35,0.15,0.15,0.9,1.0,1.0,,0.5,,0.0,The prefix 'WW' is an abbreviation and not self-explanatory.,1.5,0.5,0.7999999999999999,warning,3,YELLOW,#FFFF00
+Trending,WW_Forecast VTB,"DIVIDE(CALCULATE ([Billed Forecast] - [Billed Budget],KEEPFILTERS('Trending Week'[Week Type] = ""Latest Week"")),1000)",,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, billed forecast",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The abbreviation 'VTB' is not clear and the measure name does not explain what it calculates.,0.0,The name does not reflect the calculation of the difference between billed forecast and billed budget.,0.0,The abbreviation 'VTB' is not clear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,WW_Additional Pipeline Needed Latest Week,"DIVIDE([Additional Pipeline Needed Latest Week],1000)",,No,,No,No,No,No,No,No,No,No,,Yes,additional pipeline needed latest week,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The prefix 'WW' is an abbreviation and not self-explanatory.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_Additional Pipeline Needed Forecast Latest Week,"DIVIDE([Additional Pipeline Needed Forecast Latest Week],1000)",,No,,No,No,No,No,No,No,No,No,,Yes,additional pipeline needed forecast latest week,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The prefix 'WW' is an abbreviation and not self-explanatory.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_SolutionAreaSelect," IF(ISFILTERED('Product'[Solution Area]),SELECTEDVALUE('Product'[Solution Area]),BLANK())",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The prefix 'WW' is an abbreviation and not self-explanatory.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_SolutionAreaHeader," if(ISBLANK([WW_SolutionAreaSelect]),""All Up Business"",[WW_SolutionAreaSelect] & "" All Up"")",,No,,No,No,No,No,No,No,No,No,,Yes,ww_solutionareaselect,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The prefix 'WW' is an abbreviation and not self-explanatory.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_SolutionAreaBackgroundColour," SWITCH(SELECTEDVALUE('Product'[Solution Area]),""Modern Work"",1
+,""Business Applications"",2
+,""Applications and Infrastructure"",3
+,""Data and AI"",4,0)",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The prefix 'WW' is an abbreviation and not self-explanatory.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_QPC KPI,"
+DIVIDE (
+    [Qualified Pipeline Coverage to Budget Latest Week],
+    [Pipeline Target],
+    """"
+)",,No,,No,No,No,No,No,No,No,No,,Yes,"pipeline target, qualified pipeline coverage to budget latest week",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviations 'WW' and 'QPC' are not clear without additional context.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_QPC KPI Icon," 
+var perfQPC = [WW_QPC KPI]
+RETURN
+SWITCH( TRUE()
+                    , perfQPC >= 0.995 && perfQPC < 100, 1
+                    , perfQPC >= 0.895 && perfQPC < 0.995,2
+                    , perfQPC > 0 && perfQPC < 0.895, 3
+)",,No,,No,No,No,No,No,No,No,No,,Yes,ww_qpc kpi,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'QPC' is not self-explanatory and could confuse users unfamiliar with its meaning.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_CPC Check Icon," 
+var cpcVar = [CPC to Budget Latest Week]
+RETURN
+SWITCH( TRUE(),
+                        cpcVar >= 0.995, 1,
+                        cpcVar >= 0.895 && cpcVar < 0.995 , 2, 
+                        cpcVar < 0.895 && cpcVar<>0, 3
+)",,No,,No,No,No,No,No,No,No,No,,Yes,cpc to budget latest week,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'CPC' is not self-explanatory and could confuse users unfamiliar with its meaning.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_QPAT60 KPI,"
+DIVIDE ( [Qualified Pipeline in High Stage Latest Week], [Formats], """" )",,No,,No,No,No,No,No,No,No,No,,Yes,"formats, qualified pipeline in high stage latest week",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The abbreviation 'QPAT60' is not self-explanatory and does not provide clarity on what the measure calculates.,0.0,The name does not clearly reflect the calculation of dividing 'Qualified Pipeline in High Stage Latest Week' by 'Formats'.,0.0,The abbreviation 'QPAT60' is cryptic and unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Close Plan Attach Latest Week,"CALCULATE([Qualified Pipeline with Close Plan Attach],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline with close plan attach,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,WW_QPCForecast KPI Icon," 
+var perfQPC = [WW_QPCForecast KPI]
+RETURN
+IF([GreyOutSelect] = 0,
+SWITCH( TRUE()
+                    , perfQPC >= 0.995 && perfQPC < 100, 1
+                    , perfQPC >= 0.895 && perfQPC < 0.995,2
+                    , perfQPC > 0 && perfQPC < 0.895, 3
+),4)",,No,,No,No,No,No,No,No,No,No,,Yes,"greyoutselect, ww_qpcforecast kpi",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'QPC' is not self-explanatory and could confuse users unfamiliar with its meaning.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_CPCForecast Check Icon," 
+var cpcVar = [CPC to Forecast Latest Week]
+RETURN
+IF([GreyOutSelect] = 0,
+SWITCH( TRUE(),
+                        cpcVar >= 0.995, 1,
+                        cpcVar >= 0.895 && cpcVar < 0.995 , 2, 
+                        cpcVar < 0.895 && cpcVar<>0, 3
+),4)",,No,,No,No,No,No,No,No,No,No,,Yes,"cpc to forecast latest week, greyoutselect",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'CPC' is not self-explanatory and could confuse users unfamiliar with its meaning.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,WW_QPCForecast KPI,"
+DIVIDE (
+    [Qualified Pipeline Coverage to Forecast Latest Week],
+    [Pipeline Target],
+    """"
+)",,No,,No,No,No,No,No,No,No,No,,Yes,"pipeline target, qualified pipeline coverage to forecast latest week",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'QPC' is not self-explanatory and could confuse users unfamiliar with its meaning.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,Total DBF Latest Week,"CALCULATE([Total DBF],KEEPFILTERS('Trending Week'[Week Type] = ""Latest Week""),ALL('Trending Week'))",,No,,No,No,No,No,No,No,No,No,,Yes,total dbf,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,The abbreviation 'DBF' is not self-explanatory and could confuse users unfamiliar with its meaning.,1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Trending,DBF VTB $ Latest Week,"VAR X = CALCULATE([Total DBF] - [Billed Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ),ALL('Trending Week') )
+
+RETURN IFERROR(X,BLANK())",,No,,Yes,No,No,No,No,No,No,No,,Yes,"billed budget, total dbf",Avoid IFERROR and handle them properly,0.5,0.5,0.25,0.35,0.15,0.15,0.9,1.0,0.0,The abbreviation 'DBF VTB' is not self-explanatory and does not clarify the calculation.,0.0,The name does not clearly reflect the calculation of 'Total DBF' minus 'Billed Budget'.,0.0,The abbreviation 'DBF VTB' is cryptic and unclear.,0.0,0.0,0.3,critical,1,RED,#FF0000
+Trending,Co-Sell Prioritized Partner Sharing %,"DIVIDE (
+    CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[Cosell_Num] > 0, Trending[OpportunityID] <> ""NA""),
+    CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[Cosell_Den] > 0, Trending[OpportunityID] <> ""NA"")
+,BLANK()
+)",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Partner Sharing %,"
+    DIVIDE (
+        CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[PartnerSharing_Num] > 0, Trending[OpportunityID] <> ""NA"" ),
+        CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[PartnerSharing_Den] > 0, Trending[OpportunityID] <> ""NA""),
+        BLANK()
+    )",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,DBF VTF $ Latest Week,"VAR X = CALCULATE([Total DBF] - [Billed Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) ,ALL('Trending Week'))
+
+RETURN IFERROR(X,BLANK())",,No,,Yes,No,No,No,No,No,No,No,,Yes,"billed forecast, total dbf",Avoid IFERROR and handle them properly,0.5,0.5,0.25,0.35,0.15,0.15,0.9,1.0,0.0,The abbreviation 'DBF VTF' is not self-explanatory and does not clarify the calculation.,0.0,The name does not clearly reflect the calculation of 'Total DBF' minus 'Billed Forecast'.,0.0,The abbreviation 'DBF VTF' is cryptic and unclear.,0.0,0.0,0.3,critical,1,RED,#FF0000
+Trending,WW_DBF VTB $," DIVIDE([DBF VTB $ Latest Week],1000,BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,dbf vtb $ latest week,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The abbreviation 'DBF VTB' is not self-explanatory and does not clarify the calculation.,0.0,The name does not clearly reflect the calculation of dividing 'DBF VTB $ Latest Week' by 1000.,0.0,The abbreviation 'DBF VTB' is cryptic and unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,WW_DBF VTF $," DIVIDE([DBF VTF $ Latest Week],1000,BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,dbf vtf $ latest week,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The abbreviation 'DBF VTF' is not self-explanatory and does not clarify the calculation.,0.0,The name does not clearly reflect the calculation of dividing 'DBF VTF $ Latest Week' by 1000.,0.0,The abbreviation 'DBF VTF' is cryptic and unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Uncommitted Upside Pipeline Latest Week,"CALCULATE([Uncommitted Upside Pipeline],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,No,,No,No,No,No,No,No,No,No,,Yes,uncommitted upside pipeline,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Uncommitted Pipeline Latest Week,"CALCULATE([Uncommitted Pipeline],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,No,,No,No,No,No,No,No,No,No,,Yes,uncommitted pipeline,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline in High Stage Latest Week,"CALCULATE([Qualified Pipeline in High Stage],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline in high stage,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline in High Stage MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+)
+
+VAR B = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+)
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline in high stage,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline in High Stage WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+)
+
+VAR B = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+)
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline in high stage,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,WW_Upside Pipeline Latest Week," DIVIDE([Uncommitted Upside Pipeline Latest Week], 1000, BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,uncommitted upside pipeline latest week,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'WW_Upside Pipeline Latest Week' is unclear without additional context about what 'WW' and 'Upside' mean.,0.0,"The name does not clearly reflect the calculation, as it is unclear what 'WW' and 'Upside' refer to.",0.0,The abbreviation 'WW' is unclear and makes the name cryptic.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,DBF VTF WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,"billed forecast, total dbf",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'DBF VTF WoW' is not self-explanatory due to the use of abbreviations.,0.0,The name does not clearly reflect the calculation due to the use of cryptic abbreviations.,0.0,"The abbreviations 'DBF', 'VTF', and 'WoW' are unclear and make the name cryptic.",0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,DBF VTF MoM,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,"billed forecast, total dbf",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'DBF VTF MoM' is not self-explanatory due to the use of abbreviations.,0.0,The name does not clearly reflect the calculation due to the use of cryptic abbreviations.,0.0,"The abbreviations 'DBF', 'VTF', and 'MoM' are unclear and make the name cryptic.",0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,DBF VTB WoW,"VAR SelectedKey = 
+        SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, total dbf",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'DBF VTB WoW' is not self-explanatory due to the use of abbreviations.,0.0,The name does not clearly reflect the calculation due to the use of cryptic abbreviations.,0.0,"The abbreviations 'DBF', 'VTB', and 'WoW' are unclear and make the name cryptic.",0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,DBF VTB MoM,"VAR SelectedKey = 
+        SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevmonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevmonthKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, total dbf",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'DBF VTB MoM' is not self-explanatory due to the use of abbreviations.,0.0,The name does not clearly reflect the calculation due to the use of cryptic abbreviations.,0.0,"The abbreviations 'DBF', 'VTB', and 'MoM' are unclear and make the name cryptic.",0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,DBF YoY," 
+VAR  A = CALCULATE(
+    SUM( 'PY Trending'[Actual Billed Revenue] ) + SUM( 'PY Trending'[Scheduled Billed Revenue] ) + SUM( 'PY Trending'[CommittedPipeline] ) + SUM( 'PY Trending'[CommittedatRiskPipeline] ) + SUM( 'PY Trending'[Run Rate Projections] )
+    , KEEPFILTERS( 'Trending Week'[Snapshot Week] = ""PY"" )
+)
+RETURN IFERROR([Total DBF Latest Week] - A,BLANK())",,No,,Yes,No,No,No,No,No,No,No,,Yes,total dbf latest week,Avoid IFERROR and handle them properly,0.5,0.5,0.25,0.35,0.15,0.15,0.9,1.0,0.0,The name 'DBF YoY' is not self-explanatory due to the use of abbreviations.,0.0,The name does not clearly reflect the calculation due to the use of cryptic abbreviations.,0.0,The abbreviations 'DBF' and 'YoY' are unclear and make the name cryptic.,0.0,0.0,0.3,critical,1,RED,#FF0000
+Trending,Additional Pipeline Needed Base,"VAR  A =( [Pipeline Target] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    
+
+RETURN IFERROR(A,0)",,No,,Yes,No,No,No,No,No,No,No,,Yes,"billed budget, pipeline target",Avoid IFERROR and handle them properly,0.5,0.5,0.25,0.35,0.15,0.15,0.9,1.0,1.0,,0.5,,0.5,,2.0,1.0,0.9666666666666667,good,4,GREEN,#00FF00
+Trending,Committed + Risk Pipeline,SUM(Trending[CommittedPipeline]) + SUM(Trending[CommittedatRiskPipeline]),,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,CPC to Budget Latest Week KPI,[CPC to Budget Latest Week] * 100,,No,,No,No,No,No,No,No,No,No,,Yes,cpc to budget latest week,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'CPC to Budget Latest Week KPI' is not self-explanatory due to the use of the abbreviation 'CPC'.,0.0,The name does not clearly reflect the calculation due to the use of the abbreviation 'CPC'.,0.0,The abbreviation 'CPC' is unclear and makes the name cryptic.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Total DBF,SUM(Trending[ActualBilledRevenue]) + SUM(Trending[ScheduledBilledRevenue]) + SUM(Trending[CommittedPipeline]) + SUM(Trending[CommittedatRiskPipeline]) + SUM(Trending[RunRateProjections]) ,,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'Total DBF' is not self-explanatory due to the use of the abbreviation 'DBF'.,0.0,The name does not clearly reflect the calculation due to the use of the abbreviation 'DBF'.,0.0,The abbreviation 'DBF' is unclear and makes the name cryptic.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Billed Budget,"SUMX(
+    VALUES('Trending Week'[Week Name]),
+    CALCULATE(SUM('Budget'[BilledBudget]))
+)
+",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Billed Forecast,"SUMX(
+    VALUES('Trending Week'[Week Name]),
+    CALCULATE(SUM('CFO Forecast'[BilledForecast]))
+)
+",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline,SUM(Trending[QualifiedPipeline]) ,,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,STU Owned Pipeline Base,"
+DIVIDE (
+    SUM ( Trending[QualifiedPipelineSTU] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+
+",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'STU Owned Pipeline Base' is not self-explanatory as it does not clearly convey what the measure calculates.,0.0,"The name does not clearly reflect the calculation, which involves dividing two pipeline-related measures.",0.0,"The abbreviation 'STU' is not explained, making the name cryptic.",0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Uncommitted Pipeline,SUM(Trending[UncommittedPipeline]),,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Uncommitted Upside Pipeline,SUM(Trending[UncommittedUpsidePipeline]),,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Additional Pipeline Needed,"VAR A = ( [Pipeline Target Unround] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) ) 
+    
+    
+RETURN IF(OR(A <= 0,[QPC to Budget KPI] > 0.995),BLANK(),A)",,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, pipeline target unround, qpc to budget kpi",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,DBF VTF %,"DIVIDE([DBF VTF $], [Billed Forecast],BLANK())",,No,,No,No,No,No,No,No,No,No,,Yes,"billed forecast, dbf vtf $",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'DBF VTF %' is not self-explanatory as it uses unexplained abbreviations.,0.0,"The name does not clearly reflect the calculation, which involves dividing two measures with unclear abbreviations.",0.0,"The abbreviations 'DBF' and 'VTF' are not explained, making the name cryptic.",0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Forecast VTB $,"IFERROR([Billed Forecast]-[Billed Budget],0)",,No,,Yes,No,No,No,No,No,No,No,,Yes,"billed budget, billed forecast",Avoid IFERROR and handle them properly,0.5,0.5,0.25,0.35,0.15,0.15,0.9,1.0,0.0,The name 'Forecast VTB $' is not self-explanatory as it uses unexplained abbreviations.,0.0,"The name does not clearly reflect the calculation, which involves subtracting two measures with unclear abbreviations.",0.0,"The abbreviation 'VTB' is not explained, making the name cryptic.",0.0,0.0,0.3,critical,1,RED,#FF0000
+Trending,Forecast VTB %,"DIVIDE([Forecast VTB $],[Billed Budget],0)",,No,,No,No,No,No,No,No,No,No,,Yes,"billed budget, forecast vtb $",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'Forecast VTB %' is not self-explanatory as it uses unexplained abbreviations.,0.0,"The name does not clearly reflect the calculation, which involves dividing two measures with unclear abbreviations.",0.0,"The abbreviation 'VTB' is not explained, making the name cryptic.",0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Trending,Pipeline Goal,[Pipeline Target],,No,,No,No,No,No,No,No,Yes,No,,Yes,pipeline target,DIRECT REFERENCE: This measure is a simple reference to another measure - consider consolidating or adding business logic,0.5,0.5,0.25,0.35,0.15,0.15,0.9,1.0,1.0,,0.5,,0.5,,2.0,1.0,0.9666666666666667,good,4,GREEN,#00FF00
+Trending,Refresh Date,"CONCATENATE(""Last Refresh (PST) : "",MAX('Fiscal Period'[Refresh Date]))
+",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline Coverage to Budget Latest Week,"VAR X = CALCULATE( [Qualified Pipeline Coverage to Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )
+
+RETURN ROUND(X,2)",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline coverage to budget,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline Coverage to Forecast Latest Week,"VAR X = CALCULATE( [Qualified Pipeline Coverage to Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )
+
+RETURN ROUND(X,2)",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline coverage to forecast,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Qualified Pipeline Coverage to Budget Selected Week,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey])
+RETURN 
+CALCULATE(
+    [Qualified Pipeline Coverage to Budget],'Trending'[DatasetVersionKey] = SelectedKey)",,No,,No,No,No,No,No,No,No,No,,Yes,qualified pipeline coverage to budget,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+Trending,Additional Pipeline Needed Forecast,"VAR  A = ( [Pipeline Target Unround] * ( [Billed Forecast] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+
+RETURN IF(OR(A <= 0,[QPC to Forecast KPI] > 0.995),BLANK(),A)",,No,,No,No,No,No,No,No,No,No,,Yes,"billed forecast, pipeline target unround, qpc to forecast kpi",,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.5,,2.0,1.0,1.0,good,4,GREEN,#00FF00
+PY Trending,Qualified Pipeline Coverage to Budget PY,"VAR X = SUM ( 'PY Trending'[Billed Budget] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[Qualified Pipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",,No,,No,No,No,No,No,No,No,Yes,"billed budget, qualified pipeline",Yes,"billed budget, qualified pipeline","Please use unqualified measures references i.e., [Measure Name] instead of Fully Qualified reference i.e., Table[MeasureName] or 'Table'[MeasureName]. Referenced measures: billed budget, qualified pipeline",0.5,0.5,0.35000000000000003,0.35,0.0,0.15,0.8500000000000001,1.0,1.0,,0.5,,0.5,,2.0,1.0,0.9500000000000001,good,4,GREEN,#00FF00
+PY Trending,Committed Pipeline Coverage to Budget PY,"VAR X = SUM ( 'PY Trending'[Billed Budget] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[CommittedPipeline]  ) + SUM ( 'PY Trending'[CommittedatRiskPipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",,No,,No,No,No,No,No,No,No,Yes,billed budget,Yes,billed budget,"Please use unqualified measures references i.e., [Measure Name] instead of Fully Qualified reference i.e., Table[MeasureName] or 'Table'[MeasureName]. Referenced measures: billed budget",0.5,0.5,0.35000000000000003,0.35,0.0,0.15,0.8500000000000001,1.0,1.0,,0.5,,0.5,,2.0,1.0,0.9500000000000001,good,4,GREEN,#00FF00
+PY Trending,Qualified Pipeline Coverage to Forecast PY,"VAR X = SUM ( 'PY Trending'[Billed Forecast] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[Qualified Pipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",,No,,No,No,No,No,No,No,No,Yes,"billed forecast, qualified pipeline",Yes,"billed forecast, qualified pipeline","Please use unqualified measures references i.e., [Measure Name] instead of Fully Qualified reference i.e., Table[MeasureName] or 'Table'[MeasureName]. Referenced measures: billed forecast, qualified pipeline",0.5,0.5,0.35000000000000003,0.35,0.0,0.15,0.8500000000000001,1.0,1.0,,0.5,,0.5,,2.0,1.0,0.9500000000000001,good,4,GREEN,#00FF00
+PY Trending,Committed Pipeline Coverage to Forecast PY,"VAR X = SUM ( 'PY Trending'[Billed Forecast] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[CommittedPipeline]  ) + SUM ( 'PY Trending'[CommittedatRiskPipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",,No,,No,No,No,No,No,No,No,Yes,billed forecast,Yes,billed forecast,"Please use unqualified measures references i.e., [Measure Name] instead of Fully Qualified reference i.e., Table[MeasureName] or 'Table'[MeasureName]. Referenced measures: billed forecast",0.5,0.5,0.35000000000000003,0.35,0.0,0.15,0.8500000000000001,1.0,1.0,,0.5,,0.5,,2.0,1.0,0.9500000000000001,good,4,GREEN,#00FF00
+Fiscal Period,GreyOutSelect," IF(FIRSTNONBLANK('Fiscal Period'[Fiscal Quarter], 1) = ""FY23-Q1"", 1, 0)",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,1.0,,0.5,,0.0,"The name 'GreyOutSelect' is cryptic and uses abbreviations, making it unclear without additional context.",1.5,0.5,0.8333333333333334,warning,3,YELLOW,#FFFF00
+Fiscal Period,Formats,"CALCULATE(MIN('Fiscal Period'[FormatValue]),'Trending Week'[Week Name] = """")",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'Formats' is too generic and does not explain what the measure calculates.,0.0,"The name 'Formats' does not reflect the expression, which calculates the minimum value of 'FormatValue' under a specific condition.",0.5,,0.5,0.5,0.5,critical,1,RED,#FF0000
+Fiscal Period,YoYCFOGreyOut,"IF(OR(OR(FIRSTNONBLANK('Trend Type'[Trend Type],1) = ""Security"", FIRSTNONBLANK('Field Geography'[Subsidiary],1) = ""Netherlands""),FIRSTNONBLANK('Field Geography'[Subsidiary],1) = ""Switzerland""),1,0)",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'YoYCFOGreyOut' is cryptic and does not explain what the measure calculates.,0.0,"The name 'YoYCFOGreyOut' does not reflect the expression, which checks specific conditions and returns 1 or 0.",0.0,The name 'YoYCFOGreyOut' uses abbreviations and is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000
+Fiscal Period,YoYGreyOut,"IF(FIRSTNONBLANK('Trend Type'[Trend Type],1) = ""Security"",1,0)",,No,,No,No,No,No,No,No,No,No,,No,,,0.5,0.5,0.35000000000000003,0.35,0.15,0.15,1.0,1.0,0.0,The name 'YoYGreyOut' is cryptic and does not explain what the measure calculates.,0.0,"The name 'YoYGreyOut' does not reflect the expression, which checks a specific condition and returns 1 or 0.",0.0,The name 'YoYGreyOut' uses abbreviations and is unclear.,0.0,0.0,0.3333333333333333,critical,1,RED,#FF0000

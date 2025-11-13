@@ -1,0 +1,850 @@
+﻿Table Name,Issue_Severity,Measure Name,Measure Formula,Calculation Type,Complexity Level,Has Description,Is Standard Measure,Standardized Calculation Logic Score,Naming Conventions Score,Overall Score,Sub-Rule Scores Breakdown,Standardized Calculation Logic Recommendations,Naming Conventions Recommendations
+User,Issue,Filters Applied Icon,"""🗸""",Undocumented or unclear calculation,Low,No,No,0.320,0.960,0.640,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+User,Issue,Last Refresh Date,"""🕘""",Undocumented or unclear calculation,Low,No,No,0.320,0.960,0.640,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+User,Issue,Information Icon,"""i""",Undocumented or unclear calculation,Low,No,No,0.320,0.960,0.640,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+User,Critical,CURRENT_USER,"LEFT(USERPRINCIPALNAME(),FIND(""@"",USERPRINCIPALNAME())-1)",Undocumented or unclear calculation,Medium,No,No,0.320,0.720,0.520,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.280, MN-002: 0.280, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Close Rates,Warning,Average Close Rate,"DIVIDE((DIVIDE(SUM('Close Rates'[Q-1CloseRateNumerator]),SUM('Close Rates'[Q-1CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-2CloseRateNumerator]),SUM('Close Rates'[Q-2CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-3CloseRateNumerator]),SUM('Close Rates'[Q-3CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-4CloseRateNumerator]),SUM('Close Rates'[Q-4CloseRateDenominator]),0)),4,0)",Ratio or percentage calculation,High,No,No,0.590,0.960,0.775,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.400, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Close Rates,Issue,Pipeline Target,[QPC Goal],Undocumented or unclear calculation,Low,No,No,0.320,0.920,0.620,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Close Rates,Warning,Pipeline Target Unround,"IF(CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)>3,3,CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0))",Ratio or percentage calculation,High,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Close Rates,Warning,QPC Goal,"IF(CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)>3,3,CALCULATE(ROUND(DIVIDE(1,[Average Close Rate],BLANK()),2),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0))",Ratio or percentage calculation,High,No,No,0.620,0.880,0.750,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.240, MN-001: 0.360, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline Coverage to Budget,"VAR X = [Billed Budget]- SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = SUM ( 'Trending'[QualifiedPipeline]  ) + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))",Complex multi-step calculation,High,No,No,0.440,0.920,0.680,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.150, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline Coverage to Forecast,"VAR X = [Billed Forecast] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = SUM ( 'Trending'[QualifiedPipeline]  ) + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))",Complex multi-step calculation,High,No,No,0.440,0.920,0.680,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.150, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,% Committed,"DIVIDE([Committed + Risk Pipeline],[Qualified Pipeline],BLANK())",Ratio or percentage calculation,Medium,No,No,0.650,0.880,0.765,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.360, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,% Upside,"DIVIDE([Uncommitted + Upside Pipeline],[Qualified Pipeline],BLANK())",Ratio or percentage calculation,Medium,No,No,0.650,0.880,0.765,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.360, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Actual + Schedule,SUM(Trending[ActualBilledRevenue])+SUM(Trending[ScheduledBilledRevenue]),"Simple aggregation (SUM, COUNT, etc.)",Medium,No,No,0.710,0.960,0.835,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Critical,DBF VTB $,[Total DBF] - [Billed Budget],Undocumented or unclear calculation,Low,No,No,0.320,0.840,0.580,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.360, MN-002: 0.320, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Critical,DBF VTF $,[Total DBF] - [Billed Forecast],Undocumented or unclear calculation,Low,No,No,0.320,0.840,0.580,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.360, MN-002: 0.320, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline with Close Plan Attach,"DIVIDE (
+    SUM ( Trending[QPClosePlanAttach_Num] ),
+    SUM ( Trending[QPClosePlanAttach_Den] ),
+    BLANK ()
+)",Undocumented or unclear calculation,Medium,No,No,0.350,0.960,0.655,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.120, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,% Cloud,"VAR X = CALCULATE( [Qualified Pipeline], KEEPFILTERS(Product[Commercial Cloud Flag] = ""Commercial Cloud"" ) )
+
+RETURN DIVIDE(X,[Qualified Pipeline],BLANK())",Ratio or percentage calculation,High,No,No,0.680,0.800,0.740,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.300, MN-001: 0.280, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,% Non Cloud,"VAR X = CALCULATE( [Qualified Pipeline], KEEPFILTERS(Product[Commercial Cloud Flag] <> ""Commercial Cloud"" ) )
+
+RETURN DIVIDE(X,[Qualified Pipeline],BLANK())",Ratio or percentage calculation,High,No,No,0.680,0.880,0.780,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.300, MN-001: 0.360, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Critical,DBF VTB %,"DIVIDE([DBF VTB $],[Billed Budget],BLANK())",Ratio or percentage calculation,Low,No,No,0.650,0.840,0.745,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.360, MN-002: 0.320, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline in High Stage,"DIVIDE (
+    SUM ( Trending[QualifiedPipeline60] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)",Undocumented or unclear calculation,Medium,No,No,0.350,0.960,0.655,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.120, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline in Low Stages,"DIVIDE (
+    SUM ( Trending[QualifiedPipeline] ) - SUM ( Trending[QualifiedPipeline60] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)",Undocumented or unclear calculation,Medium,No,No,0.350,0.960,0.655,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.120, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Uncommitted + Upside Pipeline,[Uncommitted Pipeline] + [Uncommitted Upside Pipeline],Undocumented or unclear calculation,Medium,No,No,0.320,0.920,0.620,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Budget,"VAR X = [Billed Budget] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = [Committed + Risk Pipeline] + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))",Complex multi-step calculation,High,No,No,0.470,0.920,0.695,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.180, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Forecast,"VAR X = [Billed Forecast] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = [Committed + Risk Pipeline] + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))",Complex multi-step calculation,High,No,No,0.470,0.920,0.695,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.180, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Forecast Latest Week KPI,[CPC to Forecast Latest Week] * 100,Undocumented or unclear calculation,Low,No,No,0.320,0.920,0.620,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Budget MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Budget WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline Coverage to Budget MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline Coverage to Budget WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Additional Pipeline Needed Latest Week,"VAR  A = CALCULATE( ( [Pipeline Target Unround] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    ,KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))
+
+RETURN IF(OR(A <= 0,[QPC to Budget KPI] > 0.995),BLANK(),A)",Complex multi-step calculation,High,No,No,0.380,0.960,0.670,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Additional Pipeline Needed MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR Latest =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PW =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+RETURN
+    IF(Latest <= 0, 0, Latest) - IF(PW <= 0, 0, PW)",Complex multi-step calculation,High,No,No,0.380,0.920,0.650,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Additional Pipeline Needed WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR Latest =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PW =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(Latest <= 0, 0, Latest) - IF(PW <= 0, 0, PW)",Complex multi-step calculation,High,No,No,0.380,0.920,0.650,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,STU Owned Pipeline MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR B =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(
+        OR(X <= 0, Y <= 0),
+        BLANK(),
+        X - Y
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,STU Owned Pipeline WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR B =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(
+        OR(X <= 0, Y <= 0),
+        BLANK(),
+        X - Y
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,STU Owned Pipeline Latest Week,"CALCULATE([STU Owned Pipeline Base],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Calculated measure with business logic,Medium,No,No,0.560,0.920,0.740,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Close Plan Attach WoW,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR B =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Close Plan Attach MoM,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR B =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline Coverage to Forecast WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline Coverage to Forecast MoM,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Forecast MoM,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Forecast WoW,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Budget Latest Week,"CALCULATE( [CPC to Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )",Calculated measure with business logic,Medium,No,No,0.560,0.920,0.740,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Additional Pipeline Needed Forecast Latest Week,"VAR  A = CALCULATE( ( [Pipeline Target Unround] * ( [Billed Forecast] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    ,KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))
+
+RETURN IF(OR(A <= 0,[QPC to Forecast KPI] > 0.995),BLANK(),A)",Complex multi-step calculation,High,No,No,0.380,0.960,0.670,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline Coverage to Budget YoY,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Budget YoY,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed Pipeline Coverage to Budget PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Forecast YoY,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed Pipeline Coverage to Forecast PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline Coverage to Forecast YoY,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Forecast Latest Week,"CALCULATE( [CPC to Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )",Calculated measure with business logic,Medium,No,No,0.560,0.920,0.740,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,QPC to Budget KPI,"DIVIDE([Qualified Pipeline Coverage to Budget Latest Week],[Pipeline Target],BLANK())",Ratio or percentage calculation,Medium,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,QPC to Forecast KPI,"DIVIDE([Qualified Pipeline Coverage to Forecast Latest Week],[Pipeline Target],BLANK())",Ratio or percentage calculation,Medium,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    CurrentVal - PrevVal",Complex multi-step calculation,High,No,No,0.380,0.920,0.650,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Committed Pipeline WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Committed + Risk Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed + Risk Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    CurrentVal - PrevVal",Complex multi-step calculation,High,No,No,0.380,0.920,0.650,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,WW_Co-Sell Prioritized Partner Sharing,[Co-Sell Prioritized Partner Sharing %],Ratio or percentage calculation,Low,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,WW_Forecast VTB,"DIVIDE(CALCULATE ([Billed Forecast] - [Billed Budget],KEEPFILTERS('Trending Week'[Week Type] = ""Latest Week"")),1000)",Ratio or percentage calculation,Medium,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,WW_Additional Pipeline Needed Latest Week,"DIVIDE([Additional Pipeline Needed Latest Week],1000)",Ratio or percentage calculation,Medium,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,WW_Additional Pipeline Needed Forecast Latest Week,"DIVIDE([Additional Pipeline Needed Forecast Latest Week],1000)",Ratio or percentage calculation,Medium,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_SolutionAreaSelect,"IF(ISFILTERED('Product'[Solution Area]),SELECTEDVALUE('Product'[Solution Area]),BLANK())",Calculated measure with business logic,Medium,No,No,0.560,0.760,0.660,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.280, MN-002: 0.320, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_SolutionAreaHeader,"if(ISBLANK([WW_SolutionAreaSelect]),""All Up Business"",[WW_SolutionAreaSelect] & "" All Up"")",Calculated measure with business logic,Medium,No,No,0.560,0.760,0.660,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.280, MN-002: 0.320, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_SolutionAreaBackgroundColour,"SWITCH(SELECTEDVALUE('Product'[Solution Area]),""Modern Work"",1
+,""Business Applications"",2
+,""Applications and Infrastructure"",3
+,""Data and AI"",4,0)",Calculated measure with business logic,Medium,No,No,0.590,0.760,0.675,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.240, MN-001: 0.280, MN-002: 0.320, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Critical,WW_QPC KPI,"DIVIDE (
+    [Qualified Pipeline Coverage to Budget Latest Week],
+    [Pipeline Target],
+    """"
+)",Undocumented or unclear calculation,Medium,No,No,0.320,0.840,0.580,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.360, MN-002: 0.320, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_QPC KPI Icon,"var perfQPC = [WW_QPC KPI]
+RETURN
+SWITCH( TRUE()
+                    , perfQPC >= 0.995 && perfQPC < 100, 1
+                    , perfQPC >= 0.895 && perfQPC < 0.995,2
+                    , perfQPC > 0 && perfQPC < 0.895, 3
+)",Complex multi-step calculation,High,No,No,0.470,0.920,0.695,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.180, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_CPC Check Icon,"var cpcVar = [CPC to Budget Latest Week]
+RETURN
+SWITCH( TRUE(),
+                        cpcVar >= 0.995, 1,
+                        cpcVar >= 0.895 && cpcVar < 0.995 , 2, 
+                        cpcVar < 0.895 && cpcVar<>0, 3
+)",Complex multi-step calculation,High,No,No,0.470,0.920,0.695,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.180, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_QPAT60 KPI,"DIVIDE ( [Qualified Pipeline in High Stage Latest Week], [Formats], """" )",Undocumented or unclear calculation,Medium,No,No,0.320,0.880,0.600,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.320, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Close Plan Attach Latest Week,"CALCULATE([Qualified Pipeline with Close Plan Attach],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Calculated measure with business logic,Medium,No,No,0.560,0.920,0.740,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_QPCForecast KPI Icon,"var perfQPC = [WW_QPCForecast KPI]
+RETURN
+IF([GreyOutSelect] = 0,
+SWITCH( TRUE()
+                    , perfQPC >= 0.995 && perfQPC < 100, 1
+                    , perfQPC >= 0.895 && perfQPC < 0.995,2
+                    , perfQPC > 0 && perfQPC < 0.895, 3
+),4)",Complex multi-step calculation,High,No,No,0.470,0.920,0.695,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.180, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_CPCForecast Check Icon,"var cpcVar = [CPC to Forecast Latest Week]
+RETURN
+IF([GreyOutSelect] = 0,
+SWITCH( TRUE(),
+                        cpcVar >= 0.995, 1,
+                        cpcVar >= 0.895 && cpcVar < 0.995 , 2, 
+                        cpcVar < 0.895 && cpcVar<>0, 3
+),4)",Complex multi-step calculation,High,No,No,0.470,0.920,0.695,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.180, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,WW_QPCForecast KPI,"DIVIDE (
+    [Qualified Pipeline Coverage to Forecast Latest Week],
+    [Pipeline Target],
+    """"
+)",Undocumented or unclear calculation,Medium,No,No,0.320,0.920,0.620,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Total DBF Latest Week,"CALCULATE([Total DBF],KEEPFILTERS('Trending Week'[Week Type] = ""Latest Week""),ALL('Trending Week'))",Calculated measure with business logic,Medium,No,No,0.560,0.800,0.680,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.280, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,DBF VTB $ Latest Week,"VAR X = CALCULATE([Total DBF] - [Billed Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ),ALL('Trending Week') )
+
+RETURN IFERROR(X,BLANK())",Calculated measure with business logic,High,No,No,0.590,0.920,0.755,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.240, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Co-Sell Prioritized Partner Sharing %,"DIVIDE (
+    CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[Cosell_Num] > 0, Trending[OpportunityID] <> ""NA""),
+    CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[Cosell_Den] > 0, Trending[OpportunityID] <> ""NA"")
+,BLANK()
+)",Complex multi-step calculation,High,No,No,0.470,0.960,0.715,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.180, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Partner Sharing %,"DIVIDE (
+        CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[PartnerSharing_Num] > 0, Trending[OpportunityID] <> ""NA"" ),
+        CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[PartnerSharing_Den] > 0, Trending[OpportunityID] <> ""NA""),
+        BLANK()
+    )",Complex multi-step calculation,High,No,No,0.470,0.960,0.715,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.180, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,DBF VTF $ Latest Week,"VAR X = CALCULATE([Total DBF] - [Billed Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) ,ALL('Trending Week'))
+
+RETURN IFERROR(X,BLANK())",Calculated measure with business logic,High,No,No,0.590,0.920,0.755,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.240, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,WW_DBF VTB $,"DIVIDE([DBF VTB $ Latest Week],1000,BLANK())",Ratio or percentage calculation,Low,No,No,0.650,0.880,0.765,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.320, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,WW_DBF VTF $,"DIVIDE([DBF VTF $ Latest Week],1000,BLANK())",Ratio or percentage calculation,Low,No,No,0.650,0.880,0.765,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.320, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Uncommitted Upside Pipeline Latest Week,"CALCULATE([Uncommitted Upside Pipeline],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Calculated measure with business logic,Medium,No,No,0.560,0.920,0.740,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Uncommitted Pipeline Latest Week,"CALCULATE([Uncommitted Pipeline],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Calculated measure with business logic,Medium,No,No,0.560,0.920,0.740,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline in High Stage Latest Week,"CALCULATE([Qualified Pipeline in High Stage],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Calculated measure with business logic,Medium,No,No,0.560,0.920,0.740,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline in High Stage MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+)
+
+VAR B = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+)
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Qualified Pipeline in High Stage WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+)
+
+VAR B = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+)
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)",Complex multi-step calculation,High,No,No,0.350,0.920,0.635,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,WW_Upside Pipeline Latest Week,"DIVIDE([Uncommitted Upside Pipeline Latest Week], 1000, BLANK())",Ratio or percentage calculation,Medium,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,DBF VTF WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )",Complex multi-step calculation,High,No,No,0.350,0.880,0.615,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.360, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,DBF VTF MoM,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )",Complex multi-step calculation,High,No,No,0.350,0.880,0.615,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.360, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,DBF VTB WoW,"VAR SelectedKey = 
+        SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )",Complex multi-step calculation,High,No,No,0.350,0.880,0.615,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.360, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,DBF VTB MoM,"VAR SelectedKey = 
+        SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevmonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevmonthKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )",Complex multi-step calculation,High,No,No,0.350,0.880,0.615,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.060, MN-001: 0.360, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,DBF YoY,"VAR  A = CALCULATE(
+    SUM( 'PY Trending'[Actual Billed Revenue] ) + SUM( 'PY Trending'[Scheduled Billed Revenue] ) + SUM( 'PY Trending'[CommittedPipeline] ) + SUM( 'PY Trending'[CommittedatRiskPipeline] ) + SUM( 'PY Trending'[Run Rate Projections] )
+    , KEEPFILTERS( 'Trending Week'[Snapshot Week] = ""PY"" )
+)
+RETURN IFERROR([Total DBF Latest Week] - A,BLANK())",Complex multi-step calculation,High,No,No,0.410,0.800,0.605,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.120, MN-001: 0.280, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Additional Pipeline Needed Base,"VAR  A =( [Pipeline Target] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    
+
+RETURN IFERROR(A,0)",Complex multi-step calculation,High,No,No,0.440,0.960,0.700,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.150, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Committed + Risk Pipeline,SUM(Trending[CommittedPipeline]) + SUM(Trending[CommittedatRiskPipeline]),"Simple aggregation (SUM, COUNT, etc.)",Medium,No,No,0.710,0.960,0.835,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,CPC to Budget Latest Week KPI,[CPC to Budget Latest Week] * 100,Undocumented or unclear calculation,Low,No,No,0.320,0.920,0.620,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Critical,Total DBF,SUM(Trending[ActualBilledRevenue]) + SUM(Trending[ScheduledBilledRevenue]) + SUM(Trending[CommittedPipeline]) + SUM(Trending[CommittedatRiskPipeline]) + SUM(Trending[RunRateProjections]),Undocumented or unclear calculation,High,No,No,0.320,0.800,0.560,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.240, MN-002: 0.360, MN-003: 0.200","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Name clarity issues - contains abbreviations 'tot' → 'Total' that reduce clarity; name could be more descriptive. Use clear, unambiguous names that precisely define what is being measured without requiring domain expertise to understand."
+Trending,Warning,Billed Budget,"SUMX(
+    VALUES('Trending Week'[Week Name]),
+    CALCULATE(SUM('Budget'[BilledBudget]))
+)","Simple aggregation (SUM, COUNT, etc.)",Medium,No,No,0.710,0.920,0.815,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Billed Forecast,"SUMX(
+    VALUES('Trending Week'[Week Name]),
+    CALCULATE(SUM('CFO Forecast'[BilledForecast]))
+)","Simple aggregation (SUM, COUNT, etc.)",Medium,No,No,0.710,0.920,0.815,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Qualified Pipeline,SUM(Trending[QualifiedPipeline]),"Simple aggregation (SUM, COUNT, etc.)",Low,No,No,0.710,0.960,0.835,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,STU Owned Pipeline Base,"DIVIDE (
+    SUM ( Trending[QualifiedPipelineSTU] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)",Undocumented or unclear calculation,Medium,No,No,0.350,0.960,0.655,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.120, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Uncommitted Pipeline,SUM(Trending[UncommittedPipeline]),"Simple aggregation (SUM, COUNT, etc.)",Low,No,No,0.710,0.960,0.835,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Uncommitted Upside Pipeline,SUM(Trending[UncommittedUpsidePipeline]),"Simple aggregation (SUM, COUNT, etc.)",Low,No,No,0.710,0.960,0.835,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Additional Pipeline Needed,"VAR A = ( [Pipeline Target Unround] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) ) 
+    
+    
+RETURN IF(OR(A <= 0,[QPC to Budget KPI] > 0.995),BLANK(),A)",Complex multi-step calculation,High,No,No,0.440,0.960,0.700,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.150, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Critical,DBF VTF %,"DIVIDE([DBF VTF $], [Billed Forecast],BLANK())",Ratio or percentage calculation,Low,No,No,0.650,0.840,0.745,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.360, MN-002: 0.320, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Forecast VTB $,"IFERROR([Billed Forecast]-[Billed Budget],0)",Undocumented or unclear calculation,Low,No,No,0.320,0.920,0.620,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Forecast VTB %,"DIVIDE([Forecast VTB $],[Billed Budget],0)",Ratio or percentage calculation,Low,No,No,0.650,0.920,0.785,"ML-001: 0.200, ML-002: 0.180, ML-003: 0.000, ML-004: 0.270, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Ratio/percentage measures should follow standard calculation patterns. Use DIVIDE() function, include '%' in name for percentages, and ensure consistent decimal formatting across similar measures.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Pipeline Goal,[Pipeline Target],Undocumented or unclear calculation,Low,No,No,0.320,0.920,0.620,"ML-001: 0.200, ML-002: 0.030, ML-003: 0.000, ML-004: 0.090, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Measure does not align with standard library patterns. Review if this can be replaced with or derived from standard business measures, or if it should be added to the standard library for reuse.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Calculation type cannot be determined. Clarify the measure's purpose and ensure it follows recognizable DAX patterns. Consider if this measure serves a clear business need or should be restructured using standard calculation patterns.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Refresh Date,"CONCATENATE(""Last Refresh (PST) : "",MAX('Fiscal Period'[Refresh Date]))","Simple aggregation (SUM, COUNT, etc.)",Medium,No,No,0.710,0.920,0.815,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Qualified Pipeline Coverage to Budget Latest Week,"VAR X = CALCULATE( [Qualified Pipeline Coverage to Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )
+
+RETURN ROUND(X,2)",Calculated measure with business logic,Medium,No,No,0.590,0.920,0.755,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.240, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Qualified Pipeline Coverage to Forecast Latest Week,"VAR X = CALCULATE( [Qualified Pipeline Coverage to Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )
+
+RETURN ROUND(X,2)",Calculated measure with business logic,Medium,No,No,0.590,0.920,0.755,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.240, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Warning,Qualified Pipeline Coverage to Budget Selected Week,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey])
+RETURN 
+CALCULATE(
+    [Qualified Pipeline Coverage to Budget],'Trending'[DatasetVersionKey] = SelectedKey)",Calculated measure with business logic,High,No,No,0.590,0.920,0.755,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.240, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Trending,Issue,Additional Pipeline Needed Forecast,"VAR  A = ( [Pipeline Target Unround] * ( [Billed Forecast] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+
+RETURN IF(OR(A <= 0,[QPC to Forecast KPI] > 0.995),BLANK(),A)",Complex multi-step calculation,High,No,No,0.440,0.960,0.700,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.150, MN-001: 0.400, MN-002: 0.360, MN-003: 0.200","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+PY Trending,Issue,Qualified Pipeline Coverage to Budget PY,"VAR X = SUM ( 'PY Trending'[Billed Budget] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[Qualified Pipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",Complex multi-step calculation,High,No,No,0.410,0.920,0.665,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.120, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+PY Trending,Issue,Committed Pipeline Coverage to Budget PY,"VAR X = SUM ( 'PY Trending'[Billed Budget] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[CommittedPipeline]  ) + SUM ( 'PY Trending'[CommittedatRiskPipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",Complex multi-step calculation,High,No,No,0.410,0.920,0.665,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.120, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+PY Trending,Issue,Qualified Pipeline Coverage to Forecast PY,"VAR X = SUM ( 'PY Trending'[Billed Forecast] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[Qualified Pipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",Complex multi-step calculation,High,No,No,0.410,0.920,0.665,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.120, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+PY Trending,Issue,Committed Pipeline Coverage to Forecast PY,"VAR X = SUM ( 'PY Trending'[Billed Forecast] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[CommittedPipeline]  ) + SUM ( 'PY Trending'[CommittedatRiskPipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",Complex multi-step calculation,High,No,No,0.410,0.920,0.665,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.120, MN-001: 0.400, MN-002: 0.360, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Fiscal Period,Issue,GreyOutSelect,"IF(FIRSTNONBLANK('Fiscal Period'[Fiscal Quarter], 1) = ""FY23-Q1"", 1, 0)",Calculated measure with business logic,Medium,No,No,0.560,0.880,0.720,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.400, MN-002: 0.320, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Fiscal Period,Issue,Formats,"CALCULATE(MIN('Fiscal Period'[FormatValue]),'Trending Week'[Week Name] = """")","Simple aggregation (SUM, COUNT, etc.)",Medium,No,No,0.710,0.760,0.735,"ML-001: 0.200, ML-002: 0.210, ML-003: 0.000, ML-004: 0.300, MN-001: 0.280, MN-002: 0.320, MN-003: 0.160","Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Fiscal Period,Issue,YoYCFOGreyOut,"IF(OR(OR(FIRSTNONBLANK('Trend Type'[Trend Type],1) = ""Security"", FIRSTNONBLANK('Field Geography'[Subsidiary],1) = ""Netherlands""),FIRSTNONBLANK('Field Geography'[Subsidiary],1) = ""Switzerland""),1,0)",Complex multi-step calculation,High,No,No,0.440,0.880,0.660,"ML-001: 0.200, ML-002: 0.090, ML-003: 0.000, ML-004: 0.150, MN-001: 0.400, MN-002: 0.320, MN-003: 0.160","Complex calculations should be evaluated for standard library inclusion if they represent common business metrics. Consider if this can be simplified using standard patterns or broken into reusable components.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.; Complex calculation - high complexity detected. Consider: (1) Breaking into multiple simpler measures, (2) Adding inline comments explaining logic, (3) Using variables for intermediate calculations, (4) Formatting with proper line breaks and indentation.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"
+Fiscal Period,Issue,YoYGreyOut,"IF(FIRSTNONBLANK('Trend Type'[Trend Type],1) = ""Security"",1,0)",Calculated measure with business logic,Medium,No,No,0.560,0.840,0.700,"ML-001: 0.200, ML-002: 0.150, ML-003: 0.000, ML-004: 0.210, MN-001: 0.360, MN-002: 0.320, MN-003: 0.160","Complex calculated measures should leverage standard business logic patterns. Break down into simpler components where possible and reuse common calculation elements.; Missing business description. Add comprehensive documentation explaining: (1) What business question this measure answers, (2) When business users should use it, (3) Expected value ranges, (4) Any business rules or filters applied, (5) Data source and calculation methodology in plain language.","Naming conventions meet all standards (Clear definitions, Business-focused language, Proper DAX references)"

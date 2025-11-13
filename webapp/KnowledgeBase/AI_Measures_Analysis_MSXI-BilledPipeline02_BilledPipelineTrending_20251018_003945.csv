@@ -1,0 +1,902 @@
+﻿Table Name,Issue_Severity,Measure Name,Measure Formula,Calculation Type,AI Analyzed,Have Same Measure Definition,Is Standard Measure,Self Explanatory Calculation Logic,Complexity Level,Meets Naming Convention Standards,Has Descriptions,Proper DAX References,Duplicate Measure Definition Score,Duplicate Measure Definition Max Score,Standard Library Measures Score,Standard Library Measures Max Score,Business Documentation Quality Score,Business Documentation Quality Max Score,Complexity Classification Score,Complexity Classification Max Score,Definition Based Naming Score,Definition Based Naming Max Score,Business Focused Naming Score,Business Focused Naming Max Score,DAX Reference Standards Score,DAX Reference Standards Max Score,Overall Score,Calculation Logic Score,Naming Score,Business Purpose,Standardized Calculation Logic Recommendations,Naming Conventions Recommendations
+User,Critical,Filters Applied Icon,"""🗸""",Undocumented,Yes,"Yes - The measure formula '🗸' is identical to other measures with similar icon-based formulas, serving no distinct business purpose.",No - This measure does not align with enterprise-standard measures like Total Sales or Gross Margin. It appears to be an ad-hoc visual indicator.,No - The formula '🗸' does not provide any calculation logic or business insight. It is unclear how this measure contributes to analytics.,"Low - The measure is extremely simple, with no nested functions or complex logic.",No - The name 'User.Filters Applied Icon' does not clearly reflect a calculation or business purpose. It is cryptic and lacks clarity.,"No - The measure lacks a description, making it difficult for users to understand its purpose.","Yes - The formula does not reference any columns or tables, but it is syntactically correct for its purpose.",0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.000,0.400,0.000,0.400,0.200,0.200,0.250,0.300,0.200,The measure appears to be a visual indicator with no analytical value.,Replace this measure with a meaningful calculation or remove it if it serves no analytical purpose.,"Rename the measure to clearly reflect its purpose or calculation logic, if retained."
+User,Critical,Last Refresh Date,"""🕘""",Undocumented,Yes,"Yes - The formula '🕘' is identical to other measures with similar icon-based formulas, serving no distinct business purpose.",No - This measure does not align with enterprise-standard measures. It appears to be an ad-hoc visual indicator.,No - The formula '🕘' does not provide any calculation logic or business insight. It is unclear how this measure contributes to analytics.,"Low - The measure is extremely simple, with no nested functions or complex logic.",No - The name 'User.Last Refresh Date' does not clearly reflect a calculation or business purpose. It is cryptic and lacks clarity.,"No - The measure lacks a description, making it difficult for users to understand its purpose.","Yes - The formula does not reference any columns or tables, but it is syntactically correct for its purpose.",0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.000,0.400,0.000,0.400,0.200,0.200,0.250,0.300,0.200,The measure appears to be a visual indicator with no analytical value.,Replace this measure with a meaningful calculation or remove it if it serves no analytical purpose.,"Rename the measure to clearly reflect its purpose or calculation logic, if retained."
+User,Critical,Information Icon,"""i""",Undocumented,Yes,"Yes - The formula 'i' is identical to other measures with similar icon-based formulas, serving no distinct business purpose.",No - This measure does not align with enterprise-standard measures. It appears to be an ad-hoc visual indicator.,No - The formula 'i' does not provide any calculation logic or business insight. It is unclear how this measure contributes to analytics.,"Low - The measure is extremely simple, with no nested functions or complex logic.",No - The name 'User.Information Icon' does not clearly reflect a calculation or business purpose. It is cryptic and lacks clarity.,"No - The measure lacks a description, making it difficult for users to understand its purpose.","Yes - The formula does not reference any columns or tables, but it is syntactically correct for its purpose.",0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.000,0.400,0.000,0.400,0.200,0.200,0.250,0.300,0.200,The measure appears to be a visual indicator with no analytical value.,Replace this measure with a meaningful calculation or remove it if it serves no analytical purpose.,"Rename the measure to clearly reflect its purpose or calculation logic, if retained."
+User,Issue,CURRENT_USER,"LEFT(USERPRINCIPALNAME(),FIND(""@"",USERPRINCIPALNAME())-1)",Calculated Measure,Yes,"No - The measure uses a unique formula to extract the username from the USERPRINCIPALNAME() function, which is not duplicated elsewhere in the dataset.",No - This measure is not a standard business measure as it serves a technical purpose rather than a business-focused calculation.,No - The calculation logic is technical and not immediately understandable to business users without explanation.,Medium - The measure uses nested functions (LEFT and FIND) but is not overly complex for its purpose.,Yes - The name 'CURRENT_USER' clearly reflects the measure's purpose of identifying the current user.,"No - No description is provided, which makes it harder for users to understand the measure's purpose.",Yes - The formula uses proper DAX syntax and references.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Identifies the current user for technical or security purposes.,Provide a description explaining the purpose of the measure and its business relevance. Consider whether this measure is necessary for business users or if it serves only a technical purpose.,The naming convention is appropriate; no changes are needed.
+Close Rates,Critical,Average Close Rate,"DIVIDE((DIVIDE(SUM('Close Rates'[Q-1CloseRateNumerator]),SUM('Close Rates'[Q-1CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-2CloseRateNumerator]),SUM('Close Rates'[Q-2CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-3CloseRateNumerator]),SUM('Close Rates'[Q-3CloseRateDenominator]),0)
++DIVIDE(SUM('Close Rates'[Q-4CloseRateNumerator]),SUM('Close Rates'[Q-4CloseRateDenominator]),0)),4,0)",Complex Calculation,Yes,"No - The formula is unique but overly complex, with nested DIVIDE functions and repeated logic.",No - This measure does not align with standard business patterns and seems to be custom-built for a specific use case.,No - The calculation logic is highly complex and not easily understandable without detailed documentation.,"High - The measure uses 14 nested functions and has a formula length of 400 characters, making it unnecessarily complex.",Yes - The name 'Average Close Rate' is descriptive and aligns with the calculation purpose.,"No - No description is provided, which makes it difficult for users to understand the measure's purpose and logic.",Yes - The formula uses proper DAX syntax and references.,0.200,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.600,0.200,1.000,Calculates the average close rate across multiple periods.,"Simplify the formula by breaking it into smaller, reusable measures. Provide a clear description explaining the calculation logic and business relevance.",The naming convention is appropriate; no changes are needed.
+Close Rates,Issue,Pipeline Target, [QPC Goal],Simple Aggregation,Yes,No - The measure references another measure ([QPC Goal]) and does not duplicate any other measure's definition.,No - This measure does not align with standard business patterns and seems to be specific to the Close Rates table.,"Yes - The calculation logic is straightforward, referencing another measure without additional complexity.","Low - The measure is simple, with no nested functions and a short formula length.",Yes - The name 'Pipeline Target' is descriptive and aligns with the calculation purpose.,"No - No description is provided, which makes it harder for users to understand the measure's purpose.",Yes - The formula uses proper DAX syntax and references.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Represents the pipeline target for close rates.,Provide a description explaining the purpose of the measure and its business relevance. Consider whether this measure aligns with enterprise standards.,The naming convention is appropriate; no changes are needed.
+Close Rates,Critical,Pipeline Target Unround,"IF(CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)>3,3,CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0))",Complex Calculation,Yes,"Yes - The formula is highly similar to 'Close Rates.QPC Goal' with minor differences in rounding logic, which suggests duplication without distinct business purpose.","No - The measure does not align with standard enterprise measures like Total Sales Value, Gross Margin, or YoY Growth.",No - The formula is overly complex with nested functions and lacks a clear explanation of its business purpose.,"High - The formula contains 7 nested functions and spans 249 characters, making it unnecessarily complex for business users.",No - The name does not clearly reflect the calculation logic or business purpose. 'Pipeline Target Unround' is cryptic and lacks clarity.,"No - No description is provided, making it difficult for users to understand the measure's purpose.","No - The formula uses inconsistent references, such as unqualified column references and unclear measure usage.",0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Unclear due to lack of description and cryptic naming.,Simplify the formula by reducing nested functions and clearly define its business purpose. Avoid duplication with other measures.,"Rename the measure to reflect its calculation logic and business purpose, such as 'Pipeline_Target_Unrounded_Value'."
+Close Rates,Critical,QPC Goal," IF(CALCULATE(DIVIDE(1,[Average Close Rate],0),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)>3,3,CALCULATE(ROUND(DIVIDE(1,[Average Close Rate],BLANK()),2),'Fiscal Period'[Fiscal Quarter]="""",LEN('Trending Week'[DatasetVersionKey])>0)) ",Complex Calculation,Yes,"Yes - The formula is highly similar to 'Close Rates.Pipeline Target Unround' with minor differences in rounding logic, which suggests duplication without distinct business purpose.","No - The measure does not align with standard enterprise measures like Total Sales Value, Gross Margin, or YoY Growth.",No - The formula is overly complex with nested functions and lacks a clear explanation of its business purpose.,"High - The formula contains 9 nested functions and spans 266 characters, making it unnecessarily complex for business users.",No - The name does not clearly reflect the calculation logic or business purpose. 'QPC Goal' is cryptic and lacks clarity.,"No - No description is provided, making it difficult for users to understand the measure's purpose.","No - The formula uses inconsistent references, such as unqualified column references and unclear measure usage.",0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Unclear due to lack of description and cryptic naming.,Simplify the formula by reducing nested functions and clearly define its business purpose. Avoid duplication with other measures.,"Rename the measure to reflect its calculation logic and business purpose, such as 'Qualified_Pipeline_Coverage_Goal'."
+Trending,Issue,Qualified Pipeline Coverage to Budget,"VAR X = [Billed Budget]- SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = SUM ( 'Trending'[QualifiedPipeline]  ) + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",Calculated Measure,Yes,No - The formula is unique and does not duplicate other measures.,"No - The measure does not align with standard enterprise measures like Total Sales Value, Gross Margin, or YoY Growth.","Yes - The formula uses clear variable definitions (X and Y) to break down the calculation logic, making it easier to understand.",Medium - The formula contains 8 nested functions but uses variables to simplify readability.,"Yes - The name reflects the calculation logic and business purpose, aligning with naming standards.","No - No description is provided, which limits understanding of the measure's purpose.",Yes - The formula uses fully qualified column references and consistent measure referencing.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,"Tracks pipeline coverage against budget, which is relevant for financial planning and analysis.",Consider aligning the measure with enterprise standards by documenting its business purpose and simplifying the formula further.,Ensure all measures follow the same naming conventions and provide descriptions for better user understanding.
+Trending,Issue,Qualified Pipeline Coverage to Forecast,"VAR X = [Billed Forecast] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = SUM ( 'Trending'[QualifiedPipeline]  ) + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",Complex Calculation,Yes,No - The measure's formula is unique and does not duplicate other measures in the dataset.,No - The measure does not align with predefined enterprise standards like Total Sales Value or YoY Growth.,"No - The formula is complex, with nested functions and lacks a description to explain its business purpose.","High - The measure uses multiple nested functions and variables, making it difficult to interpret without additional documentation.","Yes - The name is descriptive and reflects the calculation purpose, aligning with naming convention standards.","No - The measure lacks a description, which reduces its clarity and usability for business users.","Yes - The formula uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Provides insights into pipeline coverage relative to forecasted revenue.,"Simplify the formula or provide detailed documentation to explain the calculation logic. Consider breaking down the measure into smaller, reusable components.","The naming convention is appropriate; however, adding a description would enhance usability and clarity."
+Trending,Warning,% Committed,"DIVIDE([Committed + Risk Pipeline],[Qualified Pipeline],BLANK())",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,Yes - The measure aligns with enterprise standards for ratio/percentage calculations.,Yes - The formula is straightforward and uses clear DAX functions to calculate the percentage of committed pipeline.,Low - The measure uses simple DAX functions and is easy to interpret.,"Yes - The name is descriptive and reflects the calculation purpose, aligning with naming convention standards.","No - The measure lacks a description, which reduces its clarity and usability for business users.","Yes - The formula uses unqualified measure references, adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Calculates the percentage of committed pipeline relative to the qualified pipeline.,The calculation logic is appropriate and does not require changes. Adding a description would improve usability.,The naming convention is excellent; no changes are needed.
+Trending,Warning,% Upside,"DIVIDE([Uncommitted + Upside Pipeline],[Qualified Pipeline],BLANK())",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,Yes - The measure aligns with enterprise standards for ratio/percentage calculations.,Yes - The formula is straightforward and uses clear DAX functions to calculate the percentage of upside pipeline.,Low - The measure uses simple DAX functions and is easy to interpret.,"Yes - The name is descriptive and reflects the calculation purpose, aligning with naming convention standards.","No - The measure lacks a description, which reduces its clarity and usability for business users.","Yes - The formula uses unqualified measure references, adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Calculates the percentage of upside pipeline relative to the qualified pipeline.,The calculation logic is appropriate and does not require changes. Adding a description would improve usability.,The naming convention is excellent; no changes are needed.
+Trending,Issue,Actual + Schedule,SUM(Trending[ActualBilledRevenue])+SUM(Trending[ScheduledBilledRevenue]),Simple Aggregation,Yes,"No - The measure combines two distinct fields (ActualBilledRevenue and ScheduledBilledRevenue) using SUM, which is unique within the dataset.",No - The measure does not align with predefined enterprise standards like Total Sales Value or Gross Margin.,"No - The calculation logic is not immediately clear without a description, and the name does not fully explain the measure's purpose.",Low - The measure uses basic aggregation functions (SUM) and does not involve nested or complex logic.,No - The name 'Actual + Schedule' is vague and does not clearly describe the calculation or business purpose.,"No - The measure lacks a description, making it difficult for business users to understand its purpose.","Yes - The formula uses fully qualified column references (Trending[ActualBilledRevenue], Trending[ScheduledBilledRevenue]), adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.450,0.500,0.400,Combines actual billed revenue and scheduled billed revenue for reporting purposes.,"Add a description to explain the measure's purpose and ensure it aligns with enterprise standards. Consider renaming the measure to something more descriptive, such as 'Total Actual and Scheduled Revenue'.","Use a name that clearly reflects the calculation and business purpose, such as 'Total_Actual_Scheduled_Revenue'."
+Trending,Warning,DBF VTB $,[Total DBF] - [Billed Budget],Calculated Measure,Yes,"No - The measure calculates the difference between Total DBF and Billed Budget, which is unique within the dataset.",Yes - The measure aligns with enterprise standards as it calculates a key business metric (variance to budget).,No - The name 'DBF VTB $' is cryptic and does not clearly explain the calculation or business purpose.,Low - The measure uses a simple subtraction operation without nested functions.,No - The name uses abbreviations ('DBF VTB $') that are not self-explanatory and may confuse business users.,"No - The measure lacks a description, making it difficult for business users to understand its purpose.","Yes - The formula uses unqualified measure references ([Total DBF], [Billed Budget]), adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.600,0.800,0.400,Calculates the variance between Total DBF and Billed Budget for financial analysis.,Add a description to explain the measure's purpose and calculation logic. Ensure the measure name is more descriptive and business-focused.,Rename the measure to 'DBF_Variance_To_Budget' to improve clarity and align with business terminology.
+Trending,Warning,DBF VTF $,[Total DBF] - [Billed Forecast],Calculated Measure,Yes,"No - The measure calculates the difference between Total DBF and Billed Forecast, which is unique within the dataset.",Yes - The measure aligns with enterprise standards as it calculates a key business metric (variance to forecast).,No - The name 'DBF VTF $' is cryptic and does not clearly explain the calculation or business purpose.,Low - The measure uses a simple subtraction operation without nested functions.,No - The name uses abbreviations ('DBF VTF $') that are not self-explanatory and may confuse business users.,"No - The measure lacks a description, making it difficult for business users to understand its purpose.","Yes - The formula uses unqualified measure references ([Total DBF], [Billed Forecast]), adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.600,0.800,0.400,Calculates the variance between Total DBF and Billed Forecast for financial analysis.,Add a description to explain the measure's purpose and calculation logic. Ensure the measure name is more descriptive and business-focused.,Rename the measure to 'DBF_Variance_To_Forecast' to improve clarity and align with business terminology.
+Trending,Issue,Qualified Pipeline with Close Plan Attach,"DIVIDE (
+    SUM ( Trending[QPClosePlanAttach_Num] ),
+    SUM ( Trending[QPClosePlanAttach_Den] ),
+    BLANK ()
+)",Ratio Percentage,Yes,"No - The measure uses a unique calculation logic involving division of two sums, which is not duplicated across other measures.",No - The measure does not align with standard enterprise measures like Total Sales or Gross Margin. It appears to be specific to the dataset.,"No - The measure lacks a description, and the calculation logic is not immediately clear without additional context.",Low - The measure uses basic DAX functions (SUM and DIVIDE) and does not involve complex nested logic.,"Yes - The name is descriptive and reflects the calculation purpose, aligning with naming convention standards.","No - The measure lacks a description, which reduces its clarity and usability for business users.","Yes - The measure uses fully qualified column references, adhering to DAX reference standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Tracks the percentage of qualified pipeline with a close plan attached.,Add a clear description explaining the business purpose and calculation logic of the measure. Consider aligning the measure with enterprise standards if applicable.,No changes needed as the naming convention is already clear and descriptive.
+Trending,Warning,% Cloud,"VAR X = CALCULATE( [Qualified Pipeline], KEEPFILTERS(Product[Commercial Cloud Flag] = ""Commercial Cloud"" ) )
+
+RETURN DIVIDE(X,[Qualified Pipeline],BLANK())",Ratio Percentage,Yes,"No - The measure uses a unique calculation logic involving a VAR and KEEPFILTERS, which is not duplicated across other measures.",No - The measure does not align with standard enterprise measures but is highly relevant to the dataset's business context.,"No - The measure lacks a description, and the calculation logic is not immediately clear without additional context.","Medium - The measure uses intermediate DAX functions like VAR and KEEPFILTERS, which add complexity but are appropriate for the business purpose.","Yes - The name is descriptive and reflects the calculation purpose, aligning with naming convention standards.","No - The measure lacks a description, which reduces its clarity and usability for business users.","Yes - The measure uses fully qualified column references and unqualified measure references, adhering to DAX reference standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Tracks the percentage of qualified pipeline attributed to commercial cloud products.,Add a clear description explaining the business purpose and calculation logic of the measure. Consider simplifying the logic if possible.,No changes needed as the naming convention is already clear and descriptive.
+Trending,Warning,% Non Cloud,"VAR X = CALCULATE( [Qualified Pipeline], KEEPFILTERS(Product[Commercial Cloud Flag] <> ""Commercial Cloud"" ) )
+
+RETURN DIVIDE(X,[Qualified Pipeline],BLANK())",Ratio Percentage,Yes,"No - The measure uses a unique calculation logic involving a VAR and KEEPFILTERS, which is not duplicated across other measures.",No - The measure does not align with standard enterprise measures but is highly relevant to the dataset's business context.,"No - The measure lacks a description, and the calculation logic is not immediately clear without additional context.","Medium - The measure uses intermediate DAX functions like VAR and KEEPFILTERS, which add complexity but are appropriate for the business purpose.","Yes - The name is descriptive and reflects the calculation purpose, aligning with naming convention standards.","No - The measure lacks a description, which reduces its clarity and usability for business users.","Yes - The measure uses fully qualified column references and unqualified measure references, adhering to DAX reference standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Tracks the percentage of qualified pipeline attributed to non-cloud products.,Add a clear description explaining the business purpose and calculation logic of the measure. Consider simplifying the logic if possible.,No changes needed as the naming convention is already clear and descriptive.
+Trending,Issue,DBF VTB %,"DIVIDE([DBF VTB $],[Billed Budget],BLANK())",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - This measure does not align with standard enterprise measures like Total Sales or Gross Margin.,"No - The calculation logic is not explained in business terms, and the description is missing.",Low - The formula uses basic DAX functions (DIVIDE) and is straightforward.,No - The name is cryptic and does not clearly describe the calculation or business purpose.,"No - The measure lacks a description, making it unclear for business users.",Yes - The formula uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.000,0.400,0.000,0.400,0.200,0.200,0.350,0.500,0.200,Calculate the percentage variance between DBF VTB $ and Billed Budget.,Add a clear description explaining the business purpose of the measure. Consider aligning the measure with enterprise standards if applicable.,"Rename the measure to something more descriptive, such as 'DBF Variance to Budget Percentage'."
+Trending,Warning,Qualified Pipeline in High Stage,"DIVIDE (
+    SUM ( Trending[QualifiedPipeline60] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+
+",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,Yes - The measure aligns with enterprise standards for pipeline analysis.,"No - The calculation logic is not explained in business terms, and the description is missing.","Medium - The formula uses nested DAX functions, which are moderately complex but appropriate for the business purpose.",Yes - The name is descriptive and reflects the calculation and business purpose.,"No - The measure lacks a description, making it unclear for business users.",Yes - The formula uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Analyze the proportion of the qualified pipeline in high stages.,Add a clear description explaining the business purpose of the measure.,The naming convention is appropriate; no changes are needed.
+Trending,Warning,Qualified Pipeline in Low Stages,"DIVIDE (
+    SUM ( Trending[QualifiedPipeline] ) - SUM ( Trending[QualifiedPipeline60] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,Yes - The measure aligns with enterprise standards for pipeline analysis.,"No - The calculation logic is not explained in business terms, and the description is missing.","Medium - The formula uses nested DAX functions, which are moderately complex but appropriate for the business purpose.",Yes - The name is descriptive and reflects the calculation and business purpose.,"No - The measure lacks a description, making it unclear for business users.",Yes - The formula uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Analyze the proportion of the qualified pipeline in low stages.,Add a clear description explaining the business purpose of the measure.,The naming convention is appropriate; no changes are needed.
+Trending,Warning,Uncommitted + Upside Pipeline,[Uncommitted Pipeline] + [Uncommitted Upside Pipeline],Simple Aggregation,Yes,No - The measure combines two distinct measures ([Uncommitted Pipeline] and [Uncommitted Upside Pipeline]) and does not duplicate any other measure definition.,No - The measure does not align with predefined standard measures like Total Sales Value or Gross Margin. It appears to be specific to the business context.,"Yes - The calculation logic is straightforward, summing two existing measures without any nested functions or complex operations.","Low - The measure is simple, with no nested functions and a short formula length.","Yes - The name clearly reflects the calculation logic and business purpose, combining 'Uncommitted Pipeline' and 'Upside Pipeline'.","No - The measure lacks a description, which would help clarify its business purpose and calculation logic.","Yes - The measure uses unqualified references for measures ([Uncommitted Pipeline] and [Uncommitted Upside Pipeline]), which is consistent with DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Combines uncommitted pipeline and upside pipeline values for trending analysis.,Consider adding a description to explain the business purpose of combining 'Uncommitted Pipeline' and 'Upside Pipeline'.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,CPC to Budget,"VAR X = [Billed Budget] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = [Committed + Risk Pipeline] + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",Complex Calculation,Yes,"No - The measure has a unique definition, but it is similar to 'Trending.CPC to Forecast', which may cause confusion.",No - The measure does not align with standard enterprise measures and appears to be specific to the business context.,"No - The calculation logic is complex, involving multiple variables and nested functions, which may not be immediately clear to business users.","High - The measure uses 7 nested functions and has a lengthy formula, making it complex.","Yes - The name reflects the calculation purpose, comparing CPC to the budget.","No - The measure lacks a description, which would help clarify its business purpose and calculation logic.","Yes - The measure uses fully qualified references for columns and unqualified references for measures, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.600,0.200,1.000,Compares CPC to the budget for trending analysis.,Simplify the calculation logic or provide a detailed description to explain the purpose and components of the measure.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,CPC to Forecast,"VAR X = [Billed Forecast] - SUM ( 'Trending'[ActualBilledRevenue] )
+            - SUM ( 'Trending'[ScheduledBilledRevenue] )
+
+VAR Y = [Committed + Risk Pipeline] + SUM('Trending'[RunRateProjections])
+
+
+RETURN IF (X < 0, BLANK(),DIVIDE ( Y, X , BLANK() ))
+
+",Complex Calculation,Yes,"No - The measure has a unique definition, but it is similar to 'Trending.CPC to Budget', which may cause confusion.",No - The measure does not align with standard enterprise measures and appears to be specific to the business context.,"No - The calculation logic is complex, involving multiple variables and nested functions, which may not be immediately clear to business users.","High - The measure uses 7 nested functions and has a lengthy formula, making it complex.","Yes - The name reflects the calculation purpose, comparing CPC to the forecast.","No - The measure lacks a description, which would help clarify its business purpose and calculation logic.","Yes - The measure uses fully qualified references for columns and unqualified references for measures, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.600,0.200,1.000,Compares CPC to the forecast for trending analysis.,Simplify the calculation logic or provide a detailed description to explain the purpose and components of the measure.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,CPC to Forecast Latest Week KPI,[CPC to Forecast Latest Week] * 100,Simple Aggregation,Yes,No - The formula is unique and does not duplicate other measures.,No - The measure does not align with standard business patterns like Total Sales or YoY Growth.,No - The calculation logic is simple but lacks a description to explain its business purpose.,Low - The formula is straightforward with no nested functions or complex logic.,Yes - The name reflects the calculation and business context clearly.,"No - The measure lacks a description, making it harder for business users to understand its purpose.",Yes - The formula uses proper DAX syntax without inconsistencies.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,"Provides a KPI for CPC to Forecast for the latest week, expressed as a percentage.",Add a description to explain the business purpose of the measure. Consider aligning the measure with standard business patterns if applicable.,No changes needed as the naming convention is clear and descriptive.
+Trending,Critical,CPC to Budget MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Complex Calculation,Yes,"No - The formula is unique but overly complex, making it difficult to assess its distinctiveness.",No - The measure does not align with standard business patterns and appears to be custom-built for a specific use case.,"No - The calculation logic is highly complex with multiple nested functions, making it difficult for business users to understand.","High - The formula contains 15 nested functions and spans 583 characters, indicating high complexity.",Yes - The name reflects the calculation and business context clearly.,"No - The measure lacks a description, making it harder for business users to understand its purpose.",Yes - The formula uses proper DAX syntax without inconsistencies.,0.200,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.600,0.200,1.000,Provides a Month-over-Month comparison for CPC to Budget.,Simplify the formula to reduce complexity and improve user understanding. Add a description to explain the business purpose of the measure.,No changes needed as the naming convention is clear and descriptive.
+Trending,Critical,CPC to Budget WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Complex Calculation,Yes,"No - The formula is unique but overly complex, making it difficult to assess its distinctiveness.",No - The measure does not align with standard business patterns and appears to be custom-built for a specific use case.,"No - The calculation logic is highly complex with multiple nested functions, making it difficult for business users to understand.","High - The formula contains 15 nested functions and spans 581 characters, indicating high complexity.",Yes - The name reflects the calculation and business context clearly.,"No - The measure lacks a description, making it harder for business users to understand its purpose.",Yes - The formula uses proper DAX syntax without inconsistencies.,0.200,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.600,0.200,1.000,Provides a Week-over-Week comparison for CPC to Budget.,Simplify the formula to reduce complexity and improve user understanding. Add a description to explain the business purpose of the measure.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,Qualified Pipeline Coverage to Budget MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Time Intelligence,Yes,"No - The measure has a unique definition compared to others in the dataset, focusing on Month-over-Month pipeline coverage.",No - The measure does not align with standard enterprise measures like Total Sales or Gross Margin but serves a specific business purpose.,No - The calculation logic is complex with nested variables and lacks a description to explain its business purpose.,"High - The measure uses 15 nested functions and a lengthy formula, making it difficult for business users to interpret.",Yes - The name clearly reflects the calculation logic and business purpose (Month-over-Month pipeline coverage).,"No - The measure lacks a description, which reduces its accessibility for business users.","Yes - The formula uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.100,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Tracks Month-over-Month pipeline coverage to budget for trending analysis.,Simplify the calculation logic or provide a detailed description to make the measure more accessible to business users.,Maintain the current naming convention but ensure descriptions are added to improve clarity.
+Trending,Issue,Qualified Pipeline Coverage to Budget WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Time Intelligence,Yes,"No - The measure has a unique definition compared to others in the dataset, focusing on Week-over-Week pipeline coverage.",No - The measure does not align with standard enterprise measures but serves a specific business purpose.,No - The calculation logic is complex with nested variables and lacks a description to explain its business purpose.,"High - The measure uses 15 nested functions and a lengthy formula, making it difficult for business users to interpret.",Yes - The name clearly reflects the calculation logic and business purpose (Week-over-Week pipeline coverage).,"No - The measure lacks a description, which reduces its accessibility for business users.","Yes - The formula uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.100,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Tracks Week-over-Week pipeline coverage to budget for trending analysis.,Simplify the calculation logic or provide a detailed description to make the measure more accessible to business users.,Maintain the current naming convention but ensure descriptions are added to improve clarity.
+Trending,Critical,Additional Pipeline Needed Latest Week,"VAR  A = CALCULATE( ( [Pipeline Target Unround] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    ,KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))
+
+RETURN IF(OR(A <= 0,[QPC to Budget KPI] > 0.995),BLANK(),A)",Complex Calculation,Yes,"No - The measure has a unique definition compared to others in the dataset, focusing on additional pipeline needed for the latest week.",No - The measure does not align with standard enterprise measures and appears to be ad-hoc.,No - The calculation logic is complex and lacks a description to explain its business purpose.,"Medium - The measure uses 12 nested functions, making it moderately complex but still interpretable with effort.",Yes - The name clearly reflects the calculation logic and business purpose (additional pipeline needed for the latest week).,"No - The measure lacks a description, which reduces its accessibility for business users.","Yes - The formula uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Calculates the additional pipeline needed to meet the latest week's targets.,Provide a detailed description to explain the measure's business purpose and simplify the calculation logic if possible.,Maintain the current naming convention but ensure descriptions are added to improve clarity.
+Trending,Issue,Additional Pipeline Needed MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR Latest =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PW =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+RETURN
+    IF(Latest <= 0, 0, Latest) - IF(PW <= 0, 0, PW)
+",Time Intelligence,Yes,No - The measure has a unique calculation logic involving time intelligence for month-over-month comparison.,No - The measure does not align with predefined enterprise standards like Total Sales or Gross Margin.,No - The calculation logic is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure uses 10 nested functions and a lengthy formula, making it difficult for business users to interpret.",Yes - The name clearly reflects the calculation logic and business purpose (Month-over-Month pipeline analysis).,"No - The measure lacks a description, which reduces its accessibility for business users.","Yes - The measure uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Provides month-over-month analysis of additional pipeline needed.,Simplify the calculation logic to reduce complexity and add a clear description to explain the business purpose.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,Additional Pipeline Needed WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR Latest =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PW =
+    CALCULATE(
+        [Additional Pipeline Needed Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(Latest <= 0, 0, Latest) - IF(PW <= 0, 0, PW)
+",Time Intelligence,Yes,No - The measure has a unique calculation logic involving time intelligence for week-over-week comparison.,No - The measure does not align with predefined enterprise standards like Total Sales or Gross Margin.,No - The calculation logic is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure uses 10 nested functions and a lengthy formula, making it difficult for business users to interpret.",Yes - The name clearly reflects the calculation logic and business purpose (Week-over-Week pipeline analysis).,"No - The measure lacks a description, which reduces its accessibility for business users.","Yes - The measure uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Provides week-over-week analysis of additional pipeline needed.,Simplify the calculation logic to reduce complexity and add a clear description to explain the business purpose.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,STU Owned Pipeline MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR B =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(
+        OR(X <= 0, Y <= 0),
+        BLANK(),
+        X - Y
+    )
+",Time Intelligence,Yes,No - The measure has a unique calculation logic involving time intelligence for month-over-month comparison.,No - The measure does not align with predefined enterprise standards like Total Sales or Gross Margin.,No - The calculation logic is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure uses 13 nested functions and a lengthy formula, making it difficult for business users to interpret.",Yes - The name clearly reflects the calculation logic and business purpose (Month-over-Month pipeline analysis).,"No - The measure lacks a description, which reduces its accessibility for business users.","Yes - The measure uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Provides month-over-month analysis of STU owned pipeline.,Simplify the calculation logic to reduce complexity and add a clear description to explain the business purpose.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,STU Owned Pipeline WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR B =
+    CALCULATE(
+        [STU Owned Pipeline Base],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(
+        OR(X <= 0, Y <= 0),
+        BLANK(),
+        X - Y
+    )
+",Complex Calculation,Yes,No - The measure has a unique calculation logic involving week-over-week comparison using VAR and CALCULATE functions.,No - The measure does not align with standard enterprise measures like Total Sales Value or Gross Margin but serves a specific business purpose.,No - The calculation logic is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure uses 13 nested functions and a lengthy formula, making it difficult for business users to interpret.",Yes - The name clearly reflects the calculation logic (Week-over-Week pipeline comparison).,"No - The measure lacks a description, which reduces its accessibility for business users.",Yes - The formula uses fully qualified column references and consistent syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Tracks week-over-week changes in STU Owned Pipeline for trending analysis.,Simplify the calculation logic where possible and add a clear description to explain the business purpose of the measure.,The naming convention is appropriate; no changes are needed.
+Trending,Good,STU Owned Pipeline Latest Week,"CALCULATE([STU Owned Pipeline Base],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Simple Aggregation,Yes,No - The measure has a unique calculation logic focusing on the latest week pipeline data.,"Yes - The measure aligns with standard business patterns by providing the latest week's pipeline data, which is a common requirement.",Yes - The calculation logic is simple and uses clear DAX functions like CALCULATE and KEEPFILTERS.,"Low - The formula is straightforward with only two nested functions, making it easy to understand.",Yes - The name clearly reflects the calculation logic and business purpose.,"No - The measure lacks a description, which could improve its accessibility for business users.",Yes - The formula uses fully qualified column references and consistent syntax.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Provides the latest week's pipeline data for trending analysis.,Add a description to improve business user accessibility.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,Close Plan Attach WoW,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR B =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",Complex Calculation,Yes,No - The measure has a unique calculation logic involving week-over-week comparison using VAR and CALCULATE functions.,No - The measure does not align with standard enterprise measures but serves a specific business purpose.,No - The calculation logic is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure uses 13 nested functions and a lengthy formula, making it difficult for business users to interpret.",Yes - The name clearly reflects the calculation logic (Week-over-Week close plan attach comparison).,"No - The measure lacks a description, which reduces its accessibility for business users.",Yes - The formula uses fully qualified column references and consistent syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Tracks week-over-week changes in Close Plan Attach for trending analysis.,Simplify the calculation logic where possible and add a clear description to explain the business purpose of the measure.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,Close Plan Attach MoM,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR B =
+    CALCULATE(
+        [Qualified Pipeline with Close Plan Attach],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN
+    IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",Time Intelligence,Yes,No - The measure uses a unique calculation logic involving time intelligence (Month-over-Month comparison) and does not duplicate other measures.,No - The measure does not align with standard enterprise measures like Total Sales Value or Gross Margin. It is more specific to the dataset's trending analysis.,No - The calculation logic is complex with nested functions and lacks a description to explain its purpose in business terms.,"High - The measure has a high complexity level due to its length (582 characters) and the use of 13 nested functions, which may be difficult for business users to interpret.",No - The name is descriptive but uses abbreviations like 'MoM' which may not be clear to all business users.,"No - The measure lacks a description, making it difficult for users to understand its business purpose.","Yes - The measure uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.100,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.500,0.400,0.600,Provides Month-over-Month comparison for Close Plan Attach rates.,Simplify the calculation logic where possible and add a clear description explaining the business purpose of the measure.,Avoid abbreviations like 'MoM' and use full terms such as 'Month Over Month' for better clarity.
+Trending,Issue,Qualified Pipeline Coverage to Forecast WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Time Intelligence,Yes,No - The measure uses a unique calculation logic involving time intelligence (Week-over-Week comparison) and does not duplicate other measures.,No - The measure does not align with standard enterprise measures like Total Sales Value or Gross Margin. It is specific to pipeline coverage analysis.,No - The calculation logic is complex with nested functions and lacks a description to explain its purpose in business terms.,"High - The measure has a high complexity level due to its length (639 characters) and the use of 15 nested functions, which may be difficult for business users to interpret.",No - The name is descriptive but uses abbreviations like 'WoW' which may not be clear to all business users.,"No - The measure lacks a description, making it difficult for users to understand its business purpose.","Yes - The measure uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.100,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.500,0.400,0.600,Provides Week-over-Week comparison for Qualified Pipeline Coverage to Forecast.,Simplify the calculation logic where possible and add a clear description explaining the business purpose of the measure.,Avoid abbreviations like 'WoW' and use full terms such as 'Week Over Week' for better clarity.
+Trending,Issue,Qualified Pipeline Coverage to Forecast MoM,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Time Intelligence,Yes,No - The measure uses a unique calculation logic involving time intelligence (Month-over-Month comparison) and does not duplicate other measures.,No - The measure does not align with standard enterprise measures like Total Sales Value or Gross Margin. It is specific to pipeline coverage analysis.,No - The calculation logic is complex with nested functions and lacks a description to explain its purpose in business terms.,"High - The measure has a high complexity level due to its length (641 characters) and the use of 15 nested functions, which may be difficult for business users to interpret.",No - The name is descriptive but uses abbreviations like 'MoM' which may not be clear to all business users.,"No - The measure lacks a description, making it difficult for users to understand its business purpose.","Yes - The measure uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.100,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.500,0.400,0.600,Provides Month-over-Month comparison for Qualified Pipeline Coverage to Forecast.,Simplify the calculation logic where possible and add a clear description explaining the business purpose of the measure.,Avoid abbreviations like 'MoM' and use full terms such as 'Month Over Month' for better clarity.
+Trending,Issue,CPC to Forecast MoM,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Time Intelligence,Yes,No - The measure has a unique calculation logic involving month-over-month comparison using DatasetVersionKey.,No - The measure does not align with standard enterprise measures like Total Sales or Gross Margin. It is specific to forecasting trends.,No - The calculation logic is complex with multiple nested functions and lacks a description to explain its purpose in business terms.,"High - The measure uses 15 nested functions and has a lengthy formula, making it difficult to interpret and maintain.",Yes - The name clearly reflects the calculation purpose (CPC to Forecast MoM).,"No - No description is provided, which makes it harder for business users to understand the measure's purpose.","Yes - The formula uses fully qualified column references (e.g., 'Trending Week'[DatasetVersionKey]).",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Provides month-over-month comparison for CPC to Forecast values.,Simplify the calculation logic by reducing nested functions and provide a clear description explaining the business purpose of the measure.,"The naming convention is appropriate, but adding a description would improve user accessibility."
+Trending,Issue,CPC to Forecast WoW,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Time Intelligence,Yes,No - The measure has a unique calculation logic involving week-over-week comparison using DatasetVersionKey.,No - The measure does not align with standard enterprise measures like Total Sales or Gross Margin. It is specific to forecasting trends.,No - The calculation logic is complex with multiple nested functions and lacks a description to explain its purpose in business terms.,"High - The measure uses 15 nested functions and has a lengthy formula, making it difficult to interpret and maintain.",Yes - The name clearly reflects the calculation purpose (CPC to Forecast WoW).,"No - No description is provided, which makes it harder for business users to understand the measure's purpose.","Yes - The formula uses fully qualified column references (e.g., 'Trending Week'[DatasetVersionKey]).",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Provides week-over-week comparison for CPC to Forecast values.,Simplify the calculation logic by reducing nested functions and provide a clear description explaining the business purpose of the measure.,"The naming convention is appropriate, but adding a description would improve user accessibility."
+Trending,Warning,CPC to Budget Latest Week,"CALCULATE( [CPC to Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )",Simple Aggregation,Yes,No - The measure has a unique calculation logic filtering for the latest week.,No - The measure does not align with standard enterprise measures like Total Sales or Gross Margin. It is specific to budgeting trends.,"Yes - The calculation logic is straightforward and uses minimal nested functions, making it easy to understand.","Low - The measure uses only 2 nested functions and has a short formula, making it simple and efficient.",Yes - The name clearly reflects the calculation purpose (CPC to Budget Latest Week).,"No - No description is provided, which makes it harder for business users to understand the measure's purpose.","Yes - The formula uses fully qualified column references (e.g., 'Trending Week'[Week Type]).",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Provides CPC to Budget values filtered for the latest week.,"The calculation logic is appropriate, but adding a description would improve user accessibility.","The naming convention is appropriate, but adding a description would improve user accessibility."
+Trending,Issue,Additional Pipeline Needed Forecast Latest Week,"VAR  A = CALCULATE( ( [Pipeline Target Unround] * ( [Billed Forecast] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    ,KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))
+
+RETURN IF(OR(A <= 0,[QPC to Forecast KPI] > 0.995),BLANK(),A)",Complex Calculation,Yes,No - The measure formula is unique and does not duplicate other measures in the dataset.,No - The measure does not align with standard business patterns like Total Sales or YoY Growth. It appears to be specific to the dataset's context.,"No - The calculation logic is complex, involving nested functions and variables, making it difficult for business users to understand without documentation.",High - The measure has a high level of complexity due to its length (364 characters) and use of 12 nested functions.,"Yes - The name is descriptive and reflects the calculation purpose, adhering to naming convention standards.","No - The measure lacks a description, which reduces its accessibility and usability for business users.","Yes - The formula uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Forecasting additional pipeline needed based on billed forecast and other pipeline metrics.,Simplify the calculation logic or provide detailed documentation to make the measure more accessible to business users.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,Qualified Pipeline Coverage to Budget YoY,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Budget PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Complex Calculation,Yes,No - The measure formula is unique and does not duplicate other measures in the dataset.,No - The measure does not align with standard business patterns like Total Sales or YoY Growth. It appears to be specific to the dataset's context.,"No - The calculation logic is complex, involving nested functions and variables, making it difficult for business users to understand without documentation.",High - The measure has a high level of complexity due to its length (599 characters) and use of 15 nested functions.,"Yes - The name is descriptive and reflects the calculation purpose, adhering to naming convention standards.","No - The measure lacks a description, which reduces its accessibility and usability for business users.","Yes - The formula uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Calculating YoY coverage of qualified pipeline to budget.,Simplify the calculation logic or provide detailed documentation to make the measure more accessible to business users.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,CPC to Budget YoY,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Budget],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed Pipeline Coverage to Budget PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Complex Calculation,Yes,No - The measure formula is unique and does not duplicate other measures in the dataset.,No - The measure does not align with standard business patterns like Total Sales or YoY Growth. It appears to be specific to the dataset's context.,"No - The calculation logic is complex, involving nested functions and variables, making it difficult for business users to understand without documentation.",High - The measure has a high level of complexity due to its length (575 characters) and use of 15 nested functions.,"Yes - The name is descriptive and reflects the calculation purpose, adhering to naming convention standards.","No - The measure lacks a description, which reduces its accessibility and usability for business users.","Yes - The formula uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Calculating YoY coverage of CPC to budget.,Simplify the calculation logic or provide detailed documentation to make the measure more accessible to business users.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,CPC to Forecast YoY,"VAR SelectedKey =
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [CPC to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed Pipeline Coverage to Forecast PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Complex Calculation,Yes,No - The measure uses a unique calculation logic involving SELECTEDVALUE and CALCULATE with nested functions. No duplicates detected.,No - The measure does not align with standard enterprise measures like Total Sales Value or Gross Margin. It appears to be specific to the dataset.,No - The calculation logic is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure has a high complexity level due to its length (583 characters) and 15 nested functions, which may hinder user understanding.",Yes - The name reflects the calculation purpose and uses clear business terminology.,"No - The measure lacks a description, making it difficult for users to understand its business context.",Yes - The formula uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Tracks year-over-year comparison of CPC to Forecast values for trending analysis.,Simplify the calculation logic where possible and add a clear description to explain the business purpose of the measure.,The naming convention is appropriate. No changes are needed.
+Trending,Issue,Qualified Pipeline Coverage to Forecast YoY,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline Coverage to Forecast PY],
+        FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        ROUND(CurrentVal, 2) - ROUND(PrevVal, 2)
+    )
+",Complex Calculation,Yes,No - The measure uses a unique calculation logic involving SELECTEDVALUE and CALCULATE with nested functions. No duplicates detected.,No - The measure does not align with standard enterprise measures like Total Sales Value or Gross Margin. It appears to be specific to the dataset.,No - The calculation logic is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure has a high complexity level due to its length (608 characters) and 15 nested functions, which may hinder user understanding.",Yes - The name reflects the calculation purpose and uses clear business terminology.,"No - The measure lacks a description, making it difficult for users to understand its business context.",Yes - The formula uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Tracks year-over-year comparison of Qualified Pipeline Coverage to Forecast values for trending analysis.,Simplify the calculation logic where possible and add a clear description to explain the business purpose of the measure.,The naming convention is appropriate. No changes are needed.
+Trending,Warning,CPC to Forecast Latest Week,"CALCULATE( [CPC to Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )",Simple Aggregation,Yes,No - The measure uses a unique calculation logic involving CALCULATE and KEEPFILTERS. No duplicates detected.,No - The measure does not align with standard enterprise measures like Total Sales Value or Gross Margin. It appears to be specific to the dataset.,"Yes - The calculation logic is straightforward and uses simple DAX functions. However, it lacks a description.",Low - The measure has a low complexity level due to its short length (89 characters) and only 2 nested functions.,Yes - The name reflects the calculation purpose and uses clear business terminology.,"No - The measure lacks a description, making it difficult for users to understand its business context.",Yes - The formula uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Tracks CPC to Forecast values for the latest week.,Add a clear description to explain the business purpose of the measure.,The naming convention is appropriate. No changes are needed.
+Trending,Warning,QPC to Budget KPI,"DIVIDE([Qualified Pipeline Coverage to Budget Latest Week],[Pipeline Target],BLANK())",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - This measure is specific to pipeline coverage and does not align with standard enterprise measures like Total Sales or Gross Margin.,"Yes - The formula uses DIVIDE with clear numerator and denominator, making the calculation logic straightforward.",Low - The formula is simple with only one nested function and no complex logic.,"Yes - The name clearly reflects the calculation and business purpose, aligning with naming standards.","No - No description is provided, which reduces clarity for business users.",Yes - The formula uses proper measure references without ambiguity.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Measures the ratio of qualified pipeline coverage to budget for the latest week.,Consider adding a description to explain the business context of the measure. Ensure alignment with enterprise standards if applicable.,The naming convention is appropriate; no changes are required.
+Trending,Warning,QPC to Forecast KPI,"DIVIDE([Qualified Pipeline Coverage to Forecast Latest Week],[Pipeline Target],BLANK())",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - This measure is specific to pipeline coverage and does not align with standard enterprise measures like Total Sales or Gross Margin.,"Yes - The formula uses DIVIDE with clear numerator and denominator, making the calculation logic straightforward.",Low - The formula is simple with only one nested function and no complex logic.,"Yes - The name clearly reflects the calculation and business purpose, aligning with naming standards.","No - No description is provided, which reduces clarity for business users.",Yes - The formula uses proper measure references without ambiguity.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Measures the ratio of qualified pipeline coverage to forecast for the latest week.,Consider adding a description to explain the business context of the measure. Ensure alignment with enterprise standards if applicable.,The naming convention is appropriate; no changes are required.
+Trending,Issue,Qualified Pipeline WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Qualified Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Qualified Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    CurrentVal - PrevVal
+",Complex Calculation,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - This measure is specific to week-over-week pipeline analysis and does not align with standard enterprise measures like Total Sales or Gross Margin.,"No - The formula is complex with multiple nested functions, making it harder to understand without detailed documentation.","High - The formula involves multiple variables, nested functions, and calculations, increasing its complexity.","Yes - The name clearly reflects the calculation and business purpose, aligning with naming standards.","No - No description is provided, which reduces clarity for business users.",Yes - The formula uses proper measure references without ambiguity.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Analyzes week-over-week changes in qualified pipeline values.,Simplify the formula if possible or provide detailed documentation to explain the calculation logic.,The naming convention is appropriate; no changes are required.
+Trending,Issue,Committed Pipeline WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Committed + Risk Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Committed + Risk Pipeline],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    CurrentVal - PrevVal
+",Complex Calculation,Yes,"No - The measure uses a unique calculation logic involving VAR definitions and SELECTEDVALUE, which is not duplicated elsewhere.","No - The measure does not align with standard business patterns like Total Sales, Gross Margin, or YoY Growth. It is specific to pipeline tracking.",No - The calculation logic is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure involves multiple nested functions, VAR definitions, and SELECTEDVALUE, making it highly complex.",Yes - The name clearly reflects the calculation purpose (Committed Pipeline Week-over-Week).,"No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The DAX formula uses fully qualified column references and consistent syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Tracks week-over-week changes in committed pipeline values.,Simplify the calculation logic where possible and add a clear description to explain the business purpose of the measure.,No changes needed as the naming convention is clear and descriptive.
+Trending,Critical,WW_Co-Sell Prioritized Partner Sharing, [Co-Sell Prioritized Partner Sharing %],Ratio Percentage,Yes,Yes - The measure directly references another measure ([Co-Sell Prioritized Partner Sharing %]) without adding any unique calculation logic.,No - The measure does not align with standard business patterns and appears to be redundant.,No - The measure lacks a description and does not provide any additional calculation logic beyond referencing another measure.,Low - The measure is simple as it only references another measure without any additional logic.,No - The name is somewhat descriptive but could be improved to better reflect the calculation purpose.,"No - The measure lacks a description, making it unclear for business users.",Yes - The DAX formula uses proper measure referencing syntax.,0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.450,0.300,0.600,Unclear due to lack of description and redundant calculation logic.,Remove or redefine the measure to add unique calculation logic or business value.,Improve the name to better reflect the calculation purpose and avoid redundancy.
+Trending,Warning,WW_Forecast VTB,"DIVIDE(CALCULATE ([Billed Forecast] - [Billed Budget],KEEPFILTERS('Trending Week'[Week Type] = ""Latest Week"")),1000)",Ratio Percentage,Yes,No - The measure uses a unique calculation logic involving DIVIDE and CALCULATE functions with filters.,Yes - The measure aligns with standard business patterns by calculating forecast variance to budget (VTB).,Yes - The calculation logic is straightforward and uses common business terms like Forecast and Budget.,Medium - The measure involves moderate complexity with nested functions and filtering logic.,Yes - The name clearly reflects the calculation purpose (Forecast Variance to Budget).,"No - The measure lacks a description, which would improve its clarity for business users.",Yes - The DAX formula uses proper column and measure referencing syntax.,0.200,0.200,0.300,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.850,0.700,1.000,Calculates forecast variance to budget for the latest week.,Add a description to improve clarity for business users.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,WW_Additional Pipeline Needed Latest Week,"DIVIDE([Additional Pipeline Needed Latest Week],1000)",Simple Aggregation,Yes,"Yes - The formula is identical to 'Trending.WW_Additional Pipeline Needed Forecast Latest Week' except for the referenced measure, which indicates redundancy in calculation logic.","No - The measure does not align with standard enterprise measures like Total Sales, Gross Margin, or YoY Growth.",No - The measure lacks a description and does not clearly explain its business purpose or calculation logic.,Low - The formula uses a simple DIVIDE function with no nested complexity.,"Yes - The name is descriptive and reflects the calculation purpose, though it could be improved for clarity.","No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The formula uses proper measure referencing without ambiguity.,0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.300,0.400,0.300,0.400,0.200,0.200,0.550,0.300,0.800,"Provides the additional pipeline needed for the latest week, scaled to thousands.",Consider consolidating similar measures to avoid redundancy and provide a clear description to explain the business purpose.,"Ensure the name reflects the calculation purpose more clearly, such as 'Additional_Pipeline_Needed_Latest_Week_in_Thousands'."
+Trending,Issue,WW_Additional Pipeline Needed Forecast Latest Week,"DIVIDE([Additional Pipeline Needed Forecast Latest Week],1000)",Simple Aggregation,Yes,"Yes - The formula is identical to 'Trending.WW_Additional Pipeline Needed Latest Week' except for the referenced measure, which indicates redundancy in calculation logic.","No - The measure does not align with standard enterprise measures like Total Sales, Gross Margin, or YoY Growth.",No - The measure lacks a description and does not clearly explain its business purpose or calculation logic.,Low - The formula uses a simple DIVIDE function with no nested complexity.,"Yes - The name is descriptive and reflects the calculation purpose, though it could be improved for clarity.","No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The formula uses proper measure referencing without ambiguity.,0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.300,0.400,0.300,0.400,0.200,0.200,0.550,0.300,0.800,"Provides the additional pipeline needed for the forecast of the latest week, scaled to thousands.",Consider consolidating similar measures to avoid redundancy and provide a clear description to explain the business purpose.,"Ensure the name reflects the calculation purpose more clearly, such as 'Additional_Pipeline_Needed_Forecast_Latest_Week_in_Thousands'."
+Trending,Warning,WW_SolutionAreaSelect," IF(ISFILTERED('Product'[Solution Area]),SELECTEDVALUE('Product'[Solution Area]),BLANK())",Calculated Measure,Yes,No - The measure uses a unique calculation logic involving conditional checks and dynamic selection.,No - The measure does not align with standard enterprise measures but serves a specific business purpose.,Yes - The calculation logic is clear and aligns with the business purpose of dynamically selecting a solution area.,"Medium - The formula involves multiple nested functions, but the complexity is appropriate for the business purpose.",Yes - The name is descriptive and reflects the calculation purpose.,"No - The measure lacks a description, which would help clarify its purpose further.",Yes - The formula uses proper column referencing and adheres to DAX standards.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Dynamically selects the solution area based on user interaction with the 'Product' table.,Provide a description to explain the business purpose of dynamically selecting a solution area.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,WW_SolutionAreaHeader," if(ISBLANK([WW_SolutionAreaSelect]),""All Up Business"",[WW_SolutionAreaSelect] & "" All Up"")",Calculated Measure,Yes,"No - The measure uses a unique DAX formula combining conditional logic and concatenation, which is not duplicated elsewhere.",No - This measure does not align with standard enterprise measures like Total Sales or YoY Growth. It serves a specific contextual purpose.,"No - The calculation logic involves conditional logic and concatenation, which may not be immediately clear to business users without documentation.","Low - The measure uses basic conditional logic (IF and ISBLANK) and concatenation, which are straightforward.",No - The name does not clearly describe the calculation or business purpose. It could be improved to reflect its function more explicitly.,"No - The measure lacks a description, which makes it harder for users to understand its purpose and calculation logic.",Yes - The measure uses proper DAX syntax and references columns and measures correctly.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.550,0.500,0.600,"Provides a display-friendly header for solution areas, combining user selection with default values.",Add a description to explain the business purpose and calculation logic. Consider whether this measure could be generalized or standardized for broader use.,"Rename the measure to better reflect its purpose, such as 'Solution Area Header Display'."
+Trending,Warning,WW_SolutionAreaBackgroundColour," SWITCH(SELECTEDVALUE('Product'[Solution Area]),""Modern Work"",1
+,""Business Applications"",2
+,""Applications and Infrastructure"",3
+,""Data and AI"",4,0)",Calculated Measure,Yes,No - The measure uses a unique SWITCH function to assign background colors based on solution areas.,No - This measure is specific to visual formatting and does not align with standard enterprise measures.,"Yes - The logic is straightforward, using a SWITCH function to map solution areas to numeric values.","Low - The measure uses basic conditional logic with a single SWITCH function, making it simple to understand.",Yes - The name clearly reflects the measure's purpose of assigning background colors based on solution areas.,"No - The measure lacks a description, which would help clarify its purpose and usage.",Yes - The measure uses proper DAX syntax and references columns correctly.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,"Assigns numeric values for background colors based on solution areas, supporting visual formatting in reports.",Add a description to explain the business purpose and calculation logic.,No changes needed; the name is clear and descriptive.
+Trending,Good,WW_QPC KPI,"
+DIVIDE (
+    [Qualified Pipeline Coverage to Budget Latest Week],
+    [Pipeline Target],
+    """"
+)",Ratio Percentage,Yes,"No - The measure uses a unique DIVIDE function to calculate a KPI ratio, which is not duplicated elsewhere.","Yes - This measure aligns with standard enterprise KPIs, providing a ratio-based performance metric.","Yes - The calculation logic is straightforward, dividing two measures to produce a KPI ratio.","Low - The measure uses a single DIVIDE function, making it simple and efficient.",Yes - The name clearly reflects the measure's purpose as a KPI for Qualified Pipeline Coverage.,"No - The measure lacks a description, which would help clarify its purpose and usage.",Yes - The measure uses proper DAX syntax and references measures correctly.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,"Provides a KPI for Qualified Pipeline Coverage relative to the Pipeline Target, supporting performance tracking.",Add a description to explain the business purpose and calculation logic.,No changes needed; the name is clear and descriptive.
+Trending,Issue,WW_QPC KPI Icon," 
+var perfQPC = [WW_QPC KPI]
+RETURN
+SWITCH( TRUE()
+                    , perfQPC >= 0.995 && perfQPC < 100, 1
+                    , perfQPC >= 0.895 && perfQPC < 0.995,2
+                    , perfQPC > 0 && perfQPC < 0.895, 3
+)",Complex Calculation,Yes,"No - The measure uses a SWITCH function with specific thresholds, which is unique to its purpose.",No - This measure does not align with standard enterprise measures like Total Sales or Gross Margin. It is more specific to a KPI icon logic.,No - The calculation logic is not intuitive without a description or explanation of the thresholds and their business meaning.,"Medium - The measure uses nested functions and a SWITCH statement, which adds moderate complexity but is manageable.",No - The name does not clearly describe the calculation logic or business purpose. 'KPI Icon' is vague.,"No - The measure lacks a description, making it difficult to understand its business purpose.","Yes - The measure uses proper references for other measures (e.g., [WW_QPC KPI]).",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.500,0.400,0.600,Provides a visual indicator for performance based on predefined thresholds.,Add a description explaining the thresholds and their business significance. Consider simplifying the logic if possible.,"Rename the measure to something more descriptive, such as 'WW_QPC_Performance_Icon'."
+Trending,Issue,WW_CPC Check Icon," 
+var cpcVar = [CPC to Budget Latest Week]
+RETURN
+SWITCH( TRUE(),
+                        cpcVar >= 0.995, 1,
+                        cpcVar >= 0.895 && cpcVar < 0.995 , 2, 
+                        cpcVar < 0.895 && cpcVar<>0, 3
+)",Complex Calculation,Yes,"No - The measure uses a SWITCH function with specific thresholds, which is unique to its purpose.",No - This measure does not align with standard enterprise measures like Total Sales or Gross Margin. It is more specific to a KPI icon logic.,No - The calculation logic is not intuitive without a description or explanation of the thresholds and their business meaning.,"Medium - The measure uses nested functions and a SWITCH statement, which adds moderate complexity but is manageable.",No - The name does not clearly describe the calculation logic or business purpose. 'Check Icon' is vague.,"No - The measure lacks a description, making it difficult to understand its business purpose.","Yes - The measure uses proper references for other measures (e.g., [CPC to Budget Latest Week]).",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.500,0.400,0.600,Provides a visual indicator for performance based on predefined thresholds.,Add a description explaining the thresholds and their business significance. Consider simplifying the logic if possible.,"Rename the measure to something more descriptive, such as 'WW_CPC_Performance_Icon'."
+Trending,Critical,WW_QPAT60 KPI,"
+DIVIDE ( [Qualified Pipeline in High Stage Latest Week], [Formats], """" )",Ratio Percentage,Yes,"No - The measure uses a DIVIDE function, which is unique to its purpose.",No - This measure does not align with standard enterprise measures like Total Sales or Gross Margin. It is specific to pipeline metrics.,No - The calculation logic is not intuitive without a description or explanation of the numerator and denominator.,"Low - The measure uses a simple DIVIDE function, which is straightforward.",No - The name does not clearly describe the calculation logic or business purpose. 'QPAT60 KPI' is cryptic.,"No - The measure lacks a description, making it difficult to understand its business purpose.","Yes - The measure uses proper references for other measures (e.g., [Qualified Pipeline in High Stage Latest Week]).",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.100,0.400,0.000,0.400,0.200,0.200,0.300,0.300,0.300,Calculates the percentage of qualified pipeline in high stages.,Add a description explaining the numerator and denominator and their business significance.,"Rename the measure to something more descriptive, such as 'Qualified_Pipeline_Percentage_High_Stage'."
+Trending,Warning,Close Plan Attach Latest Week,"CALCULATE([Qualified Pipeline with Close Plan Attach],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Calculated Measure,Yes,No - The measure uses a unique calculation logic involving filtering by 'Latest Week' and referencing another measure.,No - The measure is specific to the dataset and does not align with standard enterprise measures like Total Sales or Gross Margin.,No - The calculation logic is not immediately clear without a description or business context.,Low - The measure uses basic DAX functions (CALCULATE and KEEPFILTERS) and is straightforward.,Yes - The name reflects the calculation logic and business purpose clearly.,"No - The measure lacks a description, making it harder for business users to understand its purpose.",Yes - The measure uses fully qualified column references and unqualified measure references appropriately.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Tracks pipeline with close plan attached for the latest week.,Add a description to explain the business purpose of the measure. Consider aligning the measure with enterprise standards if applicable.,No changes needed; the naming convention is clear and descriptive.
+Trending,Issue,WW_QPCForecast KPI Icon," 
+var perfQPC = [WW_QPCForecast KPI]
+RETURN
+IF([GreyOutSelect] = 0,
+SWITCH( TRUE()
+                    , perfQPC >= 0.995 && perfQPC < 100, 1
+                    , perfQPC >= 0.895 && perfQPC < 0.995,2
+                    , perfQPC > 0 && perfQPC < 0.895, 3
+),4)",Complex Calculation,Yes,No - The measure uses a unique calculation logic involving a SWITCH statement and variable assignment.,No - The measure is specific to the dataset and does not align with standard enterprise measures.,No - The calculation logic is complex and lacks a description to explain its purpose.,"Medium - The measure uses nested functions and variable assignment, making it moderately complex.",Yes - The name reflects the calculation logic and business purpose clearly.,"No - The measure lacks a description, making it harder for business users to understand its purpose.",Yes - The measure uses fully qualified column references and unqualified measure references appropriately.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Provides KPI icons based on forecast performance.,Add a description to explain the business purpose of the measure. Simplify the logic if possible to improve readability.,No changes needed; the naming convention is clear and descriptive.
+Trending,Issue,WW_CPCForecast Check Icon," 
+var cpcVar = [CPC to Forecast Latest Week]
+RETURN
+IF([GreyOutSelect] = 0,
+SWITCH( TRUE(),
+                        cpcVar >= 0.995, 1,
+                        cpcVar >= 0.895 && cpcVar < 0.995 , 2, 
+                        cpcVar < 0.895 && cpcVar<>0, 3
+),4)",Complex Calculation,Yes,No - The measure uses a unique calculation logic involving a SWITCH statement and variable assignment.,No - The measure is specific to the dataset and does not align with standard enterprise measures.,No - The calculation logic is complex and lacks a description to explain its purpose.,"Medium - The measure uses nested functions and variable assignment, making it moderately complex.",Yes - The name reflects the calculation logic and business purpose clearly.,"No - The measure lacks a description, making it harder for business users to understand its purpose.",Yes - The measure uses fully qualified column references and unqualified measure references appropriately.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Provides check icons based on CPC forecast performance.,Add a description to explain the business purpose of the measure. Simplify the logic if possible to improve readability.,No changes needed; the naming convention is clear and descriptive.
+Trending,Issue,WW_QPCForecast KPI,"
+DIVIDE (
+    [Qualified Pipeline Coverage to Forecast Latest Week],
+    [Pipeline Target],
+    """"
+)",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - The measure does not align with common enterprise standards like Total Sales or YoY Growth.,"No - The calculation logic is not explained in business terms, and the description is missing.","Low - The formula uses a simple DIVIDE function with no nested logic, making it straightforward.",No - The name is cryptic and does not clearly describe the calculation or business purpose.,"No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The formula uses proper measure references and does not violate DAX referencing standards.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.450,0.500,0.400,Tracks the ratio of pipeline coverage to forecast for the latest week.,Add a clear description explaining the business purpose of the measure. Consider aligning the measure with enterprise standards if applicable.,"Rename the measure to something more descriptive, such as 'Pipeline Coverage Forecast KPI'."
+Trending,Warning,Total DBF Latest Week,"CALCULATE([Total DBF],KEEPFILTERS('Trending Week'[Week Type] = ""Latest Week""),ALL('Trending Week'))",Time Intelligence,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,Yes - The measure aligns with enterprise standards as it calculates a total value for a specific time period.,"No - The description is missing, making it harder for business users to understand the calculation logic.","Medium - The formula uses CALCULATE with multiple filters and ALL, making it moderately complex.",Yes - The name is descriptive and clearly reflects the calculation purpose.,"No - The measure lacks a description, which reduces its accessibility for business users.",Yes - The formula uses proper DAX syntax and references.,0.200,0.200,0.300,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.850,0.700,1.000,Calculates the total DBF value for the latest week.,Add a clear description explaining the business purpose and calculation logic.,No changes needed; the name is already descriptive and business-focused.
+Trending,Issue,DBF VTB $ Latest Week,"VAR X = CALCULATE([Total DBF] - [Billed Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ),ALL('Trending Week') )
+
+RETURN IFERROR(X,BLANK())",Complex Calculation,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - The measure does not align with enterprise standards and appears to be ad-hoc.,"No - The description is missing, and the formula uses a variable and IFERROR, which may confuse business users.","High - The formula uses nested logic with VAR, CALCULATE, KEEPFILTERS, and IFERROR, making it complex.",Yes - The name is descriptive and clearly reflects the calculation purpose.,"No - The measure lacks a description, which reduces its accessibility for business users.",Yes - The formula uses proper DAX syntax and references.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Calculates the variance to budget for DBF in the latest week.,Simplify the formula if possible and add a clear description explaining the business purpose and calculation logic.,No changes needed; the name is already descriptive and business-focused.
+Trending,Issue,Co-Sell Prioritized Partner Sharing %,"DIVIDE (
+    CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[Cosell_Num] > 0, Trending[OpportunityID] <> ""NA""),
+    CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[Cosell_Den] > 0, Trending[OpportunityID] <> ""NA"")
+,BLANK()
+)",Ratio Percentage,Yes,No - The measure has a unique calculation logic involving DISTINCTCOUNT and CALCULATE with specific filters applied.,No - The measure does not align with standard business patterns like Total Sales or Gross Margin. It is specific to the business context of partner sharing.,No - The calculation logic is complex with nested functions and lacks a description to explain its purpose in business terms.,"High - The measure uses multiple nested functions and filters, making it difficult to understand without additional documentation.","Yes - The name is descriptive and reflects the calculation purpose, which is related to Co-Sell Prioritized Partner Sharing.","No - The measure lacks a description, which makes it harder for business users to understand its purpose.",Yes - The measure uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Calculate the percentage of opportunities with prioritized partner sharing.,Simplify the calculation logic if possible and provide a clear description in business terms to improve accessibility for users.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,Partner Sharing %,"
+    DIVIDE (
+        CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[PartnerSharing_Num] > 0, Trending[OpportunityID] <> ""NA"" ),
+        CALCULATE(DISTINCTCOUNT(Trending[OpportunityID]), Trending[PartnerSharing_Den] > 0, Trending[OpportunityID] <> ""NA""),
+        BLANK()
+    )",Ratio Percentage,Yes,No - The measure has a unique calculation logic involving DISTINCTCOUNT and CALCULATE with specific filters applied.,No - The measure does not align with standard business patterns like Total Sales or Gross Margin. It is specific to the business context of partner sharing.,"No - The calculation logic is complex with nested functions and filters, making it difficult to understand without additional documentation.","High - The measure uses multiple nested functions and filters, making it difficult to understand without additional documentation.","Yes - The name is descriptive and reflects the calculation purpose, which is related to Partner Sharing.","No - The measure lacks a description, which makes it harder for business users to understand its purpose.",Yes - The measure uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Calculate the percentage of opportunities with partner sharing.,Simplify the calculation logic if possible and provide a clear description in business terms to improve accessibility for users.,The naming convention is appropriate; no changes are needed.
+Trending,Warning,DBF VTF $ Latest Week,"VAR X = CALCULATE([Total DBF] - [Billed Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) ,ALL('Trending Week'))
+
+RETURN IFERROR(X,BLANK())",Calculated Measure,Yes,"No - The measure has a unique calculation logic using VAR and IFERROR functions, which is not duplicated elsewhere.","Yes - The measure aligns with standard business patterns, as it calculates a financial metric for the latest week.",Yes - The calculation logic is relatively straightforward and uses clear DAX functions like VAR and IFERROR.,"Medium - The measure uses intermediate DAX functions like VAR and IFERROR, which are appropriate for the business purpose.","Yes - The name is descriptive and clearly reflects the calculation purpose, which is related to DBF and VTF for the latest week.","No - The measure lacks a description, which makes it harder for business users to understand its purpose.",Yes - The measure uses fully qualified column references and adheres to DAX standards.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Calculate the difference between Total DBF and Billed Forecast for the latest week.,Provide a clear description in business terms to improve accessibility for users.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,WW_DBF VTB $," DIVIDE([DBF VTB $ Latest Week],1000,BLANK())",Ratio Percentage,Yes,"Yes - The measure has the same formula as 'Trending.WW_DBF VTF $', which indicates duplication without clear differentiation in business purpose.","No - The measure does not align with standard enterprise measures like Total Sales Value, Gross Margin, or YoY Growth.","No - The calculation logic is not explained in business terms, and the measure name does not clarify the purpose of dividing by 1000.","Low - The formula uses basic DAX functions (DIVIDE) with minimal nesting, making it straightforward.","No - The name includes abbreviations ('DBF', 'VTB') that are not self-explanatory and lack business context.","No - The measure lacks a description, which makes it difficult for business users to understand its purpose.","Yes - The measure uses unqualified references for measures, which is consistent with DAX standards.",0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.350,0.300,0.400,Represents the DBF VTB value scaled to billions for the latest week.,Avoid duplication of measure definitions unless they serve distinct business purposes. Provide a clear description explaining the business logic behind dividing by 1000.,"Rename the measure to a more descriptive and business-focused name, avoiding abbreviations. For example, 'DBF VTB $' could be renamed to 'Weekly DBF Value to Billions'."
+Trending,Issue,WW_DBF VTF $," DIVIDE([DBF VTF $ Latest Week],1000,BLANK())",Ratio Percentage,Yes,"Yes - The measure has the same formula as 'Trending.WW_DBF VTB $', which indicates duplication without clear differentiation in business purpose.","No - The measure does not align with standard enterprise measures like Total Sales Value, Gross Margin, or YoY Growth.","No - The calculation logic is not explained in business terms, and the measure name does not clarify the purpose of dividing by 1000.","Low - The formula uses basic DAX functions (DIVIDE) with minimal nesting, making it straightforward.","No - The name includes abbreviations ('DBF', 'VTF') that are not self-explanatory and lack business context.","No - The measure lacks a description, which makes it difficult for business users to understand its purpose.","Yes - The measure uses unqualified references for measures, which is consistent with DAX standards.",0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.350,0.300,0.400,Represents the DBF VTF value scaled to billions for the latest week.,Avoid duplication of measure definitions unless they serve distinct business purposes. Provide a clear description explaining the business logic behind dividing by 1000.,"Rename the measure to a more descriptive and business-focused name, avoiding abbreviations. For example, 'DBF VTF $' could be renamed to 'Weekly DBF Value to Forecast'."
+Trending,Warning,Uncommitted Upside Pipeline Latest Week,"CALCULATE([Uncommitted Upside Pipeline],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Calculated Measure,Yes,No - The measure has a unique formula that filters the 'Trending Week' table for 'Latest Week'.,Yes - The measure aligns with standard business patterns by providing a filtered view of pipeline data for the latest week.,Yes - The calculation logic is clear and uses business terms like 'Latest Week' and 'Uncommitted Upside Pipeline'.,"Medium - The formula uses CALCULATE and KEEPFILTERS, which adds moderate complexity but is appropriate for the business purpose.","Yes - The name is descriptive, clear, and aligns with the measure's calculation logic.","No - The measure lacks a description, which could improve its clarity for business users.","Yes - The measure uses fully qualified references for columns and unqualified references for measures, adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Provides the uncommitted upside pipeline value filtered for the latest week.,Ensure the measure has a description to explain its business purpose and calculation logic in plain terms.,No changes needed; the name is already clear and descriptive.
+Trending,Warning,Uncommitted Pipeline Latest Week,"CALCULATE([Uncommitted Pipeline],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Simple Aggregation,Yes,No - The measure has a unique definition that filters 'Trending Week'[Week Type] to 'Latest Week' and calculates [Uncommitted Pipeline]. No duplicates detected.,No - The measure is specific to the 'Latest Week' context and does not align with standard enterprise measures like Total Sales or YoY Growth.,"Yes - The calculation logic is straightforward, using CALCULATE with KEEPFILTERS to apply a filter for 'Latest Week'.",Low - The measure uses simple DAX functions (CALCULATE and KEEPFILTERS) and is easy to understand.,Yes - The name clearly reflects the calculation and business context ('Uncommitted Pipeline' for 'Latest Week').,"No - The measure lacks a description, which reduces clarity for business users.","Yes - The measure uses fully qualified column references ('Trending Week'[Week Type]) and unqualified measure references ([Uncommitted Pipeline]), adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,"Provides the uncommitted pipeline value for the latest week, supporting trend analysis.",Consider adding a description to explain the business context of the measure. Ensure alignment with enterprise standards if applicable.,No changes needed as the naming convention is clear and descriptive.
+Trending,Warning,Qualified Pipeline in High Stage Latest Week,"CALCULATE([Qualified Pipeline in High Stage],KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ))",Simple Aggregation,Yes,No - The measure has a unique definition that filters 'Trending Week'[Week Type] to 'Latest Week' and calculates [Qualified Pipeline in High Stage]. No duplicates detected.,No - The measure is specific to the 'Latest Week' context and does not align with standard enterprise measures like Total Sales or YoY Growth.,"Yes - The calculation logic is straightforward, using CALCULATE with KEEPFILTERS to apply a filter for 'Latest Week'.",Low - The measure uses simple DAX functions (CALCULATE and KEEPFILTERS) and is easy to understand.,Yes - The name clearly reflects the calculation and business context ('Qualified Pipeline in High Stage' for 'Latest Week').,"No - The measure lacks a description, which reduces clarity for business users.","Yes - The measure uses fully qualified column references ('Trending Week'[Week Type]) and unqualified measure references ([Qualified Pipeline in High Stage]), adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,"Provides the qualified pipeline value in high stage for the latest week, supporting trend analysis.",Consider adding a description to explain the business context of the measure. Ensure alignment with enterprise standards if applicable.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,Qualified Pipeline in High Stage MoM,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR A = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+)
+
+VAR B = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevMonthKey)
+)
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",Time Intelligence,Yes,No - The measure has a unique definition involving multiple variables and calculations for Month-over-Month comparison. No duplicates detected.,Yes - The measure aligns with standard business patterns for Month-over-Month growth analysis.,"No - The calculation logic is complex, involving multiple variables and nested functions, which may be difficult for business users to understand.","High - The measure uses 13 nested functions and multiple variables, making it highly complex.",Yes - The name clearly reflects the calculation and business context ('Qualified Pipeline in High Stage' for 'MoM').,"No - The measure lacks a description, which reduces clarity for business users.","Yes - The measure uses fully qualified column references ('Trending Week'[DatasetVersionKey]) and unqualified measure references ([Qualified Pipeline in High Stage]), adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.800,0.600,1.000,"Provides Month-over-Month comparison for qualified pipeline in high stage, supporting trend analysis.",Simplify the calculation logic if possible or provide detailed documentation to explain the measure's purpose and calculation steps.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,Qualified Pipeline in High Stage WoW,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR A = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = SelectedKey)
+)
+
+VAR B = CALCULATE(
+    [Qualified Pipeline in High Stage],
+    FILTER(ALL('Trending Week'), 'Trending Week'[DatasetVersionKey] = PrevWeekKey)
+)
+
+VAR X = ROUND(A, 2)
+VAR Y = ROUND(B, 2)
+
+RETURN IF(OR(X <= 0, Y <= 0), BLANK(), X - Y)
+",Complex Calculation,Yes,No - The measure uses a unique calculation logic involving week-over-week comparison with nested functions.,No - The measure does not align with standard enterprise measures like Total Sales or Gross Margin.,No - The calculation logic is complex and lacks a description to explain its business purpose.,High - The measure has a high complexity level with 13 nested functions and a lengthy formula.,Yes - The name reflects the calculation purpose and includes business-relevant terms like 'Qualified Pipeline' and 'WoW'.,"No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The measure uses fully qualified column references and proper DAX syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Provides week-over-week comparison of qualified pipeline in high stages.,Simplify the calculation logic where possible and add a clear description to explain the business purpose of the measure.,The naming convention is appropriate; ensure consistency across similar measures.
+Trending,Warning,WW_Upside Pipeline Latest Week," DIVIDE([Uncommitted Upside Pipeline Latest Week], 1000, BLANK())",Simple Aggregation,Yes,No - The measure uses a unique calculation logic to divide pipeline values by 1000.,Yes - The measure aligns with standard business patterns for pipeline reporting.,Yes - The calculation logic is simple and easy to understand.,Low - The measure has low complexity with only two nested functions.,Yes - The name clearly reflects the calculation and business purpose.,"No - The measure lacks a description, which would improve its clarity for business users.",Yes - The measure uses proper DAX syntax and references.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Provides the latest week's upside pipeline value in thousands.,No changes needed for calculation logic; consider adding a description for clarity.,The naming convention is appropriate; ensure consistency across similar measures.
+Trending,Issue,DBF VTF WoW,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",Complex Calculation,Yes,No - The measure uses a unique calculation logic involving week-over-week comparison with nested functions.,No - The measure does not align with standard enterprise measures like Total Sales or Gross Margin.,No - The calculation logic is complex and lacks a description to explain its business purpose.,High - The measure has a high complexity level with 13 nested functions and a lengthy formula.,"Yes - The name reflects the calculation purpose and includes business-relevant terms like 'DBF', 'VTF', and 'WoW'.","No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The measure uses fully qualified column references and proper DAX syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Provides week-over-week comparison of DBF and VTF values.,Simplify the calculation logic where possible and add a clear description to explain the business purpose of the measure.,The naming convention is appropriate; ensure consistency across similar measures.
+Trending,Issue,DBF VTF MoM,"VAR SelectedKey = 
+    SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevMonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Forecast],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevMonthKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",Time Intelligence,Yes,"Yes - The formula is highly similar to other measures (Trending.DBF VTB MoM and Trending.DBF VTB WoW), differing only in the time offset logic (month vs week). This could lead to redundancy.","No - The measure does not align with predefined enterprise standards like Total Sales Value, Gross Margin, or YoY Growth. It appears to be ad-hoc for specific trending analysis.","No - The calculation logic is complex, with nested functions and no description provided to explain the business purpose or calculation methodology.","High - The measure uses 13 nested functions and spans 668 characters, making it difficult to interpret and maintain.","No - The name 'Trending.DBF VTF MoM' uses abbreviations (e.g., VTF, MoM) that are not self-explanatory and may confuse business users.","No - No description is provided, leaving the business purpose and calculation logic unclear.","Yes - The measure uses fully qualified column references (e.g., 'Trending Week'[DatasetVersionKey]) and unqualified measure references, adhering to DAX standards.",0.000,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.250,0.100,0.400,Tracks month-over-month changes in DBF values for trending analysis.,Consider consolidating similar measures into a single parameterized measure to reduce redundancy. Provide a clear description explaining the business purpose and calculation logic.,"Rename the measure to a more descriptive name, avoiding abbreviations. For example, 'Month_Over_Month_Trending_DBF'."
+Trending,Issue,DBF VTB WoW,"VAR SelectedKey = 
+        SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevWeekKey = SelectedKey - 1
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevWeekKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",Time Intelligence,Yes,"Yes - The formula is highly similar to other measures (Trending.DBF VTF MoM and Trending.DBF VTB MoM), differing only in the time offset logic (week vs month). This could lead to redundancy.","No - The measure does not align with predefined enterprise standards like Total Sales Value, Gross Margin, or YoY Growth. It appears to be ad-hoc for specific trending analysis.","No - The calculation logic is complex, with nested functions and no description provided to explain the business purpose or calculation methodology.","High - The measure uses 13 nested functions and spans 666 characters, making it difficult to interpret and maintain.","No - The name 'Trending.DBF VTB WoW' uses abbreviations (e.g., VTB, WoW) that are not self-explanatory and may confuse business users.","No - No description is provided, leaving the business purpose and calculation logic unclear.","Yes - The measure uses fully qualified column references (e.g., 'Trending Week'[DatasetVersionKey]) and unqualified measure references, adhering to DAX standards.",0.000,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.250,0.100,0.400,Tracks week-over-week changes in DBF values for trending analysis.,Consider consolidating similar measures into a single parameterized measure to reduce redundancy. Provide a clear description explaining the business purpose and calculation logic.,"Rename the measure to a more descriptive name, avoiding abbreviations. For example, 'Week_Over_Week_Trending_DBF'."
+Trending,Issue,DBF VTB MoM,"VAR SelectedKey = 
+        SELECTEDVALUE('Trending Week'[DatasetVersionKey], MAX('Trending Week'[DatasetVersionKey]))
+VAR PrevmonthKey = SelectedKey - 4
+
+VAR CurrentVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = SelectedKey
+        )
+    )
+
+VAR PrevVal =
+    CALCULATE(
+        [Total DBF] - [Billed Budget],
+        FILTER(
+            ALL('Trending Week'),
+            'Trending Week'[DatasetVersionKey] = PrevmonthKey
+        )
+    )
+
+RETURN
+    IF(
+        OR(ISBLANK(CurrentVal), ISBLANK(PrevVal)),
+        BLANK(),
+        CurrentVal - PrevVal
+    )
+",Time Intelligence,Yes,"Yes - The formula is highly similar to other measures (Trending.DBF VTF MoM and Trending.DBF VTB WoW), differing only in the time offset logic (month vs week). This could lead to redundancy.","No - The measure does not align with predefined enterprise standards like Total Sales Value, Gross Margin, or YoY Growth. It appears to be ad-hoc for specific trending analysis.","No - The calculation logic is complex, with nested functions and no description provided to explain the business purpose or calculation methodology.","High - The measure uses 13 nested functions and spans 668 characters, making it difficult to interpret and maintain.","No - The name 'Trending.DBF VTB MoM' uses abbreviations (e.g., VTB, MoM) that are not self-explanatory and may confuse business users.","No - No description is provided, leaving the business purpose and calculation logic unclear.","Yes - The measure uses fully qualified column references (e.g., 'Trending Week'[DatasetVersionKey]) and unqualified measure references, adhering to DAX standards.",0.000,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.250,0.100,0.400,Tracks month-over-month changes in DBF values for trending analysis.,Consider consolidating similar measures into a single parameterized measure to reduce redundancy. Provide a clear description explaining the business purpose and calculation logic.,"Rename the measure to a more descriptive name, avoiding abbreviations. For example, 'Month_Over_Month_Trending_DBF'."
+Trending,Issue,DBF YoY," 
+VAR  A = CALCULATE(
+    SUM( 'PY Trending'[Actual Billed Revenue] ) + SUM( 'PY Trending'[Scheduled Billed Revenue] ) + SUM( 'PY Trending'[CommittedPipeline] ) + SUM( 'PY Trending'[CommittedatRiskPipeline] ) + SUM( 'PY Trending'[Run Rate Projections] )
+    , KEEPFILTERS( 'Trending Week'[Snapshot Week] = ""PY"" )
+)
+RETURN IFERROR([Total DBF Latest Week] - A,BLANK())",Complex Calculation,Yes,No - The measure's formula is unique and combines multiple fields from the 'PY Trending' table. No duplicates detected.,No - The measure does not align with standard business patterns like Total Sales Value or Gross Margin. It appears to be a custom calculation.,"No - The formula is complex and lacks a description, making it difficult for business users to understand its purpose.","High - The formula is lengthy (366 characters) and contains 9 nested functions, which increases its complexity and reduces readability.",No - The name 'Trending.DBF YoY' is not descriptive enough to explain the calculation logic or business purpose.,"No - The measure lacks a description, which is critical for explaining its business purpose and calculation logic.","Yes - The formula uses fully qualified column references (e.g., 'PY Trending'[Actual Billed Revenue]), adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.100,0.400,0.100,0.400,0.200,0.200,0.350,0.300,0.400,Tracks year-over-year billed revenue trends by combining multiple revenue-related fields.,Simplify the formula to reduce complexity and improve readability. Add a clear description explaining the business purpose and calculation logic.,"Rename the measure to something more descriptive, such as 'Year_Over_Year_Billed_Revenue_Trending'."
+Trending,Critical,Additional Pipeline Needed Base,"VAR  A =( [Pipeline Target] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+    
+
+RETURN IFERROR(A,0)",Complex Calculation,Yes,No - The formula is unique and does not duplicate other measures.,No - The measure does not align with standard business patterns and appears to be a custom calculation.,"No - The formula is complex and lacks a description, making it difficult for business users to understand its purpose.","High - The formula is lengthy (241 characters) and contains 8 nested functions, which increases complexity and reduces readability.",No - The name 'Trending.Additional Pipeline Needed Base' is vague and does not clearly describe the calculation logic or business purpose.,"No - The measure lacks a description, which is critical for explaining its business purpose and calculation logic.","Yes - The formula uses fully qualified column references (e.g., 'Trending'[ActualBilledRevenue]), adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.100,0.400,0.100,0.400,0.200,0.200,0.350,0.300,0.400,Calculates the additional pipeline needed based on billed budget and pipeline targets.,Simplify the formula to reduce complexity and improve readability. Add a clear description explaining the business purpose and calculation logic.,"Rename the measure to something more descriptive, such as 'Base_Additional_Pipeline_Needed'."
+Trending,Warning,Committed + Risk Pipeline,SUM(Trending[CommittedPipeline]) + SUM(Trending[CommittedatRiskPipeline]),Simple Aggregation,Yes,No - The formula is unique and does not duplicate other measures.,Yes - The measure aligns with standard business patterns by summing committed and risk pipeline values.,"Yes - The formula is simple and straightforward, making it easy for business users to understand.","Low - The formula is short (73 characters) and contains only 2 nested functions, making it simple and appropriate for its purpose.","Yes - The name 'Trending.Committed + Risk Pipeline' is clear and descriptive, accurately reflecting the calculation logic.","No - The measure lacks a description, which could further enhance its clarity and usability.","Yes - The formula uses fully qualified column references (e.g., 'Trending'[CommittedPipeline]), adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Tracks the total committed and risk pipeline for revenue forecasting.,Add a description to further clarify the business purpose of the measure.,No changes needed as the name is already clear and descriptive.
+Trending,Issue,CPC to Budget Latest Week KPI,[CPC to Budget Latest Week] * 100,Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - This measure does not align with standard enterprise measures like Total Sales or Gross Margin.,No - The calculation logic is simple but lacks a description to explain its business purpose.,Low - The formula is straightforward with no nested functions and minimal complexity.,No - The name is somewhat descriptive but could be improved for clarity and alignment with business terminology.,"No - The measure lacks a description, making it difficult to understand its business purpose.",Yes - The DAX formula uses proper measure referencing syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.550,0.500,0.600,Tracks the percentage of CPC to budget for the latest week.,Add a description to explain the business purpose of the measure. Consider aligning the measure with enterprise standards if applicable.,"Rename the measure to better reflect its calculation and business purpose, avoiding abbreviations and cryptic labels."
+Trending,Warning,Total DBF,SUM(Trending[ActualBilledRevenue]) + SUM(Trending[ScheduledBilledRevenue]) + SUM(Trending[CommittedPipeline]) + SUM(Trending[CommittedatRiskPipeline]) + SUM(Trending[RunRateProjections]) ,Simple Aggregation,Yes,No - The formula is unique and aggregates multiple revenue-related fields.,Yes - The measure aligns with enterprise standards for total revenue aggregation.,No - The calculation logic is complex and lacks a description to explain its business purpose.,"High - The formula involves multiple nested functions and aggregates, making it complex.",Yes - The name is descriptive and aligns with the calculation logic.,"No - The measure lacks a description, making it difficult to understand its business purpose.",Yes - The DAX formula uses proper table and column referencing syntax.,0.200,0.200,0.300,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.850,0.700,1.000,Aggregates various revenue-related fields to calculate total DBF.,Add a description to explain the business purpose of the measure. Simplify the formula if possible to improve readability.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,Billed Budget,"SUMX(
+    VALUES('Trending Week'[Week Name]),
+    CALCULATE(SUM('Budget'[BilledBudget]))
+)
+",Time Intelligence,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - This measure does not align with standard enterprise measures like Total Sales or Gross Margin.,No - The calculation logic is moderately complex and lacks a description to explain its business purpose.,"Medium - The formula involves nested functions and cross-table calculations, making it moderately complex.",Yes - The name is descriptive and aligns with the calculation logic.,"No - The measure lacks a description, making it difficult to understand its business purpose.",Yes - The DAX formula uses proper table and column referencing syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Calculates the billed budget across weeks.,Add a description to explain the business purpose of the measure. Consider simplifying the formula if possible.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,Billed Forecast,"SUMX(
+    VALUES('Trending Week'[Week Name]),
+    CALCULATE(SUM('CFO Forecast'[BilledForecast]))
+)
+",Complex Calculation,Yes,"No - The measure uses a unique SUMX calculation with nested CALCULATE and SUM functions, which is not duplicated elsewhere.",No - The measure does not align with predefined enterprise standards like Total Sales Value or Gross Margin.,No - The calculation logic is complex due to nested functions and lacks a description to explain its purpose in business terms.,"Medium - The measure uses SUMX with nested CALCULATE and SUM functions, which adds moderate complexity but is manageable.",Yes - The name 'Trending.Billed Forecast' is descriptive and aligns with the calculation logic.,"No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The measure uses fully qualified column references and consistent DAX syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Provides forecasted billed amounts for trending weeks.,Add a clear description to explain the business purpose of the measure. Consider simplifying the logic if possible.,The naming convention is appropriate; no changes are needed.
+Trending,Warning,Qualified Pipeline,SUM(Trending[QualifiedPipeline]) ,Simple Aggregation,Yes,No - The measure uses a simple SUM function and does not duplicate other measures.,Yes - The measure aligns with enterprise standards as it represents a key business metric (Qualified Pipeline).,Yes - The calculation logic is straightforward and easy to understand.,"Low - The measure uses a simple SUM function, making it easy to interpret and use.",Yes - The name 'Trending.Qualified Pipeline' is descriptive and aligns with the calculation logic.,"No - The measure lacks a description, which would improve its usability for business users.",Yes - The measure uses fully qualified column references and consistent DAX syntax.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Represents the total qualified pipeline for trending analysis.,Add a description to explain the business purpose of the measure.,The naming convention is appropriate; no changes are needed.
+Trending,Issue,STU Owned Pipeline Base,"
+DIVIDE (
+    SUM ( Trending[QualifiedPipelineSTU] ),
+    SUM ( Trending[QualifiedPipeline] ),
+    BLANK()
+)
+
+",Ratio Percentage,Yes,"No - The measure uses a unique DIVIDE function with nested SUM functions, which is not duplicated elsewhere.",No - The measure does not align with predefined enterprise standards like Total Sales Value or Gross Margin.,No - The calculation logic is moderately complex and lacks a description to explain its purpose in business terms.,"Medium - The measure uses DIVIDE with nested SUM functions, which adds moderate complexity but is manageable.",Yes - The name 'Trending.STU Owned Pipeline Base' is descriptive and aligns with the calculation logic.,"No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The measure uses fully qualified column references and consistent DAX syntax.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,Calculates the ratio of STU-owned pipeline to total qualified pipeline.,Add a description to explain the business purpose of the measure. Consider simplifying the logic if possible.,The naming convention is appropriate; no changes are needed.
+Trending,Warning,Uncommitted Pipeline,SUM(Trending[UncommittedPipeline]),Simple Aggregation,Yes,No - The measure uses a unique calculation (SUM of 'UncommittedPipeline') and does not duplicate other measures.,"Yes - The measure aligns with standard aggregation logic for pipeline metrics, which is commonly used in enterprise reporting.",Yes - The calculation logic is straightforward (SUM aggregation) and easy to understand.,Low - The measure uses a simple SUM function without nested logic or additional complexity.,Yes - The name clearly reflects the calculation and business purpose (Uncommitted Pipeline).,"No - The measure lacks a description, which reduces its clarity for business users.","Yes - The formula uses fully qualified column references (Trending[UncommittedPipeline]), adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Tracks the total uncommitted pipeline value for trending analysis.,Ensure all measures have descriptions to improve business user understanding. Maintain the simplicity of aggregation logic for pipeline metrics.,No changes needed for naming conventions as the measure name is clear and descriptive.
+Trending,Warning,Uncommitted Upside Pipeline,SUM(Trending[UncommittedUpsidePipeline]),Simple Aggregation,Yes,No - The measure uses a unique calculation (SUM of 'UncommittedUpsidePipeline') and does not duplicate other measures.,"Yes - The measure aligns with standard aggregation logic for pipeline metrics, which is commonly used in enterprise reporting.",Yes - The calculation logic is straightforward (SUM aggregation) and easy to understand.,Low - The measure uses a simple SUM function without nested logic or additional complexity.,Yes - The name clearly reflects the calculation and business purpose (Uncommitted Upside Pipeline).,"No - The measure lacks a description, which reduces its clarity for business users.","Yes - The formula uses fully qualified column references (Trending[UncommittedUpsidePipeline]), adhering to DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Tracks the total uncommitted upside pipeline value for trending analysis.,Ensure all measures have descriptions to improve business user understanding. Maintain the simplicity of aggregation logic for pipeline metrics.,No changes needed for naming conventions as the measure name is clear and descriptive.
+Trending,Issue,Additional Pipeline Needed,"VAR A = ( [Pipeline Target Unround] * ( [Billed Budget] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) ) 
+    
+    
+RETURN IF(OR(A <= 0,[QPC to Budget KPI] > 0.995),BLANK(),A)",Complex Calculation,Yes,No - The measure uses a unique calculation involving multiple variables and nested logic.,No - The measure does not align with standard aggregation or time intelligence patterns and appears to be a custom calculation.,"No - The calculation logic is complex, involving multiple variables and nested functions, which makes it difficult to understand without documentation.","High - The measure uses 10 nested functions and a lengthy formula, indicating high complexity.",Yes - The name is descriptive and reflects the calculation purpose (Additional Pipeline Needed).,"No - The measure lacks a description, which is critical given its complexity.","Yes - The formula uses fully qualified column references and unqualified measure references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Calculates the additional pipeline required to meet the billed budget target.,"Simplify the calculation logic where possible or provide detailed documentation to explain the formula. Consider breaking down the measure into smaller, reusable components.",No changes needed for naming conventions as the measure name is clear and descriptive.
+Trending,Issue,DBF VTF %,"DIVIDE([DBF VTF $], [Billed Forecast],BLANK())",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,No - This measure does not align with predefined enterprise standards like Total Sales Value or Gross Margin.,"No - The calculation logic is not immediately clear without a description, as the measure name does not fully explain the formula.","Low - The formula uses basic DAX functions (DIVIDE) with minimal nesting, making it straightforward.","No - The name 'DBF VTF %' is cryptic and uses abbreviations, which are not business-friendly or self-explanatory.","No - The measure lacks a description, making it difficult for users to understand its purpose or calculation logic.","Yes - The formula uses unqualified references for measures, which is consistent with DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.450,0.500,0.400,Calculates the percentage relationship between DBF VTF $ and Billed Forecast.,Add a clear description to explain the business purpose of the measure. Consider aligning the measure with enterprise standards if applicable.,"Rename the measure to a more descriptive name, such as 'DBF to VTF Percentage', to improve clarity and business alignment."
+Trending,Warning,Forecast VTB $,"IFERROR([Billed Forecast]-[Billed Budget],0)",Calculated Measure,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,"Yes - This measure aligns with enterprise standards as it calculates a variance between forecast and budget, which is a common business metric.",Yes - The calculation logic is straightforward and uses basic DAX functions (IFERROR) with clear intent.,"Low - The formula uses basic DAX functions with minimal nesting, making it simple and appropriate for its purpose.",Yes - The name 'Forecast VTB $' is descriptive and aligns with the calculation logic.,"No - The measure lacks a description, which would improve user understanding.","Yes - The formula uses unqualified references for measures, which is consistent with DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Calculates the variance between forecast and budget in dollar terms.,Add a description to explain the business purpose of the measure.,No changes needed as the name is already descriptive and business-friendly.
+Trending,Warning,Forecast VTB %,"DIVIDE([Forecast VTB $],[Billed Budget],0)",Ratio Percentage,Yes,No - The formula is unique and does not duplicate other measures in the dataset.,"Yes - This measure aligns with enterprise standards as it calculates a percentage variance between forecast and budget, which is a common business metric.",Yes - The calculation logic is straightforward and uses basic DAX functions (DIVIDE) with clear intent.,"Low - The formula uses basic DAX functions with minimal nesting, making it simple and appropriate for its purpose.",Yes - The name 'Forecast VTB %' is descriptive and aligns with the calculation logic.,"No - The measure lacks a description, which would improve user understanding.","Yes - The formula uses unqualified references for measures, which is consistent with DAX standards.",0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Calculates the percentage variance between forecast and budget.,Add a description to explain the business purpose of the measure.,No changes needed as the name is already descriptive and business-friendly.
+Trending,Issue,Pipeline Goal,[Pipeline Target],Undocumented,Yes,"Yes - The formula [Pipeline Target] is a direct reference to another measure, which may indicate redundancy or lack of unique business purpose.",No - The measure does not align with standard enterprise measures like Total Sales Value or Gross Margin.,No - The formula lacks clarity and does not provide insight into its business purpose or calculation logic.,Low - The formula is simple with no nested functions or complex logic.,Yes - The name 'Pipeline Goal' is descriptive and aligns with the measure's intended purpose.,"No - The measure lacks a description, making it difficult for business users to understand its purpose.",Yes - The formula uses proper measure referencing without any syntax issues.,0.000,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Represents a pipeline target but lacks clarity on its calculation or business context.,Consider providing a unique calculation logic or a clear business purpose for this measure to avoid redundancy.,Ensure the measure has a description to improve user understanding and accessibility.
+Trending,Warning,Refresh Date,"CONCATENATE(""Last Refresh (PST) : "",MAX('Fiscal Period'[Refresh Date]))
+",Calculated Measure,Yes,No - The formula is unique and provides a specific business insight (last refresh date).,"Yes - The measure aligns with enterprise standards for tracking refresh dates, which is a common requirement.",Yes - The formula is clear and provides a straightforward business insight.,Medium - The formula uses nested functions but remains appropriate for its business purpose.,Yes - The name 'Refresh Date' is descriptive and aligns with the measure's purpose.,"No - The measure lacks a description, which could improve its usability for business users.",Yes - The formula uses proper DAX syntax and references columns correctly.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,"Tracks the last refresh date in PST, providing critical metadata for report accuracy.",Add a description to improve business user understanding and accessibility.,Maintain the current naming convention as it aligns well with enterprise standards.
+Trending,Good,Qualified Pipeline Coverage to Budget Latest Week,"VAR X = CALCULATE( [Qualified Pipeline Coverage to Budget], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )
+
+RETURN ROUND(X,2)",Calculated Measure,Yes,No - The formula is unique and provides a specific business insight (pipeline coverage for the latest week).,"Yes - The measure aligns with enterprise standards for tracking pipeline coverage, which is a common requirement.",Yes - The formula is clear and provides a straightforward business insight.,Medium - The formula uses nested functions but remains appropriate for its business purpose.,Yes - The name is descriptive and aligns with the measure's purpose.,"No - The measure lacks a description, which could improve its usability for business users.",Yes - The formula uses proper DAX syntax and references columns correctly.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,"Tracks pipeline coverage for the latest week, providing critical insights for budget alignment.",Add a description to improve business user understanding and accessibility.,Maintain the current naming convention as it aligns well with enterprise standards.
+Trending,Warning,Qualified Pipeline Coverage to Forecast Latest Week,"VAR X = CALCULATE( [Qualified Pipeline Coverage to Forecast], KEEPFILTERS( 'Trending Week'[Week Type] = ""Latest Week"" ) )
+
+RETURN ROUND(X,2)",Time Intelligence,Yes,No - The measure uses a unique calculation logic with a specific filter applied to 'Latest Week'. No duplicates identified.,No - The measure is not part of a standard library of enterprise measures like Total Sales or Gross Margin.,"No - The calculation logic is moderately complex due to the use of VAR and KEEPFILTERS, and lacks a description to clarify its business purpose.","Medium - The measure uses nested functions (VAR, CALCULATE, KEEPFILTERS) but is not overly complex for its intended purpose.","Yes - The name clearly reflects the calculation logic and business context, specifying 'Latest Week' and 'Pipeline Coverage to Forecast'.","No - The measure lacks a description, which makes it harder for business users to understand its purpose.",Yes - The measure uses proper DAX syntax with fully qualified column references and consistent measure referencing.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,"Tracks pipeline coverage to forecast for the latest week, supporting time-sensitive analytics.",Add a clear description to explain the business purpose of the measure. Consider aligning the measure with standard enterprise metrics if applicable.,No changes needed as the naming convention is clear and descriptive.
+Trending,Issue,Qualified Pipeline Coverage to Budget Selected Week,"VAR SelectedKey = SELECTEDVALUE('Trending Week'[DatasetVersionKey])
+RETURN 
+CALCULATE(
+    [Qualified Pipeline Coverage to Budget],'Trending'[DatasetVersionKey] = SelectedKey)",Time Intelligence,Yes,"No - The measure uses SELECTEDVALUE and CALCULATE with a specific filter on 'DatasetVersionKey', making it unique.",No - The measure is not part of a standard library of enterprise measures.,No - The calculation logic is moderately complex and lacks a description to clarify its business purpose.,"Medium - The measure uses SELECTEDVALUE and CALCULATE, which are moderately complex but appropriate for the business context.","Yes - The name is descriptive and aligns with the calculation logic, specifying 'Budget' and 'Selected Week'.","No - The measure lacks a description, making it harder for business users to understand its purpose.",Yes - The measure uses proper DAX syntax with fully qualified column references and consistent measure referencing.,0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.700,0.400,1.000,"Tracks pipeline coverage to budget for a selected week, supporting time-sensitive analytics.",Add a clear description to explain the business purpose of the measure. Consider aligning the measure with standard enterprise metrics if applicable.,No changes needed as the naming convention is clear and descriptive.
+Trending,Critical,Additional Pipeline Needed Forecast,"VAR  A = ( [Pipeline Target Unround] * ( [Billed Forecast] - SUM( Trending[ActualBilledRevenue] ) - SUM( Trending[ScheduledBilledRevenue] ) ) )
+    - ( SUM( Trending[QualifiedPipeline] ) + SUM( Trending[RunRateProjections] ) )
+
+RETURN IF(OR(A <= 0,[QPC to Forecast KPI] > 0.995),BLANK(),A)",Complex Calculation,Yes,"No - The measure uses a highly complex calculation logic with multiple nested functions, making it unique.",No - The measure is not part of a standard library of enterprise measures.,No - The calculation logic is highly complex with 10 nested functions and lacks a description to clarify its business purpose.,"High - The measure uses 10 nested functions and a lengthy formula, making it unnecessarily complex for business users.","Yes - The name is descriptive and aligns with the calculation logic, specifying 'Additional Pipeline Needed' and 'Forecast'.","No - The measure lacks a description, making it harder for business users to understand its purpose.",Yes - The measure uses proper DAX syntax with fully qualified column references and consistent measure referencing.,0.200,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.600,0.200,1.000,"Calculates additional pipeline needed for forecast, supporting advanced analytics.",Simplify the calculation logic to improve readability and usability. Add a clear description to explain the business purpose of the measure.,No changes needed as the naming convention is clear and descriptive.
+PY Trending,Issue,Qualified Pipeline Coverage to Budget PY,"VAR X = SUM ( 'PY Trending'[Billed Budget] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[Qualified Pipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",Complex Calculation,Yes,"Yes - The formula is highly similar to other measures, with only minor differences in referenced columns (e.g., 'Qualified Pipeline' vs 'Committed Pipeline'). This indicates potential duplication without distinct business purposes.","No - The measure does not align with standard enterprise measures like Total Sales, Gross Margin, or YoY Growth. It appears to be a custom calculation specific to the dataset.","No - The calculation logic is complex, involving multiple nested functions and variables. Without a description, it is difficult for business users to understand its purpose.","High - The measure uses 9 nested functions and spans 308 characters, making it unnecessarily complex for its intended business purpose.","No - The name is descriptive but overly verbose. It could be simplified while retaining clarity, e.g., 'Qualified Pipeline Coverage Budget PY'.","No - The measure lacks a description, making it difficult for users to understand its business purpose or calculation logic.","Yes - The formula uses fully qualified column references (e.g., 'PY Trending'[Billed Budget]), adhering to DAX standards.",0.000,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.350,0.100,0.600,Tracks pipeline coverage against budget for the previous year.,Simplify the calculation logic by reducing nested functions and providing a clear description of the measure's purpose. Ensure the measure serves a distinct business need to avoid duplication.,Shorten the measure name while retaining clarity. Use business-focused terminology and avoid overly verbose naming.
+PY Trending,Issue,Committed Pipeline Coverage to Budget PY,"VAR X = SUM ( 'PY Trending'[Billed Budget] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[CommittedPipeline]  ) + SUM ( 'PY Trending'[CommittedatRiskPipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",Complex Calculation,Yes,"Yes - The formula is nearly identical to 'Qualified Pipeline Coverage to Budget PY', differing only in the referenced column ('Committed Pipeline'). This suggests duplication without distinct business purposes.","No - The measure does not align with standard enterprise measures like Total Sales, Gross Margin, or YoY Growth. It appears to be a custom calculation specific to the dataset.","No - The calculation logic is complex, involving multiple nested functions and variables. Without a description, it is difficult for business users to understand its purpose.","High - The measure uses 10 nested functions and spans 357 characters, making it unnecessarily complex for its intended business purpose.","No - The name is descriptive but overly verbose. It could be simplified while retaining clarity, e.g., 'Committed Pipeline Coverage Budget PY'.","No - The measure lacks a description, making it difficult for users to understand its business purpose or calculation logic.","Yes - The formula uses fully qualified column references (e.g., 'PY Trending'[Billed Budget]), adhering to DAX standards.",0.000,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.350,0.100,0.600,Tracks pipeline coverage against budget for the previous year.,Simplify the calculation logic by reducing nested functions and providing a clear description of the measure's purpose. Ensure the measure serves a distinct business need to avoid duplication.,Shorten the measure name while retaining clarity. Use business-focused terminology and avoid overly verbose naming.
+PY Trending,Issue,Qualified Pipeline Coverage to Forecast PY,"VAR X = SUM ( 'PY Trending'[Billed Forecast] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[Qualified Pipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",Complex Calculation,Yes,"Yes - The formula is highly similar to other measures, with only minor differences in referenced columns (e.g., 'Billed Forecast' vs 'Billed Budget'). This indicates potential duplication without distinct business purposes.","No - The measure does not align with standard enterprise measures like Total Sales, Gross Margin, or YoY Growth. It appears to be a custom calculation specific to the dataset.","No - The calculation logic is complex, involving multiple nested functions and variables. Without a description, it is difficult for business users to understand its purpose.","High - The measure uses 9 nested functions and spans 310 characters, making it unnecessarily complex for its intended business purpose.","No - The name is descriptive but overly verbose. It could be simplified while retaining clarity, e.g., 'Qualified Pipeline Coverage Forecast PY'.","No - The measure lacks a description, making it difficult for users to understand its business purpose or calculation logic.","Yes - The formula uses fully qualified column references (e.g., 'PY Trending'[Billed Forecast]), adhering to DAX standards.",0.000,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.350,0.100,0.600,Tracks pipeline coverage against forecast for the previous year.,Simplify the calculation logic by reducing nested functions and providing a clear description of the measure's purpose. Ensure the measure serves a distinct business need to avoid duplication.,Shorten the measure name while retaining clarity. Use business-focused terminology and avoid overly verbose naming.
+PY Trending,Issue,Committed Pipeline Coverage to Forecast PY,"VAR X = SUM ( 'PY Trending'[Billed Forecast] ) - SUM ( 'PY Trending'[Actual Billed Revenue] )
+            - SUM ( 'PY Trending'[Scheduled Billed Revenue] )
+
+VAR Y = SUM ( 'PY Trending'[CommittedPipeline]  ) + SUM ( 'PY Trending'[CommittedatRiskPipeline]  ) + SUM('PY Trending'[Run Rate Projections])
+
+
+RETURN IF ( X < 0, BLANK (), DIVIDE ( Y , X , BLANK () ))",Complex Calculation,Yes,No - The measure formula is unique and does not duplicate other measures in the dataset.,"No - The measure does not align with standard business patterns like Total Sales, Gross Margin, or YoY Growth.",No - The formula is complex with nested functions and lacks a description to explain its business purpose.,"High - The measure uses multiple nested functions and has a lengthy formula, making it difficult to interpret.","No - The name is lengthy and unclear, making it difficult to understand the measure's purpose at a glance.","No - The measure lacks a description, which makes it harder for business users to understand its purpose.","Yes - The formula uses fully qualified column references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.200,0.400,0.100,0.400,0.200,0.200,0.400,0.300,0.500,Tracks pipeline coverage against forecasted values for the prior year.,Simplify the formula or provide a detailed description to explain the business purpose. Consider breaking down the measure into smaller components for clarity.,"Rename the measure to something more concise and descriptive, such as 'Committed Pipeline Coverage PY'."
+Fiscal Period,Warning,GreyOutSelect," IF(FIRSTNONBLANK('Fiscal Period'[Fiscal Quarter], 1) = ""FY23-Q1"", 1, 0)",Simple Aggregation,Yes,No - The measure formula is unique and does not duplicate other measures in the dataset.,No - The measure serves a specific purpose but does not align with standard enterprise measures.,"Yes - The formula is simple and easy to understand, even without a description.",Low - The formula is straightforward with minimal nested functions.,Yes - The name reflects the measure's purpose and calculation logic.,"No - The measure lacks a description, which could help clarify its business purpose.","Yes - The formula uses fully qualified column references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.750,0.500,1.000,Identifies whether a fiscal quarter matches a specific value for selection purposes.,Add a description to clarify the business purpose of the measure.,No changes needed; the name is clear and descriptive.
+Fiscal Period,Issue,Formats,"CALCULATE(MIN('Fiscal Period'[FormatValue]),'Trending Week'[Week Name] = """")",Simple Aggregation,Yes,No - The measure formula is unique and does not duplicate other measures in the dataset.,No - The measure does not align with standard enterprise measures.,No - The formula is unclear without a description to explain its business purpose.,Low - The formula is simple with minimal nested functions.,No - The name does not clearly reflect the measure's calculation or purpose.,"No - The measure lacks a description, which makes it harder for business users to understand its purpose.","Yes - The formula uses fully qualified column references, adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.200,0.300,0.200,0.400,0.100,0.400,0.200,0.200,0.450,0.400,0.500,Calculates the minimum format value for a given week.,Add a description to clarify the business purpose of the measure.,"Rename the measure to something more descriptive, such as 'Minimum Format Value by Week'."
+Fiscal Period,Issue,YoYCFOGreyOut,"IF(OR(OR(FIRSTNONBLANK('Trend Type'[Trend Type],1) = ""Security"", FIRSTNONBLANK('Field Geography'[Subsidiary],1) = ""Netherlands""),FIRSTNONBLANK('Field Geography'[Subsidiary],1) = ""Switzerland""),1,0)",Complex Calculation,Yes,No - The measure has a unique definition that incorporates multiple conditions and nested functions. No duplicates were identified.,"No - The measure does not align with standard business patterns like Total Sales, Gross Margin, or YoY Growth. It appears to be specific to a niche business requirement.",No - The calculation logic is complex due to nested functions and multiple conditions. It is not immediately clear what business insight this measure provides without additional documentation.,"High - The measure uses nested IF and OR functions with multiple conditions, making it highly complex. This level of complexity may hinder user understanding.",No - The name does not clearly reflect the calculation logic or business purpose. It uses abbreviations ('YoYCFO') that are not self-explanatory.,"No - No description is provided for the measure, making it difficult to understand its purpose or calculation logic.","Yes - The measure uses fully qualified column references (e.g., 'Trend Type'[Trend Type]), adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.100,0.400,0.000,0.400,0.200,0.200,0.300,0.300,0.300,Determines whether certain fiscal periods should be greyed out based on specific conditions.,Simplify the calculation logic by reducing nested functions and conditions. Provide a clear description explaining the business purpose and calculation logic.,Rename the measure to reflect its calculation and business purpose more clearly. Avoid abbreviations and cryptic labels.
+Fiscal Period,Warning,YoYGreyOut,"IF(FIRSTNONBLANK('Trend Type'[Trend Type],1) = ""Security"",1,0)",Simple Aggregation,Yes,No - The measure has a unique definition that is simpler than other measures in the dataset. No duplicates were identified.,"No - The measure does not align with standard business patterns like Total Sales, Gross Margin, or YoY Growth. It appears to be specific to a niche business requirement.","Yes - The calculation logic is straightforward, with a single condition using the IF function. It is relatively easy to understand.","Low - The measure uses a simple IF function with one condition, making it low in complexity and suitable for business users.",No - The name does not clearly reflect the calculation logic or business purpose. It uses abbreviations ('YoY') that are not self-explanatory.,"No - No description is provided for the measure, making it difficult to understand its purpose or calculation logic.","Yes - The measure uses fully qualified column references (e.g., 'Trend Type'[Trend Type]), adhering to DAX standards.",0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.000,0.400,0.200,0.200,0.450,0.500,0.400,Determines whether certain fiscal periods should be greyed out based on a single condition.,Ensure the measure is documented with a clear description explaining its business purpose and calculation logic.,Rename the measure to reflect its calculation and business purpose more clearly. Avoid abbreviations and cryptic labels.
