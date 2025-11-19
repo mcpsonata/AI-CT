@@ -1,0 +1,269 @@
+﻿Table Name,Issue_Severity,Measure Name,Measure Formula,Calculation Type,AI Analyzed,Have Same Measure Definition,Is Standard Measure,Self Explanatory Calculation Logic,Complexity Level,Meets Naming Convention Standards,Has Descriptions,Proper DAX References,Duplicate Measure Definition Score,Duplicate Measure Definition Max Score,Standard Library Measures Score,Standard Library Measures Max Score,Business Documentation Quality Score,Business Documentation Quality Max Score,Complexity Classification Score,Complexity Classification Max Score,Definition Based Naming Score,Definition Based Naming Max Score,Business Focused Naming Score,Business Focused Naming Max Score,DAX Reference Standards Score,DAX Reference Standards Max Score,Overall Score,Calculation Logic Score,Naming Score,Business Purpose,Standardized Calculation Logic Recommendations,Naming Conventions Recommendations
+Account,Not Analyzed,TPID Count,COUNT( Account[TPID] ),Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,# Accounts w/ Unified or Premier,"CALCULATE([TPID Count],KEEPFILTERS(Account[Has Premier Unified] = ""Yes""))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,ATQ Latest,AVERAGE(Account[ATQ]),Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Understands Strategic Priorities Latest,AVERAGE(Account[UnderstandsStrategicPriorities]),Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Identify Right Solutions Based on Needs Latest,AVERAGE(Account[IdentifyRightSolutionsBasedonNeeds]),Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Delta ATQ,"IF(AVERAGE(Account[ATQ])=0,"""",AVERAGE(Account[delta_ATQ]))",Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Delta Understands Strategic Priorities,"IF(AVERAGE(Account[UnderstandsStrategicPriorities])=0,"""",AVERAGE(Account[delta_UnderstandsStrategicPriorities]))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Delta Identify Right Solutions Based on Needs,"IF(AVERAGE(Account[IdentifyRightSolutionsBasedonNeeds])=0,"""",AVERAGE(Account[delta_IdentifyRightSolutionsBasedonNeeds]))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,% of Accounts with Exec Sponsor,"var num= CALCULATE(SUMX(VALUES('Account Plan Priority'[AccountPlanPriorityID]),1),
+    KEEPFILTERS(Account[executivesponsorid] <> blank())
+)
+var den= SUMX( VALUES( 'Account Plan Priority'[AccountPlanPriorityID] ), 1 ) 
+
+
+return DIVIDE(num,den)",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Helps Maximize Solutions Latest,AVERAGE(Account[HelpsMaximizeSolutions]),Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Delta Helps Maximize Solutions Value,"IF(AVERAGE(Account[HelpsMaximizeSolutions])=0,"""",AVERAGE(Account[delta_HelpsMaximizeSolutions]))",Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Delta Joint Planning Addresses Needs,"IF(AVERAGE(Account[JointPlanningAddressesNeeds])=0,"""",AVERAGE(Account[delta_JointPlanningAddressesNeeds]))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Joint Planning Addresses Needs,AVERAGE(Account[JointPlanningAddressesNeeds]),Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Delta Continuous Relationship Building,"IF(AVERAGE(Account[ContinuousRelationshipBuilding])=0,"""",AVERAGE(Account[delta_ContinuousRelationshipBuilding]))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,Continuous Relationship Building,AVERAGE(Account[ContinuousRelationshipBuilding]),Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,% of Accounts with sep,"var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[issep]=""yes""))
+
+RETURN DIVIDE(num,den)",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,% of Accounts with ACSP,"var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[isacsp]=""yes""))
+
+RETURN DIVIDE(num,den)",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,% of Accounts with APT,"var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[isapt]=""yes""))
+
+RETURN DIVIDE(num,den)",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account,Not Analyzed,% of Accounts with CSAA,"var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[iscsaa]=""yes""))
+
+RETURN DIVIDE(num,den)",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Calendar,Not Analyzed,Last Refresh Icon,"""🕘""",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Calendar,Not Analyzed,Information Icon,"""i""",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Calendar,Not Analyzed,Filters Applied Icon,"""🗸""",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# of Priorities w/ Pipeline,"CALCULATE([# of Priorities] 
+,KEEPFILTERS('Account Planning'[Attached To Opportunity] = ""Yes"")
+,KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% of Priorities w/ Pipeline,"CALCULATE(DIVIDE([# of Priorities w/ Pipeline],[# of Priorities]),KEEPFILTERS(Opportunity[ParentingLevel Oppties]=""TopParentOppties""))",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# of Account Plans,"CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# of Priorities,"SUMX( VALUES( 'Account Planning'[AccountPlanPriorityID] ), 1 )
+ ",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% Accounts w/ Active Plan,"VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""Active Plan"" )
+    )
+RETURN
+    DIVIDE( Numerator, [# of Account Plans] )",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% Accounts w/ No Plan,"VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""No Plan"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans] )",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% Accounts w/ Inactive Plan,"VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status]  = ""Inactive Plan"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans],"""" )",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% Accounts w/ Plan Close to Inactive,"VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""Plan Close to Inactive"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans],"""" )",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# Plans with Opportunities,"CALCULATE (
+    [# of Account Plans],
+    FILTER (
+        VALUES ( 'Account'[AccountPlanID] ),
+        [# of Priorities w/ Pipeline] > 0
+    )
+)",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% Accounts w/ Plan w/ Oppty,"DIVIDE ( [# Plans with Opportunities], [# of Account Plans],"""" )",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% Accounts w/ Strategic or Full Plan,"
+    DIVIDE ( [# Accounts w/ Strategic or Full Plan], [# of Account Plans],"""")",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Warning,# Accounts w/ Strategic or Full Plan,"
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Type] IN {""0-Strategic"",""1-Full""} )
+    )",Simple Aggregation,Yes,No - The measure has a unique calculation logic that filters account plans by specific plan types.,Yes - The measure aligns with standard business patterns by providing a filtered count of account plans.,Yes - The calculation logic is straightforward and uses clear filtering criteria.,Low - The measure uses basic DAX functions with minimal nesting and straightforward logic.,Yes - The name clearly reflects the calculation and business purpose.,"No - The measure lacks a description, which reduces its clarity for business users.",Yes - The measure uses proper DAX syntax with fully qualified column references.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,"Provides a count of accounts with specific plan types, supporting strategic planning and reporting.",Ensure all measures have a clear description to improve business user understanding. The calculation logic is already standardized and aligns with enterprise standards.,The naming convention is appropriate and does not require changes.
+Account Planning,Warning,# Plans Manager Reviewed (last 6 months),"CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Manager Reviewed Date] >= (TODAY()-180)))",Time Intelligence,Yes,No - The measure has a unique calculation logic that filters account plans based on a date range.,Yes - The measure aligns with standard business patterns by providing a filtered count of account plans within a specific time frame.,Yes - The calculation logic is clear and uses a straightforward date filter.,"Medium - The measure uses a slightly more complex DAX expression with nested functions, but it is still appropriate for the business purpose.",Yes - The name clearly reflects the calculation and business purpose.,"No - The measure lacks a description, which reduces its clarity for business users.",Yes - The measure uses proper DAX syntax with fully qualified column references.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,"Provides a count of account plans reviewed by managers in the last 6 months, supporting performance tracking.",Ensure all measures have a clear description to improve business user understanding. The calculation logic is already standardized and aligns with enterprise standards.,The naming convention is appropriate and does not require changes.
+Account Planning,Good,% Plans Manager Reviewed (last 6 months),"
+    DIVIDE([# Plans Manager Reviewed (last 6 months)], [# of Account Plans],"""")",Ratio Percentage,Yes,No - The measure has a unique calculation logic that calculates a percentage based on two other measures.,Yes - The measure aligns with standard business patterns by providing a percentage calculation.,Yes - The calculation logic is straightforward and uses a clear division formula.,Low - The measure uses basic DAX functions with minimal nesting and straightforward logic.,Yes - The name clearly reflects the calculation and business purpose.,"No - The measure lacks a description, which reduces its clarity for business users.",Yes - The measure uses proper DAX syntax with unqualified measure references.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,"Provides the percentage of account plans reviewed by managers in the last 6 months, supporting performance tracking.",Ensure all measures have a clear description to improve business user understanding. The calculation logic is already standardized and aligns with enterprise standards.,The naming convention is appropriate and does not require changes.
+Account Planning,Warning,# Accounts w/ Stakeholder Map,"CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Has Stakeholder] = ""Yes"" )
+    )",Simple Aggregation,Yes,No - The measure has a unique calculation logic that filters accounts with stakeholder maps.,Yes - The measure aligns with standard business patterns by providing a count of accounts with a specific attribute.,Yes - The calculation logic is straightforward and uses clear DAX functions like CALCULATE and KEEPFILTERS.,"Low - The measure uses a simple filter and aggregation logic, making it easy to understand.",Yes - The name clearly reflects the purpose and calculation of the measure.,"No - The measure lacks a description, which would help explain its business purpose.",Yes - The measure uses proper DAX syntax with fully qualified column references.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Counts the number of accounts with stakeholder maps for better account planning insights.,Ensure all measures have descriptions to improve business documentation quality.,No changes needed as the naming convention is clear and descriptive.
+Account Planning,Warning,% Accounts w/ Stakeholder Map,"
+    DIVIDE( [# Accounts w/ Stakeholder Map], [# of Account Plans],"""")",Ratio Percentage,Yes,No - The measure has a unique calculation logic that calculates a percentage.,Yes - The measure aligns with standard business patterns by providing a percentage calculation.,Yes - The calculation logic is straightforward and uses the DIVIDE function.,"Low - The measure uses a simple division operation, making it easy to understand.",Yes - The name clearly reflects the purpose and calculation of the measure.,"No - The measure lacks a description, which would help explain its business purpose.",Yes - The measure uses proper DAX syntax with unqualified measure references.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Calculates the percentage of accounts with stakeholder maps for better account planning insights.,Ensure all measures have descriptions to improve business documentation quality.,No changes needed as the naming convention is clear and descriptive.
+Account Planning,Issue,% of Priorities w/ future Date,"
+VAR Numerator = CALCULATE( [# of Active Priorities],
+    KEEPFILTERS( 'Account Plan Priority'[Time Frame Date] > today() )
+)        
+                                                            
+RETURN DIVIDE(Numerator,[# of Active Priorities],"""") ",Complex Calculation,Yes,No - The measure has a unique calculation logic that calculates a percentage based on a future date.,No - The measure does not align with standard business patterns and appears to be more specific to a particular use case.,"No - The calculation logic is complex and uses multiple nested functions, making it harder to understand.","High - The measure uses a VAR statement and multiple nested functions, increasing its complexity.",Yes - The name clearly reflects the purpose and calculation of the measure.,"No - The measure lacks a description, which would help explain its business purpose.",Yes - The measure uses proper DAX syntax with fully qualified column references.,0.200,0.200,0.000,0.300,0.000,0.200,0.100,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.650,0.300,1.000,Calculates the percentage of priorities with a future date for planning purposes.,Simplify the calculation logic to make it more understandable and consider aligning it with standard business patterns.,No changes needed as the naming convention is clear and descriptive.
+Account Planning,Not Analyzed,Linked to Objectives,"var Num=CALCULATE([# of Priorities],'Account Planning'[CustomerObjectiveId] <> """",
+    'Account'[Plan Type] IN {""0-Strategic"",""1-Full""},
+    KEEPFILTERS('Account Plan Priority'[Priority Status] = ""Active"")
+)
+ Var Den=   CALCULATE([# of Priorities],'Account'[Plan Type] IN {""0-Strategic"",""1-Full""},
+        KEEPFILTERS('Account Plan Priority'[Priority Status] = ""Active"")    )
+ 
+RETURN DIVIDE(Num,Den)",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,Modified On,"IF(MAX('Account'[Days Since Modified])=BLANK(),BLANK(),IF(MAX('Account'[Days Since Modified])>30,0,1))",Complex Calculation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,Last Reviewed,"
+
+SWITCH (
+
+    TRUE,
+
+    MAX ( 'Account'[Manager Reviewed Date] ) = BLANK (), BLANK (),
+
+    MAX ( 'Account'[Manager Reviewed Flag] ) = ""Yes""
+
+        && MAX ( 'Account'[Manager Reviewed Date] )
+
+            > TODAY () - 90, 1,
+
+    0
+
+)",Complex Calculation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# of Plans w/ Priority,"SUMX( VALUES( 'Account Planning'[AccountPlanID] ), 1 )
+                ",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% of Priorities with Partner,"
+VAR Numerator = CALCULATE([# of Priorities] ,
+    KEEPFILTERS('Account Plan Partners'[AccountPartnerProfileId] <> """")
+)
+VAR Denominator = [# of Priorities]
+
+
+RETURN DIVIDE(Numerator,Denominator, BLANK())",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% Plans Reviewed < 90 Days,"DIVIDE([# plans with manger reviewed date in last 90 days],[# of Account Plans],"""")",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# plans with manger reviewed date in last 90 days,"CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Manager Reviewed Date] >= (TODAY()-90)))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Warning,# plans with days since modified < 30 days,"CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Days Since Modified] < 30))",Simple Aggregation,Yes,No - The measure has a unique calculation logic that filters accounts based on the days since they were last modified.,Yes - The measure aligns with standard business patterns for tracking recent activity.,Yes - The calculation logic is straightforward and clearly filters data based on a specific condition.,"Low - The measure uses a simple filter and aggregation, making it easy to understand and implement.",Yes - The name clearly describes the purpose and calculation of the measure.,"No - The measure lacks a description, which would help explain its business purpose in plain terms.",Yes - The DAX formula uses fully qualified column references and adheres to best practices.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Tracks the number of account plans modified within the last 30 days.,Add a description to explain the business purpose of the measure in plain terms. Ensure the measure is included in a standard library for enterprise use.,No changes needed as the naming convention is clear and descriptive.
+Account Planning,Warning,% Plans Modified < 30 Days,"DIVIDE([# plans with days since modified < 30 days],[# of Account Plans],"""")",Ratio Percentage,Yes,No - The measure has a unique calculation logic that calculates the percentage of plans modified within the last 30 days.,Yes - The measure aligns with standard business patterns for calculating percentages.,Yes - The calculation logic is straightforward and clearly calculates a percentage.,"Low - The measure uses a simple division operation, making it easy to understand and implement.",Yes - The name clearly describes the purpose and calculation of the measure.,"No - The measure lacks a description, which would help explain its business purpose in plain terms.",Yes - The DAX formula uses proper measure references and adheres to best practices.,0.200,0.200,0.300,0.300,0.000,0.200,0.300,0.300,0.400,0.400,0.400,0.400,0.200,0.200,0.900,0.800,1.000,Calculates the percentage of account plans modified within the last 30 days.,Add a description to explain the business purpose of the measure in plain terms. Ensure the measure is included in a standard library for enterprise use.,No changes needed as the naming convention is clear and descriptive.
+Account Planning,Not Analyzed,% of Priorities with Top Priority,"DIVIDE( [# of Top Priorities], [# of Active Priorities],"""" )",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% of Top Priorities with CSP,"DIVIDE([# of Top Priorities with CSP],[# of Top Priorities])",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# of Top Priorities with CSP,"CALCULATE([# of Top Priorities],KEEPFILTERS('Account Plan Priority'[Is Top Priority with CSP]= TRUE))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# of Top Priorities,"CALCULATE([# of Active Priorities]
+    ,KEEPFILTERS('Account Plan Priority'[Is Top Priority Linked to Active Customer]= TRUE))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# Accounts with MACC,"CALCULATE([TPID Count],KEEPFILTERS(Account[Has MACC Pipeline]=""Yes""))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% Accounts with MACC Consumption Plan,"VAR _Num=CALCULATE([# Accounts with MACC],KEEPFILTERS(Account[Consumption Flag]=""Yes""))
+
+RETURN DIVIDE(_Num,[# Accounts with MACC],"""")
+
+",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% of Accounts with QBR,"
+var num=CALCULATE([TPID Count],KEEPFILTERS(Account[isqbr]=""yes""))
+
+RETURN DIVIDE(num,[TPID Count],BLANK())
+",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,% of Accounts with CSDR Within Last 30 Days,"
+var den=CALCULATE( [TPID Count], KEEPFILTERS( Account[Has Premier Unified] = ""Yes"" ), KEEPFILTERS( Account[Has CSDR] = ""Yes"" ) )
+var num=CALCULATE( [TPID Count], KEEPFILTERS( Account[Has Premier Unified] = ""Yes"" ), KEEPFILTERS( Account[Has CSDR within 30 Days] = ""Yes"" ) )
+
+RETURN DIVIDE(num,den,"""")
+",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Account Planning,Not Analyzed,# of Active Priorities,"CALCULATE([# of Priorities],KEEPFILTERS('Account Plan Priority'[Priority Status]=""Active""))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% Billed Pipeline w/ Priority,"VAR X = CALCULATE([Billed Pipeline],KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))
+
+RETURN DIVIDE( [Billed Pipeline w/ Priority], X )",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Billed Pipeline,[Billed Pipeline Base],Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Billed Opportunity Count,"CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Qualified Pipeline Flag] = 1))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Opportunity Count,"SUMX(VALUES('Pipeline'[dimopportunitykey]),1)",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Committed Pipeline,"CALCULATE([Billed Pipeline],KEEPFILTERS(Opportunity[Forecast Recommendation]=""Committed""))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Committed at Risk Pipeline,"CALCULATE([Billed Pipeline],KEEPFILTERS('Opportunity'[Forecast Recommendation]=""Committed at Risk""))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Committed + Risk Pipeline,[Committed Pipeline] + [Committed at Risk Pipeline],Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Billed Pipeline w/ Priority,"CALCULATE (SUM('Priority Pipeline'[PipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Billed""))",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,ACR Pipeline,[ACR Pipeline Base],Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Future year ACR Pipeline,"CALCULATE (
+    [ACR Pipeline w/ Priority],
+    KEEPFILTERS ( 'Calendar'[Relative Year] = ""CY+1"" ),
+    ALL ( 'Calendar' )
+)",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,ACR Pipeline w/ Priority,"CALCULATE (SUM('Priority Pipeline'[ACRPipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Consumption""))",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Future Year Billed Pipeline,"CALCULATE (
+    [Billed Pipeline w/ Priority],
+    KEEPFILTERS ( 'Calendar'[Relative Year] = ""CY+1"" ), ALL('Calendar')
+)",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,# Opportunities w/ Priority,"SUMX( VALUES( 'Priority Pipeline'[dimopportunitykey] ), 1 )
+            
+    ",Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,# Billed Oppties w/ Priority,"CALCULATE([# Opportunities w/ Priority],KEEPFILTERS('Priority Pipeline'[PipelineType]=""Billed""))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,# Consumed Oppties w/ Priority,"CALCULATE([# Opportunities w/ Priority],KEEPFILTERS('Priority Pipeline'[PipelineType]=""Consumption""))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% of Billed Opties w/ future date,"
+VAR Numerator = CALCULATE([# Billed Oppties w/ Priority]
+               ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+               ,KEEPFILTERS(Opportunity[Opportunity Due Date] > today())
+) 
+VAR Denominator = CALCULATE([# Billed Oppties w/ Priority]
+                  ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+)                                                         
+
+RETURN DIVIDE(Numerator,Denominator) ",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% of Consumption Opties w/ future date,"
+VAR Numerator = CALCULATE([# Consumed Oppties w/ Priority]
+               ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+               ,KEEPFILTERS(Opportunity[Estimated Completion Date] > today())
+) 
+VAR Denominator = CALCULATE([# Consumed Oppties w/ Priority]
+                  ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1 )
+)                                                         
+
+RETURN DIVIDE(Numerator,Denominator) ",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% Total Pipeline w/ Priority," VAR Num = CALCULATE( [Billed Pipeline w/ Priority] + [ACR Pipeline w/ Priority], KEEPFILTERS( 'Priority Pipeline'[OpenOpportunityFlag] = 1 ) )
+ VAR Den = CALCULATE( [Billed Pipeline] + [ACR Pipeline],KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag] = 1) ) 
+ RETURN DIVIDE(Num, Den)        
+        
+        
+       ",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% Billed opties w/ close plan,"
+VAR X = CALCULATE( [Billed Pipeline], KEEPFILTERS( Opportunity[Close Plan Attached] = ""Yes"" ),KEEPFILTERS('Opportunity'[Open Opportunity Flag] = 1) )
+
+VAR Y = CALCULATE( [Billed Pipeline],KEEPFILTERS('Opportunity'[Open Opportunity Flag] = 1) )
+
+RETURN DIVIDE( X, Y ,"""")",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% of Total Opties w/ future date,"
+VAR Numerator = CALCULATE([# Open Opportunities w/ Priority], OR(Opportunity[Opportunity Due Date] > today(),Opportunity[Estimated Completion Date] > today())) 
+VAR Denominator = [# Open Opportunities w/ Priority]                                                
+
+RETURN DIVIDE(Numerator,Denominator) ",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Total Pipeline,[Billed Pipeline]+[ACR Pipeline],Undocumented,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% ACR Pipeline w/ Priority,"VAR X = CALCULATE([ACR Pipeline],KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))
+
+RETURN DIVIDE( [ACR Pipeline w/ Priority], X )",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,# Billed Oppties,"CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Opportunity Type] IN {""Billed"",""Billed & Consumption""}))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,# Consumed Oppties,"CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Opportunity Type] IN {""Consumption"",""Billed & Consumption""}))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% Total Opty count w/ priority,"VAR X = CALCULATE([Opportunity Count],KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag] = 1))
+
+RETURN DIVIDE ([# Open Opportunities w/ Priority],X)",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% Total Stage 1 Opty count w/ priority,"CALCULATE([% Total Opty count w/ priority],KEEPFILTERS(Opportunity[Sales Stage Sort]=1))",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,% Total Stage 1 pipeline w/ priority,"CALCULATE([% Total Pipeline w/ Priority],KEEPFILTERS(Opportunity[Sales Stage Sort]=1))",Ratio Percentage,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Billed Pipeline Base,"CALCULATE(SUM(Pipeline[PipelineUSD]),KEEPFILTERS(Pipeline[PipelineType]=""Billed""))",Simple Aggregation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,ACR Pipeline Base,"CALCULATE(SUM(Pipeline[ACRPipelineUSD]),KEEPFILTERS(Pipeline[PipelineType]=""Consumption""),ALL('Product'))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,# Open Opportunities w/ Priority,"CALCULATE([# Opportunities w/ Priority]
+        ,KEEPFILTERS('Priority Pipeline'[OpenOpportunityFlag] =1))",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,# Open Opportunities w/o Priority," CALCULATE([Opportunity Count]
+ ,KEEPFILTERS('Opportunity'[Account Priority Attached]=""No"")
+,KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag]=1))
+",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Qualified Pipeline,"CALCULATE(
+    SUM( 'Pipeline'[QualifiedPipeline] )
+    , KEEPFILTERS( Pipeline[PipelineType] = ""Billed"" )
+)
+",Calculated Measure,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+Pipeline,Not Analyzed,Azure Qualified Pipeline,"CALCULATE(
+    SUM('Pipeline'[QualifiedPipeline])
+    ,KEEPFILTERS(Pipeline[PipelineType] = ""Consumption"")
+    ,USERELATIONSHIP(Account[dimaccountgeographyhierarchykey],Pipeline[dimaccountgeographyhierarchykey]))",Complex Calculation,No,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,Not Analyzed - ,0.000,0.200,0.000,0.300,0.000,0.200,0.000,0.300,0.000,0.400,0.000,0.400,0.000,0.200,0.000,0.000,0.000,Not analyzed by AI,,
+User Seller,Issue,CURRENT_USER,"LEFT(USERPRINCIPALNAME(),FIND(""@"",USERPRINCIPALNAME())-1)",Calculated Measure,Yes,"No - The measure uses a unique DAX formula to extract the username from the USERPRINCIPALNAME function, and no duplicates were found in the dataset.",No - This measure is not a standard business measure like Total Sales or Gross Margin. It is more of a utility measure for identifying the current user.,"No - The calculation logic is not immediately clear to a business user without technical knowledge of DAX functions like USERPRINCIPALNAME, LEFT, and FIND.","Low - The measure uses a straightforward combination of string manipulation functions, which are not computationally intensive or overly complex.",No - The name 'CURRENT_USER' is not descriptive enough to indicate that it extracts the username from the USERPRINCIPALNAME function. A more descriptive name like 'Extracted_Username' would be better.,"No - The measure lacks a description, which makes it harder for users to understand its purpose and calculation logic.",Yes - The measure uses proper DAX syntax and references functions correctly without any inconsistencies.,0.200,0.200,0.000,0.300,0.000,0.200,0.300,0.300,0.200,0.400,0.200,0.400,0.200,0.200,0.550,0.500,0.600,"Extracts the username from the USERPRINCIPALNAME function, which can be used for user-specific filtering or personalization in reports.","Consider adding a description to explain the purpose of the measure in plain business terms. Ensure that the measure is necessary and aligns with the business use case. If it is a utility measure, consider hiding it from the report view to avoid confusion for end-users.","Rename the measure to something more descriptive, such as 'Extracted_Username', to better reflect its purpose and calculation logic. This will improve clarity for business users."

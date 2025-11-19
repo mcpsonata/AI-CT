@@ -10,7 +10,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -34,7 +33,6 @@ env/
 .env.production
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -48,6 +46,10 @@ logs/
 *.db
 *.sqlite
 *.sqlite3
+
+# Flask Sessions (contains sensitive tokens)
+webapp/flask_session/
+flask_session/
 
 # Azure
 .azure/
