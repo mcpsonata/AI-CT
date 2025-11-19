@@ -1,0 +1,772 @@
+{
+  "timestamp": "2025-11-18T19:42:59.223152",
+  "data": [
+    {
+      "WorkspaceName": "MSXI-SPAR-Orchestration",
+      "DatasetName": "AccountTransition_DL"
+    },
+    {
+      "WorkspaceName": "Modern Work & Security Reporting",
+      "DatasetName": "FY26 Seller Maturity"
+    },
+    {
+      "WorkspaceName": "Modern Work & Security Reporting",
+      "DatasetName": "FY26 Seller Maturity"
+    },
+    {
+      "WorkspaceName": "Modern Work & Security Reporting",
+      "DatasetName": "Rise KPIs Security"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Azure IAP AMP Reporting Model"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_Funding"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "BICore_ProductFinder"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "WWBI_CustomerJourney_Import"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "WW_AmericasBI_AzureDateGrain"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_ORTF"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_DIB_PartnerDashboard_FY26"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_E5Stoplight"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_VirtualTeamMap"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_MWSCI"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_MWSCI"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_MWSCI"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_AzureTrends_SMC"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_CustomerCentric_FY26"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_PartnerACR_FY26"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_PartnerACR_FY26_WWVersion"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_MACC"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_MACC"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "DataVisibilityFAQ"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_BizApps - Americas"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "Azure_All_In_One_EMEA"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_PartnerHealthDashboard_FY26"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_AzureDateGrain_Enterprise"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_AzureDateGrain_SMC"
+    },
+    {
+      "WorkspaceName": "MSXI-BI-Americas-Prod",
+      "DatasetName": "MSA_AzureTrends_Enterprise"
+    },
+    {
+      "WorkspaceName": "CPP",
+      "DatasetName": "Customer Potential for Managed Accounts"
+    },
+    {
+      "WorkspaceName": "BICOE_Dev_BICore_BilledPipeline02",
+      "DatasetName": "IAPDigitalSignalsSMB"
+    },
+    {
+      "WorkspaceName": "*MSX Leader Insights",
+      "DatasetName": "Industry Dashboard - FinHub"
+    },
+    {
+      "WorkspaceName": "*MSX Leader Insights",
+      "DatasetName": "Industry Dashboard - FinHub"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_DealsAndClaims_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02-UAT",
+      "DatasetName": "MSBilledPipeline_Agent"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureSnapshotGeneric"
+    },
+    {
+      "WorkspaceName": "OCDMSMB",
+      "DatasetName": "SMB RFY ROB Insights"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "Azure_All_In_One_Asia"
+    },
+    {
+      "WorkspaceName": "*MSX Leader Insights",
+      "DatasetName": "MSX Insights Reports Incidents Dashboard"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "BilledPipelineExcellence"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "BilledPipelineExcellence"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "BilledPipelineExcellence"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIConsumptionAzBzGeneric_Import"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIConsumptionAzBzGeneric_Import"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIConsumptionAzBzGeneric_Import"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIConsumptionAzBzGeneric_Import"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure03",
+      "DatasetName": "FabricMSXI_AzurePipelineVelocity"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_DealsAndClaims_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline01",
+      "DatasetName": "MSBilledPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-BizApps",
+      "DatasetName": "FabricMSXI_UsageCloseRateReporting"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline01",
+      "DatasetName": "MSBilledPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline01",
+      "DatasetName": "MSBilledPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline01",
+      "DatasetName": "MSBilledPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline01",
+      "DatasetName": "MSBilledPipeline"
+    },
+    {
+      "WorkspaceName": "SMB Insights",
+      "DatasetName": "SMC Solution Plays"
+    },
+    {
+      "WorkspaceName": "MSXI-BizApps",
+      "DatasetName": "MSXI_CXPulse"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureCloseRate"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureCloseRate"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureCloseRate"
+    },
+    {
+      "WorkspaceName": "CES Staffing Insights",
+      "DatasetName": "CES Request Elevation"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure03",
+      "DatasetName": "MSXI_StrategicGrowthShaping"
+    },
+    {
+      "WorkspaceName": "GPS Investments & Incentives [PROD]",
+      "DatasetName": "Partner Incentives - Activities"
+    },
+    {
+      "WorkspaceName": "PSDI Premium Workspace",
+      "DatasetName": "EDE STA Staffing"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure02",
+      "DatasetName": "FabricGitHubCopilot"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure03",
+      "DatasetName": "MSXI - ADS Accelerate Initiative"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Developer MAU"
+    },
+    {
+      "WorkspaceName": "MSXI-BizApps",
+      "DatasetName": "MSXI_BizAppsUsageExcellence"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "BilledPipelineSlips"
+    },
+    {
+      "WorkspaceName": "MSXI-BizApps",
+      "DatasetName": "MSXI_CAMM"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_SurfaceReporting_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIConsumptionAzBzGeneric_Import"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "CH&G ACR Acceleration Dataset"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "CH&G ACR Acceleration Dataset"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure02",
+      "DatasetName": "FabricMSXIAzureSnapshotCurated"
+    },
+    {
+      "WorkspaceName": "Modern Work & Security Reporting",
+      "DatasetName": "Security VSU Dashboard"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "MSA_AzureConsumption_SMC"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "MSA_AzureConsumption_SMC"
+    },
+    {
+      "WorkspaceName": "MCAPS E&O Compete",
+      "DatasetName": "Compete Signal Dashboard"
+    },
+    {
+      "WorkspaceName": "MSXI-ATU-ISD",
+      "DatasetName": "IAP_ATU_Leader"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Azure Enablement Score"
+    },
+    {
+      "WorkspaceName": "MSXI-BizApps",
+      "DatasetName": "MSXI_BizAppsUsage_Reporting_Import"
+    },
+    {
+      "WorkspaceName": "MSXI-BizApps",
+      "DatasetName": "MSXI_BizAppsUsage_Reporting_Import"
+    },
+    {
+      "WorkspaceName": "*MSX Leader Insights",
+      "DatasetName": "MSXI PLT Report"
+    },
+    {
+      "WorkspaceName": "BICOE-Fabric-Sandbox",
+      "DatasetName": "BI COE Governance Dashboard"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure03",
+      "DatasetName": "MSXI_StrategicGrowthShaping"
+    },
+    {
+      "WorkspaceName": "MSXI-BizApps",
+      "DatasetName": "FabricMSXI_UsageCloseRateReporting"
+    },
+    {
+      "WorkspaceName": "MSXI-MACC",
+      "DatasetName": "FabricMSXI_MACCtoACRAcceleration"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "ASM Insights"
+    },
+    {
+      "WorkspaceName": "BICOE_Prod_BICore_BilledPipeline02",
+      "DatasetName": "MSBilledPipelineSpecialist"
+    },
+    {
+      "WorkspaceName": "BICOE_Prod_BICore_BilledPipeline02",
+      "DatasetName": "SalesAccelerator"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_DealsAndClaims_PROD"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "MCEM Rooms of the House"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_NRO_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure03",
+      "DatasetName": "Fabric_MSXI_CSUPerformance_Import"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "One Copilot"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure02",
+      "DatasetName": "MSXICapacityBenchmarkAllocationError_Import"
+    },
+    {
+      "WorkspaceName": "*MSX Leader Insights",
+      "DatasetName": "PnL_MSXI_Additional_Reports"
+    },
+    {
+      "WorkspaceName": "MSXI-ATU-ISD",
+      "DatasetName": "IAP_ATU_Field"
+    },
+    {
+      "WorkspaceName": "MSXI-SPAR-Orchestration",
+      "DatasetName": "MSXContentUsage_DL"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureCloseRate"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureCloseRate"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "MSPipeline"
+    },
+    {
+      "WorkspaceName": "OCDMSMB",
+      "DatasetName": "MW Performance Dashboard"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_SurfaceReporting_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure02",
+      "DatasetName": "MSXI_AzureMigrations"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline01",
+      "DatasetName": "MSBilledPipeline"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Azure Enablement Score SMB"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Workload Resiliency Insights Dashboard"
+    },
+    {
+      "WorkspaceName": "MSXI-MW&Security",
+      "DatasetName": "MSXI_SecurityUsage"
+    },
+    {
+      "WorkspaceName": "MSX Insights PRD",
+      "DatasetName": "AIT Leader Landing Page"
+    },
+    {
+      "WorkspaceName": "MSXI-BizApps",
+      "DatasetName": "FabricMSXI_UsageCloseRateReporting"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure02",
+      "DatasetName": "FabricMSXI_ESPenetrationReporting"
+    },
+    {
+      "WorkspaceName": "BICOE_Prod_BICore_BilledPipeline02",
+      "DatasetName": "IAPDigitalSignals"
+    },
+    {
+      "WorkspaceName": "GPS Investments & Incentives [PROD]",
+      "DatasetName": "SMB SureStep"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_SurfaceReporting_PROD"
+    },
+    {
+      "WorkspaceName": "GPS Prod Power BI Workspace [Production]",
+      "DatasetName": "GPS Single Partner Insights - Introduction (Read Me)"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_SurfaceReporting_PROD"
+    },
+    {
+      "WorkspaceName": "OCDMSMB",
+      "DatasetName": "SMC ASM Executive Summary"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureMTDCloseRate"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Azure SMB Maturity Model"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_Multinational_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_DealsAndClaims_PROD"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Incubation Hub - Exec Summary"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "AI Big Bets"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_SurfaceReporting_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "MSBilledPipelineCurated"
+    },
+    {
+      "WorkspaceName": "MSXI-MW&Security",
+      "DatasetName": "MSXI_MWUsage&Excellence"
+    },
+    {
+      "WorkspaceName": "GPS Prod Power BI Workspace",
+      "DatasetName": "Program History Dataset"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "MSPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "MSPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "MSPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure02",
+      "DatasetName": "FabricMSXIConsumptionAzBzCurated_Import"
+    },
+    {
+      "WorkspaceName": "GPS Investments & Incentives [PROD]",
+      "DatasetName": "Activities Utilization - ROB"
+    },
+    {
+      "WorkspaceName": "MSXI-ATU-ISD",
+      "DatasetName": "'Majors Growth’ - New MACC Propensity List"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_SurfaceReporting_PROD"
+    },
+    {
+      "WorkspaceName": "*MSX Leader Insights Dev",
+      "DatasetName": "ATU - Validation Automation"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure02",
+      "DatasetName": "MSXICapacityBenchmark_Import"
+    },
+    {
+      "WorkspaceName": "Modern Work & Security Reporting",
+      "DatasetName": "Protea"
+    },
+    {
+      "WorkspaceName": "BICOE_Prod_BICore_BilledPipeline02",
+      "DatasetName": "SalesAccelerator"
+    },
+    {
+      "WorkspaceName": "OCT",
+      "DatasetName": "OCT Report"
+    },
+    {
+      "WorkspaceName": "OCT",
+      "DatasetName": "OCT Report"
+    },
+    {
+      "WorkspaceName": "BICOE-Fabric-Sandbox",
+      "DatasetName": "OCT (V1)"
+    },
+    {
+      "WorkspaceName": "CES Capacity Insights",
+      "DatasetName": "CES Capacity Insights"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_SurfaceReporting_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline01",
+      "DatasetName": "AccountPlanning"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Milestone Impact Combined"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "MSA_AzureConsumption_Enterprise"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "MSA_AzureConsumption_Enterprise"
+    },
+    {
+      "WorkspaceName": "MSXI-Surface",
+      "DatasetName": "MSXI_AMP_DealsAndClaims_PROD"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "MSA_AzureConsumption_Enterprise"
+    },
+    {
+      "WorkspaceName": "*MSX Leader Insights",
+      "DatasetName": "MSXI 2.0 Telemetry"
+    },
+    {
+      "WorkspaceName": "MSXI-MW&Security",
+      "DatasetName": "MSXI_MWUsage&Excellence"
+    },
+    {
+      "WorkspaceName": "BICOE_Prod_BICore_BilledPipeline02",
+      "DatasetName": "MSBilledPipelineSnapshot"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline01",
+      "DatasetName": "MSBilledPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain-Dev",
+      "DatasetName": "MSXI_AzureMigrations"
+    },
+    {
+      "WorkspaceName": "MSXI-BilledPipeline02",
+      "DatasetName": "BilledPipelineTrending"
+    },
+    {
+      "WorkspaceName": "MSXI-ATU-ISD",
+      "DatasetName": "IAP_ATU_IA"
+    },
+    {
+      "WorkspaceName": "*MSX Leader Insights",
+      "DatasetName": "BI COE Svc Mgmt KPIs"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureTotalCompletedPipeline"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureTotalCompletedPipeline"
+    },
+    {
+      "WorkspaceName": "BICOE_Prod_BICore_BilledPipeline02",
+      "DatasetName": "MSBilledPipelineSpecialist"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Azure Land & Expand"
+    },
+    {
+      "WorkspaceName": "Modern Work & Security Reporting",
+      "DatasetName": "M365 Copilot"
+    },
+    {
+      "WorkspaceName": "MCAPS Scrum",
+      "DatasetName": "Market Share Report"
+    },
+    {
+      "WorkspaceName": "MSXI-Azure01",
+      "DatasetName": "FabricMSXIAzureCloseRate"
+    },
+    {
+      "WorkspaceName": "GPS Prod Power BI Workspace",
+      "DatasetName": "FY25 YTD Partner Readiness Overview"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "MSXI_AzureMigrations"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "SMC-C Field Azure - Prod Model FY26 V2"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "IAP SMC-C Field Billed- Prod Model FY26 V1"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "IAP SMC-C Field Billed- Prod Model FY26 V1"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Security_IAP_AMP_Reporting_Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Security_IAP_AMP_Reporting_Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Unified Action Tracker Insights Cross Cloud"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "AI Penetration Prod Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "IAP SMC-C Field Billed- Prod Model FY26 V1"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Pipeline Excellence AMP Reporting Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Pipeline Excellence AMP Reporting Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Pipeline Excellence AMP Reporting - Seller"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Azure IAP AMP Reporting Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "AI_IAP_AMP_Migrated"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "AI_IAP_AMP_Migrated"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Pipeline Excellence AMP Reporting Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "MW_IAP_AMP_Migrated_Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "MW_IAP_AMP_Migrated_Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "One ROB FY26 Prod Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "CrossSolution_IAP_rewire"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Tech RoB Adoption Dashboard - Model"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "Technical Feedback"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "FastStart_FY26_Dataset"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "BizApps_IAP_AMP_Reporting"
+    },
+    {
+      "WorkspaceName": "MSXI-CrossDomain",
+      "DatasetName": "BizApps_IAP_AMP_Reporting"
+    }
+  ],
+  "source": "*MSX Leader Insights -> MSXI 2.0 Telemetry",
+  "table": "dimreport_table",
+  "count": 191
+}

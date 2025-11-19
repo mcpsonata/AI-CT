@@ -1,0 +1,498 @@
+Table,Measure,Expression,Description,Issue_Severity,Has_Duplicate,Duplicate_Measure_Names,Has_Qualified_Measure_References,Qualified_Referenced_Measures,Has_All_Measure_References,All_Referenced_Measures,Has_Commonly_Used_Measure,DAX_Recommendations,Context,Self_Explanatory_Explanation,Name_Reflects_Explanation,Abbreviations_Explanation,Overall_Score,Max_Overall_Score,Confidence_Score,Unqualified_Measures_Score,Unqualified_Measures_Max_Score,Unique_Measure_Calculation_Score,Unique_Measure_Calculation_Max_Score,Commonly_Used_Measure_Score,Commonly_Used_Measure_Max_Score,Is_Self_Explanatory_Score,Is_Self_Explanatory_Max_Score,Name_Reflects_Expression_Score,Name_Reflects_Expression_Max_Score,Avoid_Abbreviations_Score,Avoid_Abbreviations_Max_Score,Severity_Priority,Severity_Color_Code,Severity_Hex_Color,Calculation_Type,Complexity_Score,Complexity_Management_Score,Complexity_Recommendations,Complexity_Management_Max_Score
+Account,TPID Count,COUNT( Account[TPID] ),,good,No,,No,,No,,Yes,,TPID Count -> Account + COUNT( Account[TPID] ),"The name 'TPID Count' is self-explanatory as it clearly indicates it counts TPIDs, which is confirmed by the context.","The name accurately reflects the calculation, which is a count of TPIDs in the Account table.",There are no problematic abbreviations in the name; 'TPID' is a standard term.,2.0,2.0,1.0,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,# Accounts w/ Unified or Premier,"CALCULATE([TPID Count],KEEPFILTERS(Account[Has Premier Unified] = ""Yes""))",,warning,No,,No,,Yes,tpid count,No,,"# Accounts w/ Unified or Premier -> Account + CALCULATE([TPID Count],KEEPFILTERS(Account[Has Premier Unified] = ""Yes"")) | REFERENCES: TPID Count -> Account + COUNT( Account[TPID] )","The name '# Accounts w/ Unified or Premier' is self-explanatory as it indicates it counts accounts with Unified or Premier status, which aligns with the context.","The name reflects the calculation, which filters accounts with 'Has Premier Unified' set to 'Yes' and counts them.",There are no problematic abbreviations; the use of '#' for 'number of' and 'w/' for 'with' is widely understood.,1.6099999999999999,2.0,0.8049999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Account,ATQ Latest,AVERAGE(Account[ATQ]),,critical,No,,No,,No,,No,,ATQ Latest -> Account + AVERAGE(Account[ATQ]),The name 'ATQ Latest' is not self-explanatory as 'ATQ' is not a commonly understood term without additional context.,"The name does not clearly reflect the calculation, which is the average of the 'ATQ' field. The term 'Latest' is also unclear in this context.",'ATQ' is a cryptic abbreviation that is not commonly understood.,0.7,2.0,0.35,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,Understands Strategic Priorities Latest,AVERAGE(Account[UnderstandsStrategicPriorities]),,good,No,,No,,No,,No,,Understands Strategic Priorities Latest -> Account + AVERAGE(Account[UnderstandsStrategicPriorities]),"The name 'Understands Strategic Priorities Latest' is self-explanatory as it indicates it calculates the latest understanding of strategic priorities, which aligns with the context.","The name reflects the calculation, which is the average of the 'UnderstandsStrategicPriorities' field.",There are no problematic abbreviations in the name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,Identify Right Solutions Based on Needs Latest,AVERAGE(Account[IdentifyRightSolutionsBasedonNeeds]),,good,No,,No,,No,,No,,Identify Right Solutions Based on Needs Latest -> Account + AVERAGE(Account[IdentifyRightSolutionsBasedonNeeds]),"The name 'Identify Right Solutions Based on Needs Latest' is self-explanatory as it indicates it calculates the latest identification of solutions based on needs, which aligns with the context.","The name reflects the calculation, which is the average of the 'IdentifyRightSolutionsBasedonNeeds' field.",There are no problematic abbreviations in the name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,Delta ATQ,"IF(AVERAGE(Account[ATQ])=0,"""",AVERAGE(Account[delta_ATQ]))",,critical,No,,No,,No,,No,,"Delta ATQ -> Account + IF(AVERAGE(Account[ATQ])=0,"""",AVERAGE(Account[delta_ATQ]))",The name 'Delta ATQ' is not self-explanatory as 'ATQ' is not a commonly understood term without additional context.,"The name does not clearly reflect the calculation, which involves conditional logic and averages of 'delta_ATQ'.",'ATQ' is a cryptic abbreviation that is not commonly understood.,0.7,2.0,0.35,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,Delta Understands Strategic Priorities,"IF(AVERAGE(Account[UnderstandsStrategicPriorities])=0,"""",AVERAGE(Account[delta_UnderstandsStrategicPriorities]))",,warning,No,,No,,No,,No,,"Delta Understands Strategic Priorities -> Account + IF(AVERAGE(Account[UnderstandsStrategicPriorities])=0,"""",AVERAGE(Account[delta_UnderstandsStrategicPriorities]))","The name 'Delta Understands Strategic Priorities' is self-explanatory as it indicates it calculates the change (delta) in understanding strategic priorities, which aligns with the context.","The name reflects the calculation, which involves conditional logic and averages of 'delta_UnderstandsStrategicPriorities'.",There are no problematic abbreviations in the name.,1.6099999999999999,2.0,0.8049999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7,0.21,Formula follows Rule 4 complexity best practices,0.3
+Account,Delta Identify Right Solutions Based on Needs,"IF(AVERAGE(Account[IdentifyRightSolutionsBasedonNeeds])=0,"""",AVERAGE(Account[delta_IdentifyRightSolutionsBasedonNeeds]))",,warning,No,,No,,No,,No,,"Delta Identify Right Solutions Based on Needs -> Account + IF(AVERAGE(Account[IdentifyRightSolutionsBasedonNeeds])=0,"""",AVERAGE(Account[delta_IdentifyRightSolutionsBasedonNeeds]))","The name 'Delta Identify Right Solutions Based on Needs' is self-explanatory as it indicates it calculates the change (delta) in identifying solutions based on needs, which aligns with the context.","The name reflects the calculation, which involves conditional logic and averages of 'delta_IdentifyRightSolutionsBasedonNeeds'.",There are no problematic abbreviations in the name.,1.6099999999999999,2.0,0.8049999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7,0.21,Formula follows Rule 4 complexity best practices,0.3
+Account,% of Accounts with Exec Sponsor,"var num= CALCULATE(SUMX(VALUES('Account Plan Priority'[AccountPlanPriorityID]),1),
+    KEEPFILTERS(Account[executivesponsorid] <> blank())
+)
+var den= SUMX( VALUES( 'Account Plan Priority'[AccountPlanPriorityID] ), 1 ) 
+
+
+return DIVIDE(num,den)",,warning,No,,No,,No,,No,,"% of Accounts with Exec Sponsor -> Account + var num= CALCULATE(SUMX(VALUES('Account Plan Priority'[AccountPlanPriorityID]),1),
+    KEEPFILTERS(Account[executivesponsorid] <> blank())
+)
+var den= SUMX( VALUES( 'Account Plan Priority'[AccountPlanPriorityID] ), 1 ) 
+
+
+return DIVIDE(num,den)","The name '% of Accounts with Exec Sponsor' is self-explanatory as it indicates it calculates the percentage of accounts with an executive sponsor, which aligns with the context.","The name reflects the calculation, which divides the number of accounts with an executive sponsor by the total number of accounts.",There are no problematic abbreviations; 'Exec' is a standard abbreviation for 'Executive'.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account,Helps Maximize Solutions Latest,AVERAGE(Account[HelpsMaximizeSolutions]),,good,No,,No,,No,,No,,Helps Maximize Solutions Latest -> Account + AVERAGE(Account[HelpsMaximizeSolutions]),"The name 'Helps Maximize Solutions Latest' is self-explanatory as it indicates it calculates the latest value for helping maximize solutions, which aligns with the context.","The name reflects the calculation, which is the average of the 'HelpsMaximizeSolutions' field.",There are no problematic abbreviations in the name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,Delta Helps Maximize Solutions Value,"IF(AVERAGE(Account[HelpsMaximizeSolutions])=0,"""",AVERAGE(Account[delta_HelpsMaximizeSolutions]))",,good,No,,No,,No,,No,,"Delta Helps Maximize Solutions Value -> Account + IF(AVERAGE(Account[HelpsMaximizeSolutions])=0,"""",AVERAGE(Account[delta_HelpsMaximizeSolutions]))","The name 'Delta Helps Maximize Solutions Value' is self-explanatory as it indicates it calculates the change (delta) in helping maximize solutions value, which aligns with the context.","The name reflects the calculation, which involves conditional logic and averages of 'delta_HelpsMaximizeSolutions'.",There are no problematic abbreviations in the name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,Delta Joint Planning Addresses Needs,"IF(AVERAGE(Account[JointPlanningAddressesNeeds])=0,"""",AVERAGE(Account[delta_JointPlanningAddressesNeeds]))",,warning,No,,No,,No,,No,,"Delta Joint Planning Addresses Needs -> Account + IF(AVERAGE(Account[JointPlanningAddressesNeeds])=0,"""",AVERAGE(Account[delta_JointPlanningAddressesNeeds]))","The name 'Delta Joint Planning Addresses Needs' is self-explanatory as it indicates it calculates the change (delta) in joint planning addressing needs, which aligns with the context.","The name reflects the calculation, which involves conditional logic and averages of 'delta_JointPlanningAddressesNeeds'.",There are no problematic abbreviations in the name.,1.6099999999999999,2.0,0.8049999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7,0.21,Formula follows Rule 4 complexity best practices,0.3
+Account,Joint Planning Addresses Needs,AVERAGE(Account[JointPlanningAddressesNeeds]),,good,No,,No,,No,,No,,Joint Planning Addresses Needs -> Account + AVERAGE(Account[JointPlanningAddressesNeeds]),"The name 'Joint Planning Addresses Needs' is self-explanatory as it indicates it calculates the value for joint planning addressing needs, which aligns with the context.","The name reflects the calculation, which is the average of the 'JointPlanningAddressesNeeds' field.",There are no problematic abbreviations in the name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,Delta Continuous Relationship Building,"IF(AVERAGE(Account[ContinuousRelationshipBuilding])=0,"""",AVERAGE(Account[delta_ContinuousRelationshipBuilding]))",,warning,No,,No,,No,,No,,"Delta Continuous Relationship Building -> Account + IF(AVERAGE(Account[ContinuousRelationshipBuilding])=0,"""",AVERAGE(Account[delta_ContinuousRelationshipBuilding]))","The name 'Delta Continuous Relationship Building' is self-explanatory as it indicates it calculates the change (delta) in continuous relationship building, which aligns with the context.","The name reflects the calculation, which involves conditional logic and averages of 'delta_ContinuousRelationshipBuilding'.",There are no problematic abbreviations in the name.,1.6099999999999999,2.0,0.8049999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7,0.21,Formula follows Rule 4 complexity best practices,0.3
+Account,Continuous Relationship Building,AVERAGE(Account[ContinuousRelationshipBuilding]),,good,No,,No,,No,,No,,Continuous Relationship Building -> Account + AVERAGE(Account[ContinuousRelationshipBuilding]),"The name 'Continuous Relationship Building' is self-explanatory as it indicates it calculates the value for continuous relationship building, which aligns with the context.","The name reflects the calculation, which is the average of the 'ContinuousRelationshipBuilding' field.",There are no problematic abbreviations in the name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,simple_aggregation,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,% of Accounts with sep,"var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[issep]=""yes""))
+
+RETURN DIVIDE(num,den)",,issue,No,,No,,Yes,tpid count,No,,"% of Accounts with sep -> Account + var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[issep]=""yes""))
+
+RETURN DIVIDE(num,den) | REFERENCES: TPID Count -> Account + COUNT( Account[TPID] )","The name '% of Accounts with sep' is self-explanatory in the context of the measure, as it clearly indicates it calculates the percentage of accounts with a specific condition ('sep').","The name accurately reflects the calculation, which divides the count of accounts with 'issep' = 'yes' by the total count of accounts.","The abbreviation 'sep' is unclear and not standard, making the name cryptic.",1.2999999999999998,2.0,0.6499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,% of Accounts with ACSP,"var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[isacsp]=""yes""))
+
+RETURN DIVIDE(num,den)",,issue,No,,No,,Yes,tpid count,No,,"% of Accounts with ACSP -> Account + var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[isacsp]=""yes""))
+
+RETURN DIVIDE(num,den) | REFERENCES: TPID Count -> Account + COUNT( Account[TPID] )","The name '% of Accounts with ACSP' is self-explanatory in the context of the measure, as it indicates it calculates the percentage of accounts with a specific condition ('ACSP').","The name reflects the calculation, which divides the count of accounts with 'isacsp' = 'yes' by the total count of accounts.","The abbreviation 'ACSP' is unclear and not standard, making the name cryptic.",1.2999999999999998,2.0,0.6499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,% of Accounts with APT,"var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[isapt]=""yes""))
+
+RETURN DIVIDE(num,den)",,issue,No,,No,,Yes,tpid count,No,,"% of Accounts with APT -> Account + var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[isapt]=""yes""))
+
+RETURN DIVIDE(num,den) | REFERENCES: TPID Count -> Account + COUNT( Account[TPID] )","The name '% of Accounts with APT' is self-explanatory in the context of the measure, as it indicates it calculates the percentage of accounts with a specific condition ('APT').","The name reflects the calculation, which divides the count of accounts with 'isapt' = 'yes' by the total count of accounts.","The abbreviation 'APT' is unclear and not standard, making the name cryptic.",1.2999999999999998,2.0,0.6499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account,% of Accounts with CSAA,"var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[iscsaa]=""yes""))
+
+RETURN DIVIDE(num,den)",,issue,No,,No,,Yes,tpid count,No,,"% of Accounts with CSAA -> Account + var den=[TPID Count]
+var num=CALCULATE([TPID Count],keepfilters(Account[iscsaa]=""yes""))
+
+RETURN DIVIDE(num,den) | REFERENCES: TPID Count -> Account + COUNT( Account[TPID] )","The name '% of Accounts with CSAA' is self-explanatory in the context of the measure, as it indicates it calculates the percentage of accounts with a specific condition ('CSAA').","The name reflects the calculation, which divides the count of accounts with 'iscsaa' = 'yes' by the total count of accounts.","The abbreviation 'CSAA' is unclear and not standard, making the name cryptic.",1.2999999999999998,2.0,0.6499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Calendar,Last Refresh Icon,"""🕘""",,good,No,,No,,No,,No,,"Last Refresh Icon -> Calendar + ""🕘""","The name 'Last Refresh Icon' is self-explanatory, as it clearly indicates it represents an icon for the last refresh.","The name reflects the calculation, which returns a static clock emoji ('🕘') to represent the last refresh.",There are no problematic abbreviations in the name.,1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Calendar,Information Icon,"""i""",,good,No,,No,,No,,No,,"Information Icon -> Calendar + ""i""","The name 'Information Icon' is self-explanatory, as it clearly indicates it represents an icon for information.","The name reflects the calculation, which returns a static 'i' character to represent information.",There are no problematic abbreviations in the name.,1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Calendar,Filters Applied Icon,"""🗸""",,good,No,,No,,No,,No,,"Filters Applied Icon -> Calendar + ""🗸""","The name 'Filters Applied Icon' is self-explanatory, as it clearly indicates it represents an icon for filters applied.","The name reflects the calculation, which returns a static filter emoji ('🗸') to represent filters applied.",There are no problematic abbreviations in the name.,1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,# of Priorities w/ Pipeline,"CALCULATE([# of Priorities] 
+,KEEPFILTERS('Account Planning'[Attached To Opportunity] = ""Yes"")
+,KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))",,good,No,,No,,Yes,# of priorities,Yes,,"# of Priorities w/ Pipeline -> Account Planning + CALCULATE([# of Priorities] 
+,KEEPFILTERS('Account Planning'[Attached To Opportunity] = ""Yes"")
+,KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties"")) | REFERENCES: # of Priorities -> Account Planning + SUMX( VALUES( 'Account Planning'[AccountPlanPriorityID] ), 1 )
+ ","The name '# of Priorities w/ Pipeline' is self-explanatory, as it indicates it calculates the count of priorities with a pipeline.","The name reflects the calculation, which counts priorities attached to opportunities with a specific parenting level.",There are no problematic abbreviations in the name.,1.94,2.0,0.97,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7999999999999999,0.23999999999999996,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% of Priorities w/ Pipeline,"CALCULATE(DIVIDE([# of Priorities w/ Pipeline],[# of Priorities]),KEEPFILTERS(Opportunity[ParentingLevel Oppties]=""TopParentOppties""))",,warning,No,,No,,Yes,"# of priorities, # of priorities w/ pipeline",No,,"% of Priorities w/ Pipeline -> Account Planning + CALCULATE(DIVIDE([# of Priorities w/ Pipeline],[# of Priorities]),KEEPFILTERS(Opportunity[ParentingLevel Oppties]=""TopParentOppties"")) | REFERENCES: # of Priorities -> Account Planning + SUMX( VALUES( 'Account Planning'[AccountPlanPriorityID] ), 1 )
+ , # of Priorities w/ Pipeline -> Account Planning + CALCULATE([# of Priorities] 
+,KEEPFILTERS('Account Planning'[Attached To Opportunity] = ""Yes"")
+,KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))","The name '% of Priorities w/ Pipeline' is self-explanatory, as it indicates it calculates the percentage of priorities with a pipeline.","The name reflects the calculation, which divides the count of priorities with a pipeline by the total count of priorities.",There are no problematic abbreviations in the name.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Account Planning,# of Account Plans,"CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")",,good,No,,No,,No,,Yes,,"# of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")","The name '# of Account Plans' is self-explanatory, as it indicates it calculates the count of account plans.","The name reflects the calculation, which counts account plans attached to accounts.",There are no problematic abbreviations in the name.,1.79,2.0,0.895,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,# of Priorities,"SUMX( VALUES( 'Account Planning'[AccountPlanPriorityID] ), 1 )
+ ",,good,No,,No,,No,,Yes,,"# of Priorities -> Account Planning + SUMX( VALUES( 'Account Planning'[AccountPlanPriorityID] ), 1 )
+ ","The name '# of Priorities' is self-explanatory, as it indicates it calculates the count of priorities.","The name reflects the calculation, which counts the number of priorities based on their IDs.",There are no problematic abbreviations in the name.,1.79,2.0,0.895,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,% Accounts w/ Active Plan,"VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""Active Plan"" )
+    )
+RETURN
+    DIVIDE( Numerator, [# of Account Plans] )",,good,No,,No,,Yes,# of account plans,No,,"% Accounts w/ Active Plan -> Account Planning + VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""Active Plan"" )
+    )
+RETURN
+    DIVIDE( Numerator, [# of Account Plans] ) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")","The name '% Accounts w/ Active Plan' is self-explanatory, as it indicates it calculates the percentage of accounts with an active plan.","The name reflects the calculation, which divides the count of accounts with an active plan by the total count of account plans.",There are no problematic abbreviations in the name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% Accounts w/ No Plan,"VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""No Plan"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans] )",,warning,No,,No,,Yes,# of account plans,No,,"% Accounts w/ No Plan -> Account Planning + VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""No Plan"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans] ) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")","The name '% Accounts w/ No Plan' is self-explanatory, as it indicates it calculates the percentage of accounts with no plan.","The name reflects the calculation, which divides the count of accounts with no plan by the total count of account plans.",There are no problematic abbreviations in the name.,1.52,2.0,0.76,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,% Accounts w/ Inactive Plan,"VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status]  = ""Inactive Plan"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans],"""" )",,warning,No,,No,,Yes,# of account plans,No,,"% Accounts w/ Inactive Plan -> Account Planning + VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status]  = ""Inactive Plan"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans],"""" ) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")","The name '% Accounts w/ Inactive Plan' is self-explanatory, as it indicates it calculates the percentage of accounts with an inactive plan.","The name reflects the calculation, which divides the count of accounts with an inactive plan by the total count of account plans.",There are no problematic abbreviations in the name.,1.52,2.0,0.76,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,% Accounts w/ Plan Close to Inactive,"VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""Plan Close to Inactive"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans],"""" )",,warning,No,,No,,Yes,# of account plans,No,,"% Accounts w/ Plan Close to Inactive -> Account Planning + VAR Numerator =
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Status] = ""Plan Close to Inactive"" )
+    )
+RETURN
+    DIVIDE ( Numerator, [# of Account Plans],"""" ) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")","The name '% Accounts w/ Plan Close to Inactive' is self-explanatory, as it indicates it calculates the percentage of accounts with a plan close to becoming inactive.","The name reflects the calculation, which divides the count of accounts with a plan close to inactive by the total count of account plans.",There are no problematic abbreviations in the name.,1.52,2.0,0.76,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,# Plans with Opportunities,"CALCULATE (
+    [# of Account Plans],
+    FILTER (
+        VALUES ( 'Account'[AccountPlanID] ),
+        [# of Priorities w/ Pipeline] > 0
+    )
+)",,good,No,,No,,Yes,"# of account plans, # of priorities w/ pipeline",Yes,,"# Plans with Opportunities -> Account Planning + CALCULATE (
+    [# of Account Plans],
+    FILTER (
+        VALUES ( 'Account'[AccountPlanID] ),
+        [# of Priorities w/ Pipeline] > 0
+    )
+) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes""), # of Priorities w/ Pipeline -> Account Planning + CALCULATE([# of Priorities] 
+,KEEPFILTERS('Account Planning'[Attached To Opportunity] = ""Yes"")
+,KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))",The name '# Plans with Opportunities' is self-explanatory as it clearly indicates it counts plans associated with opportunities.,"The name reflects the calculation, which filters account plans where there are priorities with a pipeline, aligning with the description.","The name uses standard abbreviations like '#' for 'number of', which are widely understood and not problematic.",1.8199999999999998,2.0,0.9099999999999999,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Replace division operator (/) with DIVIDE() function for error handling; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,% Accounts w/ Plan w/ Oppty,"DIVIDE ( [# Plans with Opportunities], [# of Account Plans],"""" )",,good,No,,No,,Yes,"# of account plans, # plans with opportunities",No,,"% Accounts w/ Plan w/ Oppty -> Account Planning + DIVIDE ( [# Plans with Opportunities], [# of Account Plans],"""" ) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes""), # Plans with Opportunities -> Account Planning + CALCULATE (
+    [# of Account Plans],
+    FILTER (
+        VALUES ( 'Account'[AccountPlanID] ),
+        [# of Priorities w/ Pipeline] > 0
+    )
+)",The name '% Accounts w/ Plan w/ Oppty' is self-explanatory as it indicates it calculates the percentage of accounts with plans that have opportunities.,"The name reflects the calculation, which divides the number of plans with opportunities by the total number of account plans.","The abbreviations 'w/' and 'Oppty' are common and widely understood, so they are not problematic.",1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,% Accounts w/ Strategic or Full Plan,"
+    DIVIDE ( [# Accounts w/ Strategic or Full Plan], [# of Account Plans],"""")",,good,No,,No,,Yes,"# accounts w/ strategic or full plan, # of account plans",No,,"% Accounts w/ Strategic or Full Plan -> Account Planning + 
+    DIVIDE ( [# Accounts w/ Strategic or Full Plan], [# of Account Plans],"""") | REFERENCES: # Accounts w/ Strategic or Full Plan -> Account Planning + 
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Type] IN {""0-Strategic"",""1-Full""} )
+    ), # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")",The name '% Accounts w/ Strategic or Full Plan' is self-explanatory as it indicates it calculates the percentage of accounts with either a strategic or full plan.,"The name reflects the calculation, which divides the number of accounts with strategic or full plans by the total number of account plans.",The abbreviation 'w/' is widely understood and not problematic.,1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Replace division operator (/) with DIVIDE() function for error handling; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,# Accounts w/ Strategic or Full Plan,"
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Type] IN {""0-Strategic"",""1-Full""} )
+    )",,good,No,,No,,Yes,# of account plans,Yes,,"# Accounts w/ Strategic or Full Plan -> Account Planning + 
+    CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Plan Type] IN {""0-Strategic"",""1-Full""} )
+    ) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")",The name '# Accounts w/ Strategic or Full Plan' is self-explanatory as it indicates it counts accounts with either a strategic or full plan.,"The name reflects the calculation, which filters account plans based on plan type being strategic or full.","The abbreviation '#' is widely understood as 'number of', so it is not problematic.",1.8199999999999998,2.0,0.9099999999999999,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,# Plans Manager Reviewed (last 6 months),"CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Manager Reviewed Date] >= (TODAY()-180)))",,good,No,,No,,Yes,# of account plans,Yes,,"# Plans Manager Reviewed (last 6 months) -> Account Planning + CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Manager Reviewed Date] >= (TODAY()-180))) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")",The name '# Plans Manager Reviewed (last 6 months)' is self-explanatory as it indicates it counts plans reviewed by managers in the last six months.,"The name reflects the calculation, which filters account plans based on the manager review date being within the last 180 days.","The abbreviation '#' is widely understood as 'number of', so it is not problematic.",1.94,2.0,0.97,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7999999999999999,0.23999999999999996,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% Plans Manager Reviewed (last 6 months),"
+    DIVIDE([# Plans Manager Reviewed (last 6 months)], [# of Account Plans],"""")",,warning,No,,No,,Yes,"# of account plans, # plans manager reviewed (last 6 months)",No,,"% Plans Manager Reviewed (last 6 months) -> Account Planning + 
+    DIVIDE([# Plans Manager Reviewed (last 6 months)], [# of Account Plans],"""") | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes""), # Plans Manager Reviewed (last 6 months) -> Account Planning + CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Manager Reviewed Date] >= (TODAY()-180)))",The name '% Plans Manager Reviewed (last 6 months)' is self-explanatory as it indicates it calculates the percentage of plans reviewed by managers in the last six months.,"The name reflects the calculation, which divides the number of plans reviewed by managers in the last six months by the total number of account plans.",The name does not contain any problematic abbreviations.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,# Accounts w/ Stakeholder Map,"CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Has Stakeholder] = ""Yes"" )
+    )",,good,No,,No,,Yes,# of account plans,Yes,,"# Accounts w/ Stakeholder Map -> Account Planning + CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Has Stakeholder] = ""Yes"" )
+    ) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")",The name '# Accounts w/ Stakeholder Map' is self-explanatory as it indicates it counts accounts with a stakeholder map.,"The name reflects the calculation, which filters account plans based on the presence of a stakeholder map.","The abbreviation '#' is widely understood as 'number of', so it is not problematic.",1.8199999999999998,2.0,0.9099999999999999,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,% Accounts w/ Stakeholder Map,"
+    DIVIDE( [# Accounts w/ Stakeholder Map], [# of Account Plans],"""")",,warning,No,,No,,Yes,"# accounts w/ stakeholder map, # of account plans",No,,"% Accounts w/ Stakeholder Map -> Account Planning + 
+    DIVIDE( [# Accounts w/ Stakeholder Map], [# of Account Plans],"""") | REFERENCES: # Accounts w/ Stakeholder Map -> Account Planning + CALCULATE (
+        [# of Account Plans],
+        KEEPFILTERS ( 'Account'[Has Stakeholder] = ""Yes"" )
+    ), # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")",The name '% Accounts w/ Stakeholder Map' is self-explanatory as it indicates it calculates the percentage of accounts with a stakeholder map.,"The name reflects the calculation, which divides the number of accounts with a stakeholder map by the total number of account plans.",The name does not contain any problematic abbreviations.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% of Priorities w/ future Date,"
+VAR Numerator = CALCULATE( [# of Active Priorities],
+    KEEPFILTERS( 'Account Plan Priority'[Time Frame Date] > today() )
+)        
+                                                            
+RETURN DIVIDE(Numerator,[# of Active Priorities],"""") ",,good,No,,No,,Yes,# of active priorities,No,,"% of Priorities w/ future Date -> Account Planning + 
+VAR Numerator = CALCULATE( [# of Active Priorities],
+    KEEPFILTERS( 'Account Plan Priority'[Time Frame Date] > today() )
+)        
+                                                            
+RETURN DIVIDE(Numerator,[# of Active Priorities],"""")  | REFERENCES: # of Active Priorities -> Account Planning + CALCULATE([# of Priorities],KEEPFILTERS('Account Plan Priority'[Priority Status]=""Active""))",The name '% of Priorities w/ future Date' is self-explanatory as it indicates it calculates the percentage of priorities with a future date.,"The name reflects the calculation, which divides the number of active priorities with a future date by the total number of active priorities.",The abbreviation 'w/' is widely understood and not problematic.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,Linked to Objectives,"var Num=CALCULATE([# of Priorities],'Account Planning'[CustomerObjectiveId] <> """",
+    'Account'[Plan Type] IN {""0-Strategic"",""1-Full""},
+    KEEPFILTERS('Account Plan Priority'[Priority Status] = ""Active"")
+)
+ Var Den=   CALCULATE([# of Priorities],'Account'[Plan Type] IN {""0-Strategic"",""1-Full""},
+        KEEPFILTERS('Account Plan Priority'[Priority Status] = ""Active"")    )
+ 
+RETURN DIVIDE(Num,Den)",,warning,No,,No,,Yes,# of priorities,No,,"Linked to Objectives -> Account Planning + var Num=CALCULATE([# of Priorities],'Account Planning'[CustomerObjectiveId] <> """",
+    'Account'[Plan Type] IN {""0-Strategic"",""1-Full""},
+    KEEPFILTERS('Account Plan Priority'[Priority Status] = ""Active"")
+)
+ Var Den=   CALCULATE([# of Priorities],'Account'[Plan Type] IN {""0-Strategic"",""1-Full""},
+        KEEPFILTERS('Account Plan Priority'[Priority Status] = ""Active"")    )
+ 
+RETURN DIVIDE(Num,Den) | REFERENCES: # of Priorities -> Account Planning + SUMX( VALUES( 'Account Planning'[AccountPlanPriorityID] ), 1 )
+ ",The name 'Linked to Objectives' is self-explanatory as it indicates it calculates the proportion of priorities linked to objectives.,"The name reflects the calculation, which divides the number of priorities linked to objectives by the total number of priorities.",The name does not contain any problematic abbreviations.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,Modified On,"IF(MAX('Account'[Days Since Modified])=BLANK(),BLANK(),IF(MAX('Account'[Days Since Modified])>30,0,1))",,warning,No,,No,,No,,No,,"Modified On -> Account Planning + IF(MAX('Account'[Days Since Modified])=BLANK(),BLANK(),IF(MAX('Account'[Days Since Modified])>30,0,1))",The name 'Modified On' is self-explanatory as it indicates it relates to the modification date of an account.,"The name reflects the calculation, which checks if the modification date is within a certain range.",The name does not contain any problematic abbreviations.,1.5499999999999998,2.0,0.7749999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,complex_calculation,0.5,0.15,Rule 4: Consider breaking complex calculation into multiple simpler measures,0.3
+Account Planning,Last Reviewed,"
+
+SWITCH (
+
+    TRUE,
+
+    MAX ( 'Account'[Manager Reviewed Date] ) = BLANK (), BLANK (),
+
+    MAX ( 'Account'[Manager Reviewed Flag] ) = ""Yes""
+
+        && MAX ( 'Account'[Manager Reviewed Date] )
+
+            > TODAY () - 90, 1,
+
+    0
+
+)",,warning,No,,No,,No,,No,,"Last Reviewed -> Account Planning + 
+
+SWITCH (
+
+    TRUE,
+
+    MAX ( 'Account'[Manager Reviewed Date] ) = BLANK (), BLANK (),
+
+    MAX ( 'Account'[Manager Reviewed Flag] ) = ""Yes""
+
+        && MAX ( 'Account'[Manager Reviewed Date] )
+
+            > TODAY () - 90, 1,
+
+    0
+
+)",The name 'Last Reviewed' is self-explanatory as it indicates it relates to the last review date of an account.,"The name reflects the calculation, which checks if the last review date meets certain conditions.",The name does not contain any problematic abbreviations.,1.58,2.0,0.79,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,complex_calculation,0.6,0.18,Rule 4: Consider breaking complex calculation into multiple simpler measures,0.3
+Account Planning,# of Plans w/ Priority,"SUMX( VALUES( 'Account Planning'[AccountPlanID] ), 1 )
+                ",,good,No,,No,,No,,No,,"# of Plans w/ Priority -> Account Planning + SUMX( VALUES( 'Account Planning'[AccountPlanID] ), 1 )
+                ",The name '# of Plans w/ Priority' is self-explanatory as it indicates it counts plans with priorities.,"The name reflects the calculation, which sums up plans with priorities.","The abbreviation '#' is widely understood as 'number of', so it is not problematic.",1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Account Planning,% of Priorities with Partner,"
+VAR Numerator = CALCULATE([# of Priorities] ,
+    KEEPFILTERS('Account Plan Partners'[AccountPartnerProfileId] <> """")
+)
+VAR Denominator = [# of Priorities]
+
+
+RETURN DIVIDE(Numerator,Denominator, BLANK())",,good,No,,No,,Yes,# of priorities,No,,"% of Priorities with Partner -> Account Planning + 
+VAR Numerator = CALCULATE([# of Priorities] ,
+    KEEPFILTERS('Account Plan Partners'[AccountPartnerProfileId] <> """")
+)
+VAR Denominator = [# of Priorities]
+
+
+RETURN DIVIDE(Numerator,Denominator, BLANK()) | REFERENCES: # of Priorities -> Account Planning + SUMX( VALUES( 'Account Planning'[AccountPlanPriorityID] ), 1 )
+ ",The name '% of Priorities with Partner' is self-explanatory as it indicates it calculates the percentage of priorities associated with a partner.,"The name reflects the calculation, which divides the number of priorities with a partner by the total number of priorities.",The name does not contain any problematic abbreviations.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% Plans Reviewed < 90 Days,"DIVIDE([# plans with manger reviewed date in last 90 days],[# of Account Plans],"""")",,warning,No,,No,,Yes,"# of account plans, # plans with manger reviewed date in last 90 days",No,,"% Plans Reviewed < 90 Days -> Account Planning + DIVIDE([# plans with manger reviewed date in last 90 days],[# of Account Plans],"""") | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes""), # plans with manger reviewed date in last 90 days -> Account Planning + CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Manager Reviewed Date] >= (TODAY()-90)))",The name '% Plans Reviewed < 90 Days' is self-explanatory as it indicates it calculates the percentage of plans reviewed within the last 90 days.,"The name reflects the calculation, which divides the number of plans reviewed in the last 90 days by the total number of account plans.",The name does not contain any problematic abbreviations.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,# plans with manger reviewed date in last 90 days,"CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Manager Reviewed Date] >= (TODAY()-90)))",,good,No,,No,,Yes,# of account plans,Yes,,"# plans with manger reviewed date in last 90 days -> Account Planning + CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Manager Reviewed Date] >= (TODAY()-90))) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")","The measure name clearly indicates it counts plans with a manager-reviewed date within the last 90 days, which aligns with the context provided.","The name accurately reflects the calculation, which filters account plans based on the manager-reviewed date being within the last 90 days.",There are no problematic abbreviations in the measure name.,1.94,2.0,0.97,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7999999999999999,0.23999999999999996,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,# plans with days since modified < 30 days,"CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Days Since Modified] < 30))",,good,No,,No,,Yes,# of account plans,Yes,,"# plans with days since modified < 30 days -> Account Planning + CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Days Since Modified] < 30)) | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes"")","The measure name clearly indicates it counts plans where the days since last modified are less than 30, which aligns with the context.","The name reflects the calculation, which filters account plans based on the days since modified being less than 30.",There are no problematic abbreviations in the measure name.,1.9099999999999997,2.0,0.9549999999999998,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7,0.21,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% Plans Modified < 30 Days,"DIVIDE([# plans with days since modified < 30 days],[# of Account Plans],"""")",,warning,No,,No,,Yes,"# of account plans, # plans with days since modified < 30 days",No,,"% Plans Modified < 30 Days -> Account Planning + DIVIDE([# plans with days since modified < 30 days],[# of Account Plans],"""") | REFERENCES: # of Account Plans -> Account Planning + CALCULATE (SUMX (VALUES ( 'Account'[AccountPlanID] ),1),Account[Account Plan Attached] = ""Yes""), # plans with days since modified < 30 days -> Account Planning + CALCULATE (
+  [# of Account Plans],
+  FILTER( 'Account','Account'[Days Since Modified] < 30))","The measure name indicates it calculates the percentage of plans modified within the last 30 days, which aligns with the context.","The name reflects the calculation, which divides the count of plans modified within 30 days by the total number of account plans.",There are no problematic abbreviations in the measure name.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% of Priorities with Top Priority,"DIVIDE( [# of Top Priorities], [# of Active Priorities],"""" )",,warning,No,,No,,Yes,"# of active priorities, # of top priorities",No,,"% of Priorities with Top Priority -> Account Planning + DIVIDE( [# of Top Priorities], [# of Active Priorities],"""" ) | REFERENCES: # of Active Priorities -> Account Planning + CALCULATE([# of Priorities],KEEPFILTERS('Account Plan Priority'[Priority Status]=""Active"")), # of Top Priorities -> Account Planning + CALCULATE([# of Active Priorities]
+    ,KEEPFILTERS('Account Plan Priority'[Is Top Priority Linked to Active Customer]= TRUE))","The measure name indicates it calculates the percentage of priorities that are marked as top priority, which aligns with the context.","The name reflects the calculation, which divides the count of top priorities by the count of active priorities.",There are no problematic abbreviations in the measure name.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% of Top Priorities with CSP,"DIVIDE([# of Top Priorities with CSP],[# of Top Priorities])",,warning,No,,No,,Yes,"# of top priorities, # of top priorities with csp",No,,"% of Top Priorities with CSP -> Account Planning + DIVIDE([# of Top Priorities with CSP],[# of Top Priorities]) | REFERENCES: # of Top Priorities -> Account Planning + CALCULATE([# of Active Priorities]
+    ,KEEPFILTERS('Account Plan Priority'[Is Top Priority Linked to Active Customer]= TRUE)), # of Top Priorities with CSP -> Account Planning + CALCULATE([# of Top Priorities],KEEPFILTERS('Account Plan Priority'[Is Top Priority with CSP]= TRUE))","The measure name indicates it calculates the percentage of top priorities associated with CSP, which aligns with the context.","The name reflects the calculation, which divides the count of top priorities with CSP by the total count of top priorities.",There are no problematic abbreviations in the measure name.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,# of Top Priorities with CSP,"CALCULATE([# of Top Priorities],KEEPFILTERS('Account Plan Priority'[Is Top Priority with CSP]= TRUE))",,good,No,,No,,Yes,# of top priorities,Yes,,"# of Top Priorities with CSP -> Account Planning + CALCULATE([# of Top Priorities],KEEPFILTERS('Account Plan Priority'[Is Top Priority with CSP]= TRUE)) | REFERENCES: # of Top Priorities -> Account Planning + CALCULATE([# of Active Priorities]
+    ,KEEPFILTERS('Account Plan Priority'[Is Top Priority Linked to Active Customer]= TRUE))","The measure name indicates it counts the number of top priorities associated with CSP, which aligns with the context.","The name reflects the calculation, which filters top priorities based on their association with CSP.",There are no problematic abbreviations in the measure name.,1.9099999999999997,2.0,0.9549999999999998,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Account Planning,# of Top Priorities,"CALCULATE([# of Active Priorities]
+    ,KEEPFILTERS('Account Plan Priority'[Is Top Priority Linked to Active Customer]= TRUE))",,good,No,,No,,Yes,# of active priorities,Yes,,"# of Top Priorities -> Account Planning + CALCULATE([# of Active Priorities]
+    ,KEEPFILTERS('Account Plan Priority'[Is Top Priority Linked to Active Customer]= TRUE)) | REFERENCES: # of Active Priorities -> Account Planning + CALCULATE([# of Priorities],KEEPFILTERS('Account Plan Priority'[Priority Status]=""Active""))","The measure name indicates it counts the number of top priorities, which aligns with the context.","The name reflects the calculation, which filters active priorities to count only those marked as top priority.",There are no problematic abbreviations in the measure name.,1.94,2.0,0.97,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7999999999999999,0.23999999999999996,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,# Accounts with MACC,"CALCULATE([TPID Count],KEEPFILTERS(Account[Has MACC Pipeline]=""Yes""))",,good,No,,No,,Yes,tpid count,Yes,,"# Accounts with MACC -> Account Planning + CALCULATE([TPID Count],KEEPFILTERS(Account[Has MACC Pipeline]=""Yes"")) | REFERENCES: TPID Count -> Account + COUNT( Account[TPID] )","The measure name indicates it counts the number of accounts with MACC, which aligns with the context.","The name reflects the calculation, which filters accounts based on the MACC pipeline flag.",There are no problematic abbreviations in the measure name.,1.9099999999999997,2.0,0.9549999999999998,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Account Planning,% Accounts with MACC Consumption Plan,"VAR _Num=CALCULATE([# Accounts with MACC],KEEPFILTERS(Account[Consumption Flag]=""Yes""))
+
+RETURN DIVIDE(_Num,[# Accounts with MACC],"""")
+
+",,good,No,,No,,Yes,# accounts with macc,No,,"% Accounts with MACC Consumption Plan -> Account Planning + VAR _Num=CALCULATE([# Accounts with MACC],KEEPFILTERS(Account[Consumption Flag]=""Yes""))
+
+RETURN DIVIDE(_Num,[# Accounts with MACC],"""")
+
+ | REFERENCES: # Accounts with MACC -> Account Planning + CALCULATE([TPID Count],KEEPFILTERS(Account[Has MACC Pipeline]=""Yes""))","The measure name indicates it calculates the percentage of accounts with a MACC consumption plan, which aligns with the context.","The name reflects the calculation, which divides the count of accounts with a MACC consumption plan by the total count of accounts with MACC.",There are no problematic abbreviations in the measure name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% of Accounts with QBR,"
+var num=CALCULATE([TPID Count],KEEPFILTERS(Account[isqbr]=""yes""))
+
+RETURN DIVIDE(num,[TPID Count],BLANK())
+",,good,No,,No,,Yes,tpid count,No,,"% of Accounts with QBR -> Account Planning + 
+var num=CALCULATE([TPID Count],KEEPFILTERS(Account[isqbr]=""yes""))
+
+RETURN DIVIDE(num,[TPID Count],BLANK())
+ | REFERENCES: TPID Count -> Account + COUNT( Account[TPID] )","The measure name indicates it calculates the percentage of accounts with QBR, which aligns with the context.","The name reflects the calculation, which divides the count of accounts with QBR by the total count of accounts.",There are no problematic abbreviations in the measure name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,% of Accounts with CSDR Within Last 30 Days,"
+var den=CALCULATE( [TPID Count], KEEPFILTERS( Account[Has Premier Unified] = ""Yes"" ), KEEPFILTERS( Account[Has CSDR] = ""Yes"" ) )
+var num=CALCULATE( [TPID Count], KEEPFILTERS( Account[Has Premier Unified] = ""Yes"" ), KEEPFILTERS( Account[Has CSDR within 30 Days] = ""Yes"" ) )
+
+RETURN DIVIDE(num,den,"""")
+",,warning,No,,No,,Yes,tpid count,No,,"% of Accounts with CSDR Within Last 30 Days -> Account Planning + 
+var den=CALCULATE( [TPID Count], KEEPFILTERS( Account[Has Premier Unified] = ""Yes"" ), KEEPFILTERS( Account[Has CSDR] = ""Yes"" ) )
+var num=CALCULATE( [TPID Count], KEEPFILTERS( Account[Has Premier Unified] = ""Yes"" ), KEEPFILTERS( Account[Has CSDR within 30 Days] = ""Yes"" ) )
+
+RETURN DIVIDE(num,den,"""")
+ | REFERENCES: TPID Count -> Account + COUNT( Account[TPID] )","The measure name indicates it calculates the percentage of accounts with CSDR within the last 30 days, which aligns with the context.","The name reflects the calculation, which divides the count of accounts with CSDR within the last 30 days by the total count of accounts with CSDR.",There are no problematic abbreviations in the measure name.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Account Planning,# of Active Priorities,"CALCULATE([# of Priorities],KEEPFILTERS('Account Plan Priority'[Priority Status]=""Active""))",,good,No,,No,,Yes,# of priorities,Yes,,"# of Active Priorities -> Account Planning + CALCULATE([# of Priorities],KEEPFILTERS('Account Plan Priority'[Priority Status]=""Active"")) | REFERENCES: # of Priorities -> Account Planning + SUMX( VALUES( 'Account Planning'[AccountPlanPriorityID] ), 1 )
+ ","The measure name indicates it counts the number of active priorities, which aligns with the context.","The name reflects the calculation, which filters priorities based on their active status.",There are no problematic abbreviations in the measure name.,1.9099999999999997,2.0,0.9549999999999998,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Pipeline,% Billed Pipeline w/ Priority,"VAR X = CALCULATE([Billed Pipeline],KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))
+
+RETURN DIVIDE( [Billed Pipeline w/ Priority], X )",,good,No,,No,,Yes,"billed pipeline, billed pipeline w/ priority",No,,"% Billed Pipeline w/ Priority -> Pipeline + VAR X = CALCULATE([Billed Pipeline],KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))
+
+RETURN DIVIDE( [Billed Pipeline w/ Priority], X ) | REFERENCES: Billed Pipeline -> Pipeline + [Billed Pipeline Base], Billed Pipeline w/ Priority -> Pipeline + CALCULATE (SUM('Priority Pipeline'[PipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Billed""))","The measure name indicates it calculates the percentage of billed pipeline with priority, which aligns with the context.","The name reflects the calculation, which divides the billed pipeline with priority by the total billed pipeline.",There are no problematic abbreviations in the measure name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,Billed Pipeline,[Billed Pipeline Base],,warning,Yes,Direct reference to: billed pipeline base,No,,Yes,billed pipeline base,Yes,DIRECT REFERENCE: This measure is a simple reference to another measure (Direct reference to: billed pipeline base) - which will cause confusion to data agents. Please consider removing this measure.,"Billed Pipeline -> Pipeline + [Billed Pipeline Base] | REFERENCES: Billed Pipeline Base -> Pipeline + CALCULATE(SUM(Pipeline[PipelineUSD]),KEEPFILTERS(Pipeline[PipelineType]=""Billed""))","The measure name indicates it calculates the billed pipeline, which aligns with the context.","The name reflects the calculation, which sums the pipeline amounts filtered by the billed pipeline type.",There are no problematic abbreviations in the measure name.,1.5899999999999999,2.0,0.7949999999999999,0.2,0.2,0.0,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,Billed Opportunity Count,"CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Qualified Pipeline Flag] = 1))",,warning,No,,No,,Yes,opportunity count,No,,"Billed Opportunity Count -> Pipeline + CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Qualified Pipeline Flag] = 1)) | REFERENCES: Opportunity Count -> Pipeline + SUMX(VALUES('Pipeline'[dimopportunitykey]),1)","The measure name indicates it counts billed opportunities, which aligns with the context.","The name reflects the calculation, which counts opportunities filtered by the qualified pipeline flag.",There are no problematic abbreviations in the measure name.,1.6099999999999999,2.0,0.8049999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Pipeline,Opportunity Count,"SUMX(VALUES('Pipeline'[dimopportunitykey]),1)",,good,No,,No,,No,,Yes,,"Opportunity Count -> Pipeline + SUMX(VALUES('Pipeline'[dimopportunitykey]),1)","The name 'Opportunity Count' is self-explanatory as it clearly indicates it counts opportunities, which aligns with the context.",The name reflects the calculation as the context shows it sums up opportunities using a SUMX function.,There are no cryptic abbreviations in the name; it is clear and descriptive.,1.79,2.0,0.895,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,Committed Pipeline,"CALCULATE([Billed Pipeline],KEEPFILTERS(Opportunity[Forecast Recommendation]=""Committed""))",,good,No,,No,,Yes,billed pipeline,Yes,,"Committed Pipeline -> Pipeline + CALCULATE([Billed Pipeline],KEEPFILTERS(Opportunity[Forecast Recommendation]=""Committed"")) | REFERENCES: Billed Pipeline -> Pipeline + [Billed Pipeline Base]","The name 'Committed Pipeline' is self-explanatory as it indicates it relates to the committed portion of the pipeline, which aligns with the context.",The name reflects the calculation as the context shows it filters the pipeline for 'Committed' opportunities.,There are no cryptic abbreviations in the name; it is clear and descriptive.,1.9099999999999997,2.0,0.9549999999999998,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Pipeline,Committed at Risk Pipeline,"CALCULATE([Billed Pipeline],KEEPFILTERS('Opportunity'[Forecast Recommendation]=""Committed at Risk""))",,good,No,,No,,Yes,billed pipeline,Yes,,"Committed at Risk Pipeline -> Pipeline + CALCULATE([Billed Pipeline],KEEPFILTERS('Opportunity'[Forecast Recommendation]=""Committed at Risk"")) | REFERENCES: Billed Pipeline -> Pipeline + [Billed Pipeline Base]","The name 'Committed at Risk Pipeline' is self-explanatory as it indicates it relates to the committed pipeline that is at risk, which aligns with the context.",The name reflects the calculation as the context shows it filters the pipeline for 'Committed at Risk' opportunities.,There are no cryptic abbreviations in the name; it is clear and descriptive.,1.9099999999999997,2.0,0.9549999999999998,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Pipeline,Committed + Risk Pipeline,[Committed Pipeline] + [Committed at Risk Pipeline],,good,No,,No,,Yes,"committed at risk pipeline, committed pipeline",No,,"Committed + Risk Pipeline -> Pipeline + [Committed Pipeline] + [Committed at Risk Pipeline] | REFERENCES: Committed at Risk Pipeline -> Pipeline + CALCULATE([Billed Pipeline],KEEPFILTERS('Opportunity'[Forecast Recommendation]=""Committed at Risk"")), Committed Pipeline -> Pipeline + CALCULATE([Billed Pipeline],KEEPFILTERS(Opportunity[Forecast Recommendation]=""Committed""))","The name 'Committed + Risk Pipeline' is self-explanatory as it indicates it combines committed and at-risk pipeline, which aligns with the context.",The name reflects the calculation as the context shows it sums 'Committed Pipeline' and 'Committed at Risk Pipeline'.,There are no cryptic abbreviations in the name; it is clear and descriptive.,1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,Billed Pipeline w/ Priority,"CALCULATE (SUM('Priority Pipeline'[PipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Billed""))",,good,No,,No,,No,,Yes,,"Billed Pipeline w/ Priority -> Pipeline + CALCULATE (SUM('Priority Pipeline'[PipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Billed""))","The name 'Billed Pipeline w/ Priority' is self-explanatory as it indicates it calculates the billed pipeline with priority, which aligns with the context.",The name reflects the calculation as the context shows it filters for 'Billed' pipeline with priority.,There are no cryptic abbreviations in the name; it is clear and descriptive.,1.8199999999999998,2.0,0.9099999999999999,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,ACR Pipeline,[ACR Pipeline Base],,critical,Yes,Direct reference to: acr pipeline base,No,,Yes,acr pipeline base,Yes,DIRECT REFERENCE: This measure is a simple reference to another measure (Direct reference to: acr pipeline base) - which will cause confusion to data agents. Please consider removing this measure.,"ACR Pipeline -> Pipeline + [ACR Pipeline Base] | REFERENCES: ACR Pipeline Base -> Pipeline + CALCULATE(SUM(Pipeline[ACRPipelineUSD]),KEEPFILTERS(Pipeline[PipelineType]=""Consumption""),ALL('Product'))",The name 'ACR Pipeline' is not self-explanatory as 'ACR' is not a standard or widely understood term without additional context.,"The name does not reflect the calculation as the context shows it relates to 'Consumption' pipeline, but 'ACR' is unclear.",'ACR' is a cryptic abbreviation that is not immediately clear.,0.59,2.0,0.295,0.2,0.2,0.0,0.2,0.3,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,Future year ACR Pipeline,"CALCULATE (
+    [ACR Pipeline w/ Priority],
+    KEEPFILTERS ( 'Calendar'[Relative Year] = ""CY+1"" ),
+    ALL ( 'Calendar' )
+)",,critical,No,,No,,Yes,acr pipeline w/ priority,No,,"Future year ACR Pipeline -> Pipeline + CALCULATE (
+    [ACR Pipeline w/ Priority],
+    KEEPFILTERS ( 'Calendar'[Relative Year] = ""CY+1"" ),
+    ALL ( 'Calendar' )
+) | REFERENCES: ACR Pipeline w/ Priority -> Pipeline + CALCULATE (SUM('Priority Pipeline'[ACRPipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Consumption""))",The name 'Future year ACR Pipeline' is not self-explanatory as 'ACR' is not a standard or widely understood term without additional context.,"The name does not reflect the calculation as the context shows it relates to 'Consumption' pipeline for the future year, but 'ACR' is unclear.",'ACR' is a cryptic abbreviation that is not immediately clear.,0.52,2.0,0.26,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Replace division operator (/) with DIVIDE() function for error handling; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,ACR Pipeline w/ Priority,"CALCULATE (SUM('Priority Pipeline'[ACRPipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Consumption""))",,critical,No,,No,,No,,Yes,,"ACR Pipeline w/ Priority -> Pipeline + CALCULATE (SUM('Priority Pipeline'[ACRPipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Consumption""))",The name 'ACR Pipeline w/ Priority' is not self-explanatory as 'ACR' is not a standard or widely understood term without additional context.,"The name does not reflect the calculation as the context shows it relates to 'Consumption' pipeline with priority, but 'ACR' is unclear.",'ACR' is a cryptic abbreviation that is not immediately clear.,0.82,2.0,0.41,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,Future Year Billed Pipeline,"CALCULATE (
+    [Billed Pipeline w/ Priority],
+    KEEPFILTERS ( 'Calendar'[Relative Year] = ""CY+1"" ), ALL('Calendar')
+)",,warning,No,,No,,Yes,billed pipeline w/ priority,No,,"Future Year Billed Pipeline -> Pipeline + CALCULATE (
+    [Billed Pipeline w/ Priority],
+    KEEPFILTERS ( 'Calendar'[Relative Year] = ""CY+1"" ), ALL('Calendar')
+) | REFERENCES: Billed Pipeline w/ Priority -> Pipeline + CALCULATE (SUM('Priority Pipeline'[PipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Billed""))","The name 'Future Year Billed Pipeline' is self-explanatory as it indicates it calculates the billed pipeline for the future year, which aligns with the context.",The name reflects the calculation as the context shows it filters for 'Billed Pipeline w/ Priority' for the future year.,There are no cryptic abbreviations in the name; it is clear and descriptive.,1.52,2.0,0.76,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,undocumented,0.4,0.12,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Replace division operator (/) with DIVIDE() function for error handling; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,# Opportunities w/ Priority,"SUMX( VALUES( 'Priority Pipeline'[dimopportunitykey] ), 1 )
+            
+    ",,good,No,,No,,No,,Yes,,"# Opportunities w/ Priority -> Pipeline + SUMX( VALUES( 'Priority Pipeline'[dimopportunitykey] ), 1 )
+            
+    ","The name '# Opportunities w/ Priority' is self-explanatory as it indicates it counts opportunities with priority, which aligns with the context.",The name reflects the calculation as the context shows it sums opportunities with priority using a SUMX function.,There are no cryptic abbreviations in the name; it is clear and descriptive.,1.79,2.0,0.895,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,# Billed Oppties w/ Priority,"CALCULATE([# Opportunities w/ Priority],KEEPFILTERS('Priority Pipeline'[PipelineType]=""Billed""))",,critical,No,,No,,Yes,# opportunities w/ priority,Yes,,"# Billed Oppties w/ Priority -> Pipeline + CALCULATE([# Opportunities w/ Priority],KEEPFILTERS('Priority Pipeline'[PipelineType]=""Billed"")) | REFERENCES: # Opportunities w/ Priority -> Pipeline + SUMX( VALUES( 'Priority Pipeline'[dimopportunitykey] ), 1 )
+            
+    ",The name '# Billed Oppties w/ Priority' is not self-explanatory as 'Oppties' is an unclear abbreviation.,The name does not fully reflect the calculation as 'Oppties' is unclear and does not clearly indicate billed opportunities.,'Oppties' is a cryptic abbreviation that is not immediately clear.,0.9099999999999999,2.0,0.45499999999999996,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Rule 4: Replace division operator (/) with DIVIDE() function for error handling",0.3
+Pipeline,# Consumed Oppties w/ Priority,"CALCULATE([# Opportunities w/ Priority],KEEPFILTERS('Priority Pipeline'[PipelineType]=""Consumption""))",,critical,No,,No,,Yes,# opportunities w/ priority,Yes,,"# Consumed Oppties w/ Priority -> Pipeline + CALCULATE([# Opportunities w/ Priority],KEEPFILTERS('Priority Pipeline'[PipelineType]=""Consumption"")) | REFERENCES: # Opportunities w/ Priority -> Pipeline + SUMX( VALUES( 'Priority Pipeline'[dimopportunitykey] ), 1 )
+            
+    ",The name '# Consumed Oppties w/ Priority' is not self-explanatory as 'Oppties' is an unclear abbreviation.,The name does not fully reflect the calculation as 'Oppties' is unclear and does not clearly indicate consumed opportunities.,'Oppties' is a cryptic abbreviation that is not immediately clear.,0.9099999999999999,2.0,0.45499999999999996,0.2,0.2,0.2,0.2,0.3,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Rule 4: Replace division operator (/) with DIVIDE() function for error handling",0.3
+Pipeline,% of Billed Opties w/ future date,"
+VAR Numerator = CALCULATE([# Billed Oppties w/ Priority]
+               ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+               ,KEEPFILTERS(Opportunity[Opportunity Due Date] > today())
+) 
+VAR Denominator = CALCULATE([# Billed Oppties w/ Priority]
+                  ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+)                                                         
+
+RETURN DIVIDE(Numerator,Denominator) ",,critical,No,,No,,Yes,# billed oppties w/ priority,No,,"% of Billed Opties w/ future date -> Pipeline + 
+VAR Numerator = CALCULATE([# Billed Oppties w/ Priority]
+               ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+               ,KEEPFILTERS(Opportunity[Opportunity Due Date] > today())
+) 
+VAR Denominator = CALCULATE([# Billed Oppties w/ Priority]
+                  ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+)                                                         
+
+RETURN DIVIDE(Numerator,Denominator)  | REFERENCES: # Billed Oppties w/ Priority -> Pipeline + CALCULATE([# Opportunities w/ Priority],KEEPFILTERS('Priority Pipeline'[PipelineType]=""Billed""))",The name '% of Billed Opties w/ future date' is not self-explanatory as 'Opties' is an unclear abbreviation.,The name does not fully reflect the calculation as 'Opties' is unclear and does not clearly indicate billed opportunities.,'Opties' is a cryptic abbreviation that is not immediately clear.,0.67,2.0,0.335,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,% of Consumption Opties w/ future date,"
+VAR Numerator = CALCULATE([# Consumed Oppties w/ Priority]
+               ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+               ,KEEPFILTERS(Opportunity[Estimated Completion Date] > today())
+) 
+VAR Denominator = CALCULATE([# Consumed Oppties w/ Priority]
+                  ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1 )
+)                                                         
+
+RETURN DIVIDE(Numerator,Denominator) ",,critical,No,,No,,Yes,# consumed oppties w/ priority,No,,"% of Consumption Opties w/ future date -> Pipeline + 
+VAR Numerator = CALCULATE([# Consumed Oppties w/ Priority]
+               ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1)
+               ,KEEPFILTERS(Opportunity[Estimated Completion Date] > today())
+) 
+VAR Denominator = CALCULATE([# Consumed Oppties w/ Priority]
+                  ,KEEPFILTERS('Opportunity'[Open Opportunity Flag] =1 )
+)                                                         
+
+RETURN DIVIDE(Numerator,Denominator)  | REFERENCES: # Consumed Oppties w/ Priority -> Pipeline + CALCULATE([# Opportunities w/ Priority],KEEPFILTERS('Priority Pipeline'[PipelineType]=""Consumption""))",The name '% of Consumption Opties w/ future date' is not self-explanatory as 'Opties' is an unclear abbreviation.,The name does not fully reflect the calculation as 'Opties' is unclear and does not clearly indicate consumption opportunities.,'Opties' is a cryptic abbreviation that is not immediately clear.,0.67,2.0,0.335,0.2,0.2,0.2,0.2,0.0,0.3,0.0,0.2,0.0,0.4,0.0,0.4,1,RED,#FF0000,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,% Total Pipeline w/ Priority," VAR Num = CALCULATE( [Billed Pipeline w/ Priority] + [ACR Pipeline w/ Priority], KEEPFILTERS( 'Priority Pipeline'[OpenOpportunityFlag] = 1 ) )
+ VAR Den = CALCULATE( [Billed Pipeline] + [ACR Pipeline],KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag] = 1) ) 
+ RETURN DIVIDE(Num, Den)        
+        
+        
+       ",,good,No,,No,,Yes,"acr pipeline, acr pipeline w/ priority, billed pipeline, billed pipeline w/ priority",Yes,,"% Total Pipeline w/ Priority -> Pipeline +  VAR Num = CALCULATE( [Billed Pipeline w/ Priority] + [ACR Pipeline w/ Priority], KEEPFILTERS( 'Priority Pipeline'[OpenOpportunityFlag] = 1 ) )
+ VAR Den = CALCULATE( [Billed Pipeline] + [ACR Pipeline],KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag] = 1) ) 
+ RETURN DIVIDE(Num, Den)        
+        
+        
+        | REFERENCES: ACR Pipeline -> Pipeline + [ACR Pipeline Base], ACR Pipeline w/ Priority -> Pipeline + CALCULATE (SUM('Priority Pipeline'[ACRPipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Consumption"")), Billed Pipeline -> Pipeline + [Billed Pipeline Base], Billed Pipeline w/ Priority -> Pipeline + CALCULATE (SUM('Priority Pipeline'[PipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Billed""))","The name '% Total Pipeline w/ Priority' is self-explanatory as it indicates it calculates the percentage of the total pipeline with priority, which aligns with the context.",The name reflects the calculation as the context shows it divides the sum of billed and ACR pipeline with priority by the total pipeline.,There are no cryptic abbreviations in the name; it is clear and descriptive.,1.9699999999999998,2.0,0.9849999999999999,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,% Billed opties w/ close plan,"
+VAR X = CALCULATE( [Billed Pipeline], KEEPFILTERS( Opportunity[Close Plan Attached] = ""Yes"" ),KEEPFILTERS('Opportunity'[Open Opportunity Flag] = 1) )
+
+VAR Y = CALCULATE( [Billed Pipeline],KEEPFILTERS('Opportunity'[Open Opportunity Flag] = 1) )
+
+RETURN DIVIDE( X, Y ,"""")",,issue,No,,No,,Yes,billed pipeline,No,,"% Billed opties w/ close plan -> Pipeline + 
+VAR X = CALCULATE( [Billed Pipeline], KEEPFILTERS( Opportunity[Close Plan Attached] = ""Yes"" ),KEEPFILTERS('Opportunity'[Open Opportunity Flag] = 1) )
+
+VAR Y = CALCULATE( [Billed Pipeline],KEEPFILTERS('Opportunity'[Open Opportunity Flag] = 1) )
+
+RETURN DIVIDE( X, Y ,"""") | REFERENCES: Billed Pipeline -> Pipeline + [Billed Pipeline Base]",The name '% Billed opties w/ close plan' is self-explanatory as it indicates it calculates the percentage of billed opportunities with a close plan.,"The name accurately reflects the calculation, which divides billed pipeline with a close plan by the total billed pipeline.","The abbreviation 'opties' is unclear and cryptic, making the name less understandable.",1.2999999999999998,2.0,0.6499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,% of Total Opties w/ future date,"
+VAR Numerator = CALCULATE([# Open Opportunities w/ Priority], OR(Opportunity[Opportunity Due Date] > today(),Opportunity[Estimated Completion Date] > today())) 
+VAR Denominator = [# Open Opportunities w/ Priority]                                                
+
+RETURN DIVIDE(Numerator,Denominator) ",,issue,No,,No,,Yes,# open opportunities w/ priority,No,,"% of Total Opties w/ future date -> Pipeline + 
+VAR Numerator = CALCULATE([# Open Opportunities w/ Priority], OR(Opportunity[Opportunity Due Date] > today(),Opportunity[Estimated Completion Date] > today())) 
+VAR Denominator = [# Open Opportunities w/ Priority]                                                
+
+RETURN DIVIDE(Numerator,Denominator)  | REFERENCES: # Open Opportunities w/ Priority -> Pipeline + CALCULATE([# Opportunities w/ Priority]
+        ,KEEPFILTERS('Priority Pipeline'[OpenOpportunityFlag] =1))",The name '% of Total Opties w/ future date' is self-explanatory as it suggests it calculates the percentage of total opportunities with a future date.,"The name reflects the calculation, which divides the number of open opportunities with a future date by the total number of open opportunities.","The abbreviation 'opties' is unclear and cryptic, making the name less understandable.",1.27,2.0,0.635,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,ratio_percentage,0.9,0.27,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,Total Pipeline,[Billed Pipeline]+[ACR Pipeline],,good,No,,No,,Yes,"acr pipeline, billed pipeline",No,,"Total Pipeline -> Pipeline + [Billed Pipeline]+[ACR Pipeline] | REFERENCES: ACR Pipeline -> Pipeline + [ACR Pipeline Base], Billed Pipeline -> Pipeline + [Billed Pipeline Base]",The name 'Total Pipeline' is self-explanatory as it clearly indicates it calculates the total pipeline.,"The name reflects the calculation, which sums the billed pipeline and ACR pipeline.",There are no problematic abbreviations in the name.,1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
+Pipeline,% ACR Pipeline w/ Priority,"VAR X = CALCULATE([ACR Pipeline],KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))
+
+RETURN DIVIDE( [ACR Pipeline w/ Priority], X )",,good,No,,No,,Yes,"acr pipeline, acr pipeline w/ priority",No,,"% ACR Pipeline w/ Priority -> Pipeline + VAR X = CALCULATE([ACR Pipeline],KEEPFILTERS('Opportunity'[ParentingLevel Oppties]=""TopParentOppties""))
+
+RETURN DIVIDE( [ACR Pipeline w/ Priority], X ) | REFERENCES: ACR Pipeline -> Pipeline + [ACR Pipeline Base], ACR Pipeline w/ Priority -> Pipeline + CALCULATE (SUM('Priority Pipeline'[ACRPipelineUSD])
+        ,KEEPFILTERS('Priority Pipeline'[PipelineType] = ""Consumption""))",The name '% ACR Pipeline w/ Priority' is self-explanatory as it indicates it calculates the percentage of ACR pipeline with priority.,"The name reflects the calculation, which divides ACR pipeline with priority by the total ACR pipeline.",There are no problematic abbreviations in the name.,1.6999999999999997,2.0,0.8499999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,ratio_percentage,1.0,0.3,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,# Billed Oppties,"CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Opportunity Type] IN {""Billed"",""Billed & Consumption""}))",,issue,No,,No,,Yes,opportunity count,No,,"# Billed Oppties -> Pipeline + CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Opportunity Type] IN {""Billed"",""Billed & Consumption""})) | REFERENCES: Opportunity Count -> Pipeline + SUMX(VALUES('Pipeline'[dimopportunitykey]),1)",The name '# Billed Oppties' is self-explanatory as it indicates it calculates the count of billed opportunities.,"The name reflects the calculation, which counts opportunities of type 'Billed' or 'Billed & Consumption'.","The abbreviation 'Oppties' is unclear and cryptic, making the name less understandable.",1.21,2.0,0.605,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Pipeline,# Consumed Oppties,"CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Opportunity Type] IN {""Consumption"",""Billed & Consumption""}))",,issue,No,,No,,Yes,opportunity count,No,,"# Consumed Oppties -> Pipeline + CALCULATE([Opportunity Count], KEEPFILTERS(Opportunity[Opportunity Type] IN {""Consumption"",""Billed & Consumption""})) | REFERENCES: Opportunity Count -> Pipeline + SUMX(VALUES('Pipeline'[dimopportunitykey]),1)",The name '# Consumed Oppties' is self-explanatory as it indicates it calculates the count of consumed opportunities.,"The name reflects the calculation, which counts opportunities of type 'Consumption' or 'Billed & Consumption'.","The abbreviation 'Oppties' is unclear and cryptic, making the name less understandable.",1.21,2.0,0.605,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n)",0.3
+Pipeline,% Total Opty count w/ priority,"VAR X = CALCULATE([Opportunity Count],KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag] = 1))
+
+RETURN DIVIDE ([# Open Opportunities w/ Priority],X)",,warning,No,,No,,Yes,"# open opportunities w/ priority, opportunity count",Yes,,"% Total Opty count w/ priority -> Pipeline + VAR X = CALCULATE([Opportunity Count],KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag] = 1))
+
+RETURN DIVIDE ([# Open Opportunities w/ Priority],X) | REFERENCES: # Open Opportunities w/ Priority -> Pipeline + CALCULATE([# Opportunities w/ Priority]
+        ,KEEPFILTERS('Priority Pipeline'[OpenOpportunityFlag] =1)), Opportunity Count -> Pipeline + SUMX(VALUES('Pipeline'[dimopportunitykey]),1)",The name '% Total Opty count w/ priority' is self-explanatory as it indicates it calculates the percentage of total opportunity count with priority.,"The name reflects the calculation, which divides the count of open opportunities with priority by the total count of opportunities.","The abbreviation 'Opty' is unclear and cryptic, making the name less understandable.",1.54,2.0,0.77,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.0,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7999999999999999,0.23999999999999996,Rule 4: Replace division operator (/) with DIVIDE() function for error handling,0.3
+Pipeline,% Total Stage 1 Opty count w/ priority,"CALCULATE([% Total Opty count w/ priority],KEEPFILTERS(Opportunity[Sales Stage Sort]=1))",,issue,No,,No,,Yes,% total opty count w/ priority,No,,"% Total Stage 1 Opty count w/ priority -> Pipeline + CALCULATE([% Total Opty count w/ priority],KEEPFILTERS(Opportunity[Sales Stage Sort]=1)) | REFERENCES: % Total Opty count w/ priority -> Pipeline + VAR X = CALCULATE([Opportunity Count],KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag] = 1))
+
+RETURN DIVIDE ([# Open Opportunities w/ Priority],X)",The name '% Total Stage 1 Opty count w/ priority' is self-explanatory as it indicates it calculates the percentage of Stage 1 opportunity count with priority.,"The name reflects the calculation, which filters Stage 1 opportunities and calculates the percentage with priority.","The abbreviation 'Opty' is unclear and cryptic, making the name less understandable.",1.27,2.0,0.635,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.0,0.4,2,ORANGE,#FFA500,ratio_percentage,0.9,0.27,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Rule 4: Replace division operator (/) with DIVIDE() function for error handling",0.3
+Pipeline,% Total Stage 1 pipeline w/ priority,"CALCULATE([% Total Pipeline w/ Priority],KEEPFILTERS(Opportunity[Sales Stage Sort]=1))",,warning,No,,No,,Yes,% total pipeline w/ priority,No,,"% Total Stage 1 pipeline w/ priority -> Pipeline + CALCULATE([% Total Pipeline w/ Priority],KEEPFILTERS(Opportunity[Sales Stage Sort]=1)) | REFERENCES: % Total Pipeline w/ Priority -> Pipeline +  VAR Num = CALCULATE( [Billed Pipeline w/ Priority] + [ACR Pipeline w/ Priority], KEEPFILTERS( 'Priority Pipeline'[OpenOpportunityFlag] = 1 ) )
+ VAR Den = CALCULATE( [Billed Pipeline] + [ACR Pipeline],KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag] = 1) ) 
+ RETURN DIVIDE(Num, Den)        
+        
+        
+       ",The name '% Total Stage 1 pipeline w/ priority' is self-explanatory as it indicates it calculates the percentage of Stage 1 pipeline with priority.,"The name reflects the calculation, which filters Stage 1 pipeline and calculates the percentage with priority.",There are no problematic abbreviations in the name.,1.67,2.0,0.835,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,ratio_percentage,0.9,0.27,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Rule 4: Replace division operator (/) with DIVIDE() function for error handling",0.3
+Pipeline,Billed Pipeline Base,"CALCULATE(SUM(Pipeline[PipelineUSD]),KEEPFILTERS(Pipeline[PipelineType]=""Billed""))",,good,No,,No,,No,,Yes,,"Billed Pipeline Base -> Pipeline + CALCULATE(SUM(Pipeline[PipelineUSD]),KEEPFILTERS(Pipeline[PipelineType]=""Billed""))",The name 'Billed Pipeline Base' is self-explanatory as it indicates it calculates the base value of billed pipeline.,"The name reflects the calculation, which sums the pipeline amount for billed opportunities.",There are no problematic abbreviations in the name.,2.0,2.0,1.0,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,simple_aggregation,1.0,0.3,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Rule 4: Format SUM expressions with line breaks when part of complex calculations",0.3
+Pipeline,ACR Pipeline Base,"CALCULATE(SUM(Pipeline[ACRPipelineUSD]),KEEPFILTERS(Pipeline[PipelineType]=""Consumption""),ALL('Product'))",,good,No,,No,,No,,Yes,,"ACR Pipeline Base -> Pipeline + CALCULATE(SUM(Pipeline[ACRPipelineUSD]),KEEPFILTERS(Pipeline[PipelineType]=""Consumption""),ALL('Product'))",The name 'ACR Pipeline Base' is self-explanatory as it indicates it calculates the base value of ACR pipeline.,"The name reflects the calculation, which sums the pipeline amount for consumption opportunities.",There are no problematic abbreviations in the name.,1.9099999999999997,2.0,0.9549999999999998,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7,0.21,"Rule 4: Format CALCULATE function: CALCULATE(\n    expression,\n    filter1,\n    filter2\n); Rule 4: Format SUM expressions with line breaks when part of complex calculations",0.3
+Pipeline,# Open Opportunities w/ Priority,"CALCULATE([# Opportunities w/ Priority]
+        ,KEEPFILTERS('Priority Pipeline'[OpenOpportunityFlag] =1))",,good,No,,No,,Yes,# opportunities w/ priority,Yes,,"# Open Opportunities w/ Priority -> Pipeline + CALCULATE([# Opportunities w/ Priority]
+        ,KEEPFILTERS('Priority Pipeline'[OpenOpportunityFlag] =1)) | REFERENCES: # Opportunities w/ Priority -> Pipeline + SUMX( VALUES( 'Priority Pipeline'[dimopportunitykey] ), 1 )
+            
+    ",The name '# Open Opportunities w/ Priority' is self-explanatory as it indicates it calculates the count of open opportunities with priority.,"The name reflects the calculation, which counts open opportunities with a priority flag.",There are no problematic abbreviations in the name.,1.94,2.0,0.97,0.2,0.2,0.2,0.2,0.3,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,calculated_measure,0.7999999999999999,0.23999999999999996,Rule 4: Replace division operator (/) with DIVIDE() function for error handling,0.3
+Pipeline,# Open Opportunities w/o Priority," CALCULATE([Opportunity Count]
+ ,KEEPFILTERS('Opportunity'[Account Priority Attached]=""No"")
+,KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag]=1))
+",,warning,No,,No,,Yes,opportunity count,No,,"# Open Opportunities w/o Priority -> Pipeline +  CALCULATE([Opportunity Count]
+ ,KEEPFILTERS('Opportunity'[Account Priority Attached]=""No"")
+,KEEPFILTERS('Pipeline'[TopParentOpenOpptyFlag]=1))
+ | REFERENCES: Opportunity Count -> Pipeline + SUMX(VALUES('Pipeline'[dimopportunitykey]),1)",The name '# Open Opportunities w/o Priority' is self-explanatory as it indicates it calculates the count of open opportunities without priority.,"The name reflects the calculation, which counts open opportunities without a priority flag.",There are no problematic abbreviations in the name.,1.6400000000000001,2.0,0.8200000000000001,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7999999999999999,0.23999999999999996,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,Qualified Pipeline,"CALCULATE(
+    SUM( 'Pipeline'[QualifiedPipeline] )
+    , KEEPFILTERS( Pipeline[PipelineType] = ""Billed"" )
+)
+",,warning,No,,No,,No,,No,,"Qualified Pipeline -> Pipeline + CALCULATE(
+    SUM( 'Pipeline'[QualifiedPipeline] )
+    , KEEPFILTERS( Pipeline[PipelineType] = ""Billed"" )
+)
+",The name 'Qualified Pipeline' is self-explanatory as it indicates it calculates the value of qualified pipeline.,"The name reflects the calculation, which sums the qualified pipeline for billed opportunities.",There are no problematic abbreviations in the name.,1.6400000000000001,2.0,0.8200000000000001,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,calculated_measure,0.7999999999999999,0.23999999999999996,Formula follows Rule 4 complexity best practices,0.3
+Pipeline,Azure Qualified Pipeline,"CALCULATE(
+    SUM('Pipeline'[QualifiedPipeline])
+    ,KEEPFILTERS(Pipeline[PipelineType] = ""Consumption"")
+    ,USERELATIONSHIP(Account[dimaccountgeographyhierarchykey],Pipeline[dimaccountgeographyhierarchykey]))",,warning,No,,No,,No,,No,,"Azure Qualified Pipeline -> Pipeline + CALCULATE(
+    SUM('Pipeline'[QualifiedPipeline])
+    ,KEEPFILTERS(Pipeline[PipelineType] = ""Consumption"")
+    ,USERELATIONSHIP(Account[dimaccountgeographyhierarchykey],Pipeline[dimaccountgeographyhierarchykey]))",The name 'Azure Qualified Pipeline' is self-explanatory as it indicates it calculates the value of Azure qualified pipeline.,"The name reflects the calculation, which sums the qualified pipeline for Azure consumption opportunities.",There are no problematic abbreviations in the name.,1.58,2.0,0.79,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,3,YELLOW,#FFFF00,complex_calculation,0.6,0.18,Rule 4: Consider breaking complex calculation into multiple simpler measures,0.3
+User Seller,CURRENT_USER,"LEFT(USERPRINCIPALNAME(),FIND(""@"",USERPRINCIPALNAME())-1)",,good,No,,No,,No,,No,,"CURRENT_USER -> User Seller + LEFT(USERPRINCIPALNAME(),FIND(""@"",USERPRINCIPALNAME())-1)",The measure name 'CURRENT_USER' is self-explanatory because it clearly indicates that it retrieves the current user's information. The context confirms this by showing it extracts the username from the USERPRINCIPALNAME function.,"The measure name 'CURRENT_USER' reflects the calculation as it accurately describes the purpose of the measure, which is to extract the current user's identifier from their email address using the USERPRINCIPALNAME function.",There are no problematic abbreviations in the measure name 'CURRENT_USER'. The name is clear and uses standard terminology.,1.4899999999999998,2.0,0.7449999999999999,0.2,0.2,0.2,0.2,0.0,0.3,0.2,0.2,0.4,0.4,0.4,0.4,4,GREEN,#00FF00,undocumented,0.3,0.09,Rule 4: CRITICAL - Restructure DAX with proper formatting; Rule 4: Add clear business documentation for this calculation pattern,0.3
