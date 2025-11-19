@@ -26,7 +26,7 @@ Usage:
 
 import time
 import logging
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Callable
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 
@@ -59,14 +59,16 @@ class RunAllSessionManager:
     each other's progress tracking and EventSource connections.
     """
     
-    def __init__(self, main_session_id: str):
+    def __init__(self, main_session_id: str, progress_callback: Optional[Callable] = None):
         """
         Initialize Run All Session Manager.
         
         Args:
             main_session_id: Main session ID for the entire Run All workflow
+            progress_callback: Optional callback for progress updates
         """
         self.main_session_id = main_session_id
+        self.progress_callback = progress_callback
         self.analyzer_sessions: Dict[int, AnalyzerSessionInfo] = {}
         self.current_analyzer_index = 0
         self.total_analyzers = 0
@@ -396,12 +398,12 @@ class RunAllSessionManager:
         success_count = len(self.completed_analyzers)
         failure_count = len(self.failed_analyzers)
         
-        logger.info(f"🎉 Run All workflow complete! {success_count} successful, {failure_count} failed, "
+        logger.info(f"✅ Run All workflow complete! {success_count} successful, {failure_count} failed, "
                    f"total duration: {total_duration:.1f}s")
         
         # Send final completion update
         self._send_run_all_progress_update(
-            f"🎉 Run All Complete! {success_count}/{self.total_analyzers} analyzers successful",
+            f"✅ Run All Complete! {success_count}/{self.total_analyzers} analyzers successful",
             100.0,
             None,
             "run_all_complete",
@@ -500,14 +502,15 @@ class RunAllSessionManager:
 
 
 # Factory function for easy integration
-def create_run_all_session_manager(main_session_id: str) -> RunAllSessionManager:
+def create_run_all_session_manager(main_session_id: str, progress_callback: Optional[Callable] = None) -> RunAllSessionManager:
     """
     Factory function to create a new Run All Session Manager.
     
     Args:
         main_session_id: Main session identifier for Run All workflow
+        progress_callback: Optional callback for progress updates
     
     Returns:
         Configured RunAllSessionManager instance
     """
-    return RunAllSessionManager(main_session_id)
+    return RunAllSessionManager(main_session_id, progress_callback)

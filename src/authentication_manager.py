@@ -208,57 +208,30 @@ class AuthenticationManager:
                         
                        
     def get_powerbi_access_token(self) -> str:
-        logger.info("🔑 [TOKEN-STEP 1/5] get_powerbi_access_token() called")
-        
         # First check: If token is not valid and Skip_Create_Tokens == false, create new tokens
         if not self.is_token_valid() and not self.skip_create_tokens:
-            logger.info("🔑 [TOKEN-STEP 2/5] Token not valid, creating new access tokens...")
-            token_create_start = datetime.now()
+            logger.info("Creating new access tokens.")
             function_app_response = self.create_access_tokens()
-            token_create_time = (datetime.now() - token_create_start).total_seconds()
-            logger.info(f"🔑 [TOKEN-STEP 2/5] Token creation completed in {token_create_time:.2f}s: {function_app_response}")
-        else:
-            logger.info(f"🔑 [TOKEN-STEP 2/5] Token validation - Valid: {self.is_token_valid()}, Skip_Create: {self.skip_create_tokens}")
+            logger.info(function_app_response)
         
         # Check if we have a cached token and it's valid
         if "PowerBI" in self.tokens_cache and self.is_token_valid():
-            logger.info("✅ [TOKEN-STEP 3/5] Using cached PowerBI token (valid)")
-            cached_token = self.tokens_cache.get("PowerBI")
-            logger.info(f"✅ [TOKEN-STEP 5/5] Returning cached token (length: {len(cached_token) if cached_token else 0})")
-            return cached_token
+            return self.tokens_cache.get("PowerBI")
         
         # If cache is empty, directly get the token
-        logger.info("🔑 [TOKEN-STEP 3/5] No cached token, retrieving fresh token...")
         if "PowerBI" not in self.tokens_cache:
-            use_local_auth = os.getenv("Use_Local_Auth") == "1"
-            logger.info(f"🔑 [TOKEN-STEP 4/5] Use_Local_Auth={use_local_auth}")
-            
-            token_retrieval_start = datetime.now()
-            if use_local_auth:
-                secret_name = os.getenv("Power_BI_Secret_Name")
-                logger.info(f"🔑 [TOKEN-STEP 4/5] Calling get_client_secret('{secret_name}')...")
-                token = self.get_client_secret(secret_name)
+            if os.getenv("Use_Local_Auth") == "1":
+                token = self.get_client_secret(os.getenv("Power_BI_Secret_Name"))
             else:
-                secret_name = os.getenv("Power_BI_Secret_Name")
-                logger.info(f"🔑 [TOKEN-STEP 4/5] Calling get_azure_token('{secret_name}')...")
-                token = self.get_azure_token(secret_name)
-            
-            token_retrieval_time = (datetime.now() - token_retrieval_start).total_seconds()
-            logger.info(f"🔑 [TOKEN-STEP 4/5] Token retrieval completed in {token_retrieval_time:.2f}s")
+                token = self.get_azure_token(os.getenv("Power_BI_Secret_Name"))
             
             # Cache the token
             if token:
-                logger.info(f"✅ [TOKEN-STEP 4/5] Token retrieved successfully (length: {len(token)}), caching...")
                 self.tokens_cache["PowerBI"] = token
                 if self.token_expiry_date_time is None:
                     self.token_expiry_date_time = datetime.now() + timedelta(hours=12)
-                    logger.info(f"✅ Token expiry set to: {self.token_expiry_date_time}")
-            else:
-                logger.error("❌ [TOKEN-STEP 4/5] Token retrieval returned None or empty!")
         
-        final_token = self.tokens_cache.get("PowerBI")
-        logger.info(f"🔑 [TOKEN-STEP 5/5] Returning token (exists: {final_token is not None}, length: {len(final_token) if final_token else 0})")
-        return final_token
+        return self.tokens_cache.get("PowerBI")
             
         
     def get_fabric_access_token(self) -> str:

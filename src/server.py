@@ -13,7 +13,6 @@ from collections import defaultdict, deque
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Union
-from urllib.parse import quote
 from dotenv import load_dotenv
 # Third-party imports
 import anyio
@@ -420,85 +419,41 @@ class TabularEditor:
     def connect_dataset(self, workspace_identifier: str, database_name: str) -> dict:
         """Establish connection to Power BI dataset with automatic SQL endpoint discovery"""
         try: 
-            logger.info(f"🔌 [STEP 1/8] TabularEditor {self._instance_id} attempting connection to: {database_name} in {workspace_identifier}")
+            logger.info(f"🔌 TabularEditor {self._instance_id} attempting connection to: {database_name} in {workspace_identifier}")
             
             # Check if already connected and disconnect first to prevent "already connected" error
             if self.connected or hasattr(self.tabularserver, 'Connected') and self.tabularserver.Connected:
-                logger.info("🔄 [STEP 2/8] Existing connection detected. Disconnecting before establishing new connection...")
+                logger.info("🔄 Existing connection detected. Disconnecting before establishing new connection...")
                 try:
                     self.tabularserver.Disconnect()
                     self.connected = False
-                    logger.info("✅ [STEP 2/8] Successfully disconnected from previous connection")
+                    logger.info("✅ Successfully disconnected from previous connection")
                 except Exception as disconnect_error:
-                    logger.warning(f"⚠️ [STEP 2/8] Warning during disconnect: {str(disconnect_error)}")
+                    logger.warning(f"⚠️ Warning during disconnect: {str(disconnect_error)}")
                     # Force reset connection state even if disconnect failed
                     self.connected = False
                     self.model = None
-            else:
-                logger.info("✅ [STEP 2/8] No existing connection to disconnect")
             
-            logger.info(f"🔍 [STEP 3/8] Retrieving workspace info for: {workspace_identifier}")
             workspace_info = self.fabric.get_workspace_info(workspace_identifier)
             workspace_name = workspace_info.get("workspace_name", None)
             workspace_id = workspace_info.get("workspace_id", None)
-            logger.info(f"✅ [STEP 3/8] Retrieved workspace info - Name: '{workspace_name}', ID: {workspace_id}")
-            
             if not workspace_name:
                 raise ValueError(f"Workspace '{workspace_identifier}' not found.")
 
-            # URL encode workspace name to handle special characters like &, spaces, etc.
-            logger.info(f"🔗 [STEP 4/8] URL encoding workspace name...")
-            workspace_name_encoded = quote(workspace_name, safe='')
-            logger.info(f"✅ [STEP 4/8] Workspace name: '{workspace_name}' -> Encoded: '{workspace_name_encoded}'")
-
-            logger.info(f"🔑 [STEP 5/8] Retrieving Power BI access token...")
-            token_start_time = datetime.now()
-            access_token = self.auth_manager.get_powerbi_access_token()
-            token_retrieval_time = (datetime.now() - token_start_time).total_seconds()
-            
-            if not access_token:
-                raise Exception("❌ [STEP 5/8] Failed to retrieve Power BI access token - token is None or empty")
-            
-            token_length = len(access_token) if access_token else 0
-            logger.info(f"✅ [STEP 5/8] Retrieved access token (length: {token_length} chars, retrieval time: {token_retrieval_time:.2f}s)")
-
-            logger.info(f"🔧 [STEP 6/8] Building connection string...")
             self.connection_string = (
             f"Provider=MSOLAP;"
-            f"Data Source=powerbi://api.powerbi.com/v1.0/myorg/{workspace_name_encoded};"
+            f"Data Source=powerbi://api.powerbi.com/v1.0/myorg/{workspace_name};"
             f"Initial Catalog={database_name};"
-            f"Password={access_token};"
+            f"Password={self.auth_manager.get_powerbi_access_token()};"
             )
-            logger.info(f"✅ [STEP 6/8] Connection string built: {self.connection_string[:80]}...")
            
-            logger.info(f"🔌 [STEP 7/8] Initiating TabularServer.Connect() to Power BI...")
-            connect_start_time = datetime.now()
-            try:
-                self.tabularserver.Connect(self.connection_string)
-                connect_time = (datetime.now() - connect_start_time).total_seconds()
-                logger.info(f"✅ [STEP 7/8] TabularServer.Connect() succeeded (connection time: {connect_time:.2f}s)")
-            except Exception as connect_error:
-                connect_time = (datetime.now() - connect_start_time).total_seconds()
-                logger.error(f"❌ [STEP 7/8] TabularServer.Connect() FAILED after {connect_time:.2f}s")
-                logger.error(f"❌ Connection error type: {type(connect_error).__name__}")
-                logger.error(f"❌ Connection error message: {str(connect_error)}")
-                logger.error(f"❌ Workspace: '{workspace_name}' (encoded: '{workspace_name_encoded}')")
-                logger.error(f"❌ Dataset: '{database_name}'")
-                logger.error(f"❌ Token length: {token_length} chars")
-                raise
-            
-            logger.info(f"📚 [STEP 8/8] Searching for database '{database_name}' in connected server...")
+            logger.info(f"🔌 TabularEditor {self._instance_id} connecting with connection string: {self.connection_string[:50]}...")
+            self.tabularserver.Connect(self.connection_string)
             db = next((database for database in self.tabularserver.Databases 
                       if database.Name == database_name), None)
             if db is None:
-                available_dbs = [db.Name for db in self.tabularserver.Databases]
-                logger.error(f"❌ [STEP 8/8] Database '{database_name}' not found!")
-                logger.error(f"❌ Available databases: {available_dbs}")
-                raise Exception(f"Database '{database_name}' not found in the server. Available: {available_dbs}")
-            
-            logger.info(f"✅ [STEP 8/8] Found database '{db.Name}'")
+                raise Exception(f"{database_name} not found in the provided server.")
 
-            logger.info(f"🔗 [FINALIZING] Setting up model and connection state...")
             self.model = db.Model
             self.connected = True
             
@@ -507,12 +462,9 @@ class TabularEditor:
             self.current_workspace_id = workspace_id or 'Unknown'
             self.current_database = database_name
             
-            logger.info(f"✅ ========================================")
-            logger.info(f"✅ CONNECTION SUCCESSFUL!")
-            logger.info(f"✅ TabularEditor {self._instance_id} connected to model '{db.Name}'")
-            logger.info(f"✅ Workspace: {self.current_workspace} (ID: {self.current_workspace_id})")
-            logger.info(f"✅ Dataset: {self.current_database}")
-            logger.info(f"✅ ========================================")
+            logger.info(f"✅ TabularEditor {self._instance_id} connected to model '{db.Name}'.")
+            logger.info(f"📊 Workspace: {self.current_workspace} (ID: {self.current_workspace_id})")
+            logger.info(f"📊 Dataset: {self.current_database} (Name: {database_name})")
             
             return {
                 "success": True,
@@ -524,19 +476,6 @@ class TabularEditor:
             }
             
         except Exception as e:
-            logger.error(f"❌ ========================================")
-            logger.error(f"❌ CONNECTION FAILED!")
-            logger.error(f"❌ Error Type: {type(e).__name__}")
-            logger.error(f"❌ Error Message: {str(e)}")
-            logger.error(f"❌ Workspace Identifier: {workspace_identifier}")
-            logger.error(f"❌ Database Name: {database_name}")
-            logger.error(f"❌ TabularEditor Instance: {self._instance_id}")
-            logger.error(f"❌ ========================================")
-            
-            # Add detailed error context
-            import traceback
-            logger.error(f"❌ Full stack trace:")
-            logger.error(traceback.format_exc())
            # Reset connection state on failure
             self.connected = False
             self.model = None
@@ -684,7 +623,7 @@ class TabularEditor:
         fact_tables = len(categorized_tables.get("fact_tables", []))
         dimension_tables = len(categorized_tables.get("dimension_tables", []))
         
-        key_findings.append(f"• AI analyzed {total_tables} tables using GPT-4.1 classification")
+        key_findings.append(f"• AI analyzed {total_tables} tables using GPT-4o classification")
         key_findings.append(f"• Identified {fact_tables} fact tables and {dimension_tables} dimension tables")
         
         if excellent_tables > 0:
@@ -703,7 +642,7 @@ class TabularEditor:
         recommendations = []
         
         if poor_tables > 0:
-            recommendations.append(f"🚨 Review {poor_tables} tables with poor classification - may need restructuring")
+            recommendations.append(f"⚠️ Review {poor_tables} tables with poor classification - may need restructuring")
         
         if fair_tables > total_tables * 0.3:  # More than 30% fair tables
             recommendations.append("⚠️ Consider improving table design for clearer fact/dimension patterns")
@@ -850,13 +789,13 @@ class TabularEditor:
         
         if table_description_percentage < 100:
             missing_table_desc = total_tables - tables_with_descriptions
-            recommendations.append(f"📋 Add descriptions to {missing_table_desc} tables without documentation")
+            recommendations.append(f"Add descriptions to {missing_table_desc} tables without documentation")
         
         if column_description_percentage < 80:
-            recommendations.append(f"📝 Improve column documentation - only {column_description_percentage:.1f}% have descriptions")
+            recommendations.append(f"Improve column documentation - only {column_description_percentage:.1f}% have descriptions")
         
         if total_measures > 0 and measure_description_percentage < 80:
-            recommendations.append(f"🧮 Enhance measure documentation - only {measure_description_percentage:.1f}% have descriptions")
+            recommendations.append(f"Enhance measure documentation - only {measure_description_percentage:.1f}% have descriptions")
         
         if overall_percentage >= 90:
             recommendations.append("✅ Excellent metadata documentation - model is well-documented")
@@ -865,7 +804,7 @@ class TabularEditor:
         elif overall_percentage >= 50:
             recommendations.append("⚠️ Moderate metadata coverage - consider documentation improvements")
         else:
-            recommendations.append("🚨 Poor metadata coverage - significant documentation needed")
+            recommendations.append("Poor metadata coverage - significant documentation needed")
         
         if table_description_percentage == 100 and column_description_percentage == 100 and measure_description_percentage == 100:
             recommendations.append("🏆 Perfect metadata documentation - all components fully described")
@@ -974,6 +913,7 @@ class TabularEditor:
         
         return summary
 
+ 
     def _generate_relationship_summary(self, analysis_data: Dict[str, Any], summary: Dict[str, Any]) -> Dict[str, Any]:
         """Generate summary for relationship analysis."""
         # Add analyzer-specific criteria information
@@ -1226,11 +1166,11 @@ class TabularEditor:
             score_based_recommendations.append("⚠️ MODERATE: Relationship structure needs improvement for optimal performance")
             score_based_recommendations.append("🔧 IMPROVE: Focus on critical relationships (score <60%) and data type mismatches")
         elif overall_score >= 40:
-            score_based_recommendations.append("🚨 POOR: Significant relationship design issues affecting model performance")
+            score_based_recommendations.append("❌ POOR: Significant relationship design issues affecting model performance")
             score_based_recommendations.append("🛠️ REDESIGN: Immediate attention required for cardinality and cross-filter direction issues")
         else:
-            score_based_recommendations.append("🚨 CRITICAL: Relationship structure requires comprehensive redesign")
-            score_based_recommendations.append("🚨 URGENT: Address data connectivity issues, fix inactive relationships, and implement missing connections")
+            score_based_recommendations.append("❌ CRITICAL: Relationship structure requires comprehensive redesign")
+            score_based_recommendations.append("❌ URGENT: Address data connectivity issues, fix inactive relationships, and implement missing connections")
         
         # Specific issue-based recommendations
         if isolated_tables > 0:
@@ -1740,7 +1680,7 @@ class TabularEditor:
                     
                     if result.get("Column_Format_Score", 1) < 0.08:
                         issues.append("poor naming conventions")
-                        reasons.append("Column doesn't follow PascalCase formatting standards (no spaces/underscores)")
+                        reasons.append("Column doesn't follow consistent formatting standards (inconsistent capitalization or special characters)")
                     
                     if result.get("Column_DataType_Score", 1) < 0.75:
                         issues.append("suboptimal data type")
@@ -1779,7 +1719,7 @@ class TabularEditor:
                     cf_score = result.get("Column_Format_Score", 1)
                     if 0.08 <= cf_score < 0.09:
                         issues.append("minor formatting improvements")
-                        reasons.append("Could better follow PascalCase naming conventions")
+                        reasons.append("Could better follow consistent naming conventions")
                     
                     dt_score = result.get("Column_DataType_Score", 1)
                     if 0.75 <= dt_score < 0.90:
@@ -1837,7 +1777,7 @@ class TabularEditor:
                 "formatting": {
                     "score": round(avg_scores.get("cn_004_formatting", 0) * 100 / 0.10, 1),
                     "weight": "10%",
-                    "description": "Adherence to PascalCase naming conventions"
+                    "description": "Adherence to readable naming conventions"
                 },
                 "data_type_accuracy": {
                     "score": round(avg_scores.get("ct_001_data_type_accuracy", 0) * 100 / 1.0, 1),
@@ -1885,7 +1825,7 @@ class TabularEditor:
                         issues.append(f"Uniqueness issue: Column '{column_name}' is too similar to other column names, causing confusion (score: {uniqueness_score:.2f}/0.25)")
                     
                     if format_score < 0.08:  # 75% of 0.10
-                        issues.append(f"Formatting issue: Column '{column_name}' doesn't follow PascalCase conventions (score: {format_score:.2f}/0.10)")
+                        issues.append(f"Formatting issue: Column '{column_name}' doesn't follow consistent naming conventions (score: {format_score:.2f}/0.10)")
                     
                     if datatype_score < 0.75:  # 75% of 1.0
                         current_type = row.get("Current_DataType", "Unknown")
@@ -2133,7 +2073,7 @@ class TabularEditor:
             # Add security-specific recommendations as fallback
             security_recommendations = []
             if overall_score < 50:
-                security_recommendations.append("🚨 Immediate action required: Implement comprehensive security model")
+                security_recommendations.append("❌ Immediate action required: Implement comprehensive security model")
             elif overall_score < 70:
                 security_recommendations.append("⚠️ Security improvements needed: Address key gaps in access control")
             else:
@@ -2337,7 +2277,7 @@ class TabularEditor:
                         table_name = row.get('Table', 'Unknown')
                         hierarchy_name = row.get('Hierarchy_Name', 'Unknown')
                         score = row.get('Overall_Score', 0)
-                        rationale = row.get('Score_Rationale', '')
+                        rationale = row.get('Recommendations', '')
                         
                         if severity == 'critical':
                             explanation = f"Table '{table_name}' - Hierarchy '{hierarchy_name}': Critical issue identified"
@@ -2470,39 +2410,172 @@ class TabularEditor:
             "warning": warning_issues
         }
        
-        # Generate high-level recommendations based on overall analysis like fact_dimension_analysis
+        # Generate simple recommendations based on hierarchy counts and basic analysis
         generated_recommendations = []
         
-        # Calculate hierarchy quality distribution from existing hierarchies
-        excellent_hierarchies = len([h for h in existing_hierarchies if h.get("total_score", 0) >= 0.85])
-        good_hierarchies = len([h for h in existing_hierarchies if 0.7 <= h.get("total_score", 0) < 0.85])
-        poor_hierarchies = len([h for h in existing_hierarchies if h.get("total_score", 0) < 0.6])
-        fact_table_hierarchies = len([h for h in existing_hierarchies if h.get("table_type", "") == "Fact"])
+        # Debug logging
+        logger.info(f"🔧 HIERARCHIES RECOMMENDATIONS DEBUG:")
+        logger.info(f"   Total existing hierarchies: {len(existing_hierarchies)}")
+        logger.info(f"   Total existing count: {total_existing}")
+        logger.info(f"   Tables without hierarchies: {tables_without}")
+        logger.info(f"   Total tables: {total_tables}")
         
-        # Generate recommendations based on overall analysis results
+        # ENSURE WE ALWAYS HAVE MEANINGFUL RECOMMENDATIONS (like fact_dimension analysis)
+        # This mirrors the pattern from _generate_fact_dimension_summary which always works
+        
+        # Basic hierarchy assessment (always generate at least one)
         if total_existing == 0:
-            generated_recommendations.append("No hierarchies found - Consider creating hierarchies for dimension tables to improve user navigation")
-        else:
-            if excellent_hierarchies > total_existing * 0.7:  # 70% or more excellent
-                generated_recommendations.append("Excellent hierarchy design - well-designed hierarchical structure")
-            elif good_hierarchies + excellent_hierarchies > total_existing * 0.6:  # 60% or more good+excellent
-                generated_recommendations.append("Good hierarchy quality with some optimization opportunities")
+            generated_recommendations.append("No hierarchies detected - Consider creating hierarchies for better data navigation")
+            generated_recommendations.append("Start with Date hierarchies (Year>Quarter>Month) and Geography hierarchies (Country>State>City)")
+            generated_recommendations.append("Product hierarchies (Category>Subcategory>Product) enhance user experience")
+        elif total_existing > 0:
+            generated_recommendations.append(f"Found {total_existing} hierarchies across {tables_with_hierarchies} tables")
+            
+            # Score-based recommendations (like fact dimension analysis)
+            if summary.get("overall_score", 0) >= 85:
+                generated_recommendations.append("Excellent hierarchy design - well-structured navigation paths")
+            elif summary.get("overall_score", 0) >= 70:
+                generated_recommendations.append("Good hierarchy structure with optimization opportunities")
             else:
-                generated_recommendations.append("Significant hierarchy improvements needed for better user experience")
+                generated_recommendations.append("Significant improvements needed in hierarchy design")
+        
+        # Always add practical recommendations
+        generated_recommendations.append("Ensure hierarchies follow logical business patterns for intuitive navigation")
+        
+        # Add CSV-based specific recommendations if available
+        csv_content = analysis_data.get("csv_content", "")
+        if csv_content:
+            try:
+                import pandas as pd
+                import io
+                
+                csv_lines = csv_content.strip().split('\n')
+                csv_lines = [line for line in csv_lines if line.strip()]
+                cleaned_csv = '\n'.join(csv_lines)
+                df = pd.read_csv(io.StringIO(cleaned_csv))
+                
+                if len(df) > 0 and 'Issue_Severity' in df.columns:
+                    critical_count = len(df[df['Issue_Severity'].str.lower() == 'critical'])
+                    issue_count = len(df[df['Issue_Severity'].str.lower() == 'issue'])
+                    
+                    if critical_count > 0:
+                        generated_recommendations.append(f"Priority: Fix {critical_count} critical hierarchy issues immediately")
+                    if issue_count > 0:
+                        generated_recommendations.append(f"Address {issue_count} hierarchy design issues for better navigation")
+                        
+            except Exception as e:
+                logger.warning(f"Could not extract CSV recommendations: {e}")
+        
+        logger.info(f"   GENERATED: {len(generated_recommendations)} recommendations")
+        
+        # Calculate hierarchy quality metrics - handle both CSV format and fallback format
+        excellent_hierarchies = 0
+        good_hierarchies = 0
+        poor_hierarchies = 0
+        fact_table_hierarchies = 0
+        
+        for h in existing_hierarchies:
+            # Handle both CSV format and fallback format field names
+            overall_score = h.get("Overall_Score", h.get("total_score", 0))
+            table_type = h.get("Table_Type", h.get("table_type", ""))
+            
+            # Count by quality
+            if overall_score >= 0.85:
+                excellent_hierarchies += 1
+            elif overall_score >= 0.7:
+                good_hierarchies += 1
+            elif overall_score < 0.6:
+                poor_hierarchies += 1
+                
+            # Count fact table hierarchies
+            if table_type == "FACT" or table_type == "Fact":
+                fact_table_hierarchies += 1
+        
+        logger.info(f"   Quality breakdown: Excellent={excellent_hierarchies}, Good={good_hierarchies}, Poor={poor_hierarchies}")
+        logger.info(f"   Fact table hierarchies: {fact_table_hierarchies}")
+        
+        # Add quality-based recommendations
+        if excellent_hierarchies > total_existing * 0.7:  # 70% or more excellent
+            generated_recommendations.append(f"🌟 {excellent_hierarchies}/{total_existing} hierarchies are excellent - maintain current structure")
+        elif poor_hierarchies > total_existing * 0.4:  # 40% or more need improvement
+            generated_recommendations.append(f"⚡ Priority: Improve {poor_hierarchies} hierarchies with scores below 60%")
         
         if fact_table_hierarchies > 0:
-            generated_recommendations.append(f"{fact_table_hierarchies} hierarchies in fact tables - consider moving to dimension tables")
+            generated_recommendations.append(f"🔄 Move {fact_table_hierarchies} hierarchies from fact tables to dimension tables")
         
-        if poor_hierarchies > 0:
-            generated_recommendations.append(f"Review {poor_hierarchies} hierarchies with poor design - may need restructuring")
+        # ABSOLUTE GUARANTEE: Ensure we always have recommendations (like working analyses)
+        if len(generated_recommendations) == 0:
+            logger.warning("   FORCING DEFAULT RECOMMENDATIONS: No recommendations generated")
+            generated_recommendations = [
+                "✅ Hierarchy analysis completed successfully", 
+                "🔍 Review your data model for hierarchy optimization opportunities",
+                "📊 Consider creating Date, Geography, and Product hierarchies for better navigation"
+            ]
+            
+        # Add navigation recommendations
+        if total_existing > 0:
+            generated_recommendations.append("🎯 Ensure hierarchies follow logical business patterns for intuitive navigation")
+        else:
+            generated_recommendations.append("🎯 Consider creating Date, Geography, and Product hierarchies for better data exploration")
         
-        if tables_without > 0 and tables_without > total_tables * 0.3:  # More than 30% tables without hierarchies
-            generated_recommendations.append("Many tables could benefit from hierarchies - focus on dimension tables first")
+        logger.info(f"   FINAL GENERATED: {len(generated_recommendations)} total recommendations")
+        for i, rec in enumerate(generated_recommendations):
+            logger.info(f"      GEN{i+1}. {rec}")
         
-        summary["recommendations"] = generated_recommendations
+        # Check if there are original recommendations from analysis_data that we should merge
+        original_recommendations = analysis_data.get("recommendations", [])
+        logger.info(f"   ORIGINAL: Found {len(original_recommendations)} recommendations from analysis_data")
+        
+        # CRITICAL FIX: Use generated recommendations as the primary source (they're more reliable) - LIMIT TO 3
+        # This ensures we always have recommendations like the working analyses
+        final_recommendations = generated_recommendations[:3]  # LIMIT TO TOP 3 RECOMMENDATIONS
+        
+        # Add original recommendations if they exist and are meaningful - BUT KEEP TOTAL AT 3 MAX
+        if original_recommendations and len(final_recommendations) < 3:
+            for orig_rec in original_recommendations:
+                if len(final_recommendations) >= 3:  # Stop when we reach 3 recommendations
+                    break
+                if orig_rec and str(orig_rec).strip() and str(orig_rec).strip() not in [str(r).strip() for r in final_recommendations]:
+                    final_recommendations.append(str(orig_rec).strip())
+        
+        logger.info(f"   MERGED: {len(final_recommendations)} final recommendations (capped at 3)")
+        
+        # Filter out empty or whitespace-only recommendations  
+        filtered_recommendations = []
+        for rec in final_recommendations:
+            if rec and str(rec).strip():  # Only add non-empty recommendations
+                filtered_recommendations.append(str(rec).strip())
+        
+        logger.info(f"   FILTERING: {len(final_recommendations)} -> {len(filtered_recommendations)} after removing empty")
+        
+        # CRITICAL: Always ensure we have recommendations (like fact_dimension analysis)
+        if not filtered_recommendations:
+            logger.error("   EMERGENCY: No filtered recommendations, forcing defaults")
+            filtered_recommendations = [
+                "✅ Hierarchy analysis completed successfully",
+                "🔍 Review your data model for hierarchy optimization opportunities", 
+                "📊 Consider creating hierarchies for Date, Geography, and Product dimensions"
+            ]
+        
+        # Set recommendations - ALWAYS set this key (like working analyses) - LIMIT TO 3 FOR UI
+        summary["recommendations"] = filtered_recommendations[:3]  # LIMIT TO TOP 3 RECOMMENDATIONS
+        logger.info(f"🔧 RECOMMENDATIONS SET: {len(filtered_recommendations[:3])} recommendations in summary (limited to 3)")
+        for i, rec in enumerate(filtered_recommendations[:3]):
+            logger.info(f"   FINAL{i+1}. {rec}")
+        
+        # Final debug log to verify summary recommendations state
+        final_recs = summary.get('recommendations', [])
+        logger.info(f"🔧 HIERARCHIES SUMMARY DEBUG: Final summary contains {len(final_recs)} recommendations")
+        logger.info(f"🔧 HIERARCHIES SUMMARY DEBUG: Recommendations type: {type(final_recs)}")
+        logger.info(f"🔧 HIERARCHIES SUMMARY DEBUG: Final recommendations verification:")
+        for i, rec in enumerate(final_recs):
+            logger.info(f"   REC{i+1}: '{rec}' (type: {type(rec)})")
+        
+        logger.info(f"🔧 HIERARCHIES SUMMARY DEBUG: Final summary keys: {list(summary.keys())}")
         
         return summary
 
+ 
     def _extract_sql_endpoint_from_model(self) -> Optional[Dict[str, str]]:
         """Extract SQL endpoint and database from semantic model expressions automatically."""
         if not self.connected or not self.model:
@@ -3426,7 +3499,7 @@ class TabularEditor:
         if analysis_type == "fact_dimension_analysis":
             criteria = {
                 "AI Classification Framework": {
-                    "description": "GPT-4.1 powered intelligent table classification using dimensional modeling best practices",
+                    "description": "GPT-4o powered intelligent table classification using dimensional modeling best practices",
                     "criteria": [
                         "Analyzes table structure, column patterns, and naming conventions",
                         "Evaluates relationship patterns and cardinality indicators", 
@@ -3496,10 +3569,10 @@ class TabularEditor:
                     ]
                 },
                 "Formatting": {
-                    "description": "Adherence to PascalCase naming conventions",
+                    "description": "Adherence to readable naming conventions",
                     "criteria": [
-                        "Follows PascalCase formatting standards",
-                        "No spaces or underscores in names",
+                        "Follows consistent formatting standards (PascalCase, spaces, or underscores)",
+                        "Spaces and underscores allowed for improved readability",
                         "Consistent capitalization patterns",
                         "Professional naming appearance"
                     ]
@@ -3623,6 +3696,59 @@ class TabularEditor:
                         "Overall model hierarchy coverage percentage calculated",
                         "Standard hierarchy patterns (Date, Geography, Product) evaluated",
                         "User experience impact of hierarchy presence or absence"
+                    ]
+                }
+            }
+        elif analysis_type == "measures_analysis":
+            criteria = {
+                "DAX Quality Assessment": {
+                    "description": "AI-powered evaluation of DAX expression quality and best practices",
+                    "criteria": [
+                        "Analyzes DAX syntax, performance, and maintainability",
+                        "Evaluates use of appropriate DAX functions and patterns",
+                        "Identifies potential performance bottlenecks",
+                        "Checks for DAX best practices and optimization opportunities",
+                        "Provides confidence scoring for code quality assessment"
+                    ]
+                },
+                "Naming Conventions": {
+                    "description": "Measure naming standards and business clarity",
+                    "criteria": [
+                        "Names clearly indicate business purpose and calculation type",
+                        "Uses descriptive, business-relevant terminology",
+                        "Follows consistent naming patterns across measures",
+                        "Avoids technical jargon that confuses business users",
+                        "Includes appropriate units or context indicators"
+                    ]
+                },
+                "Business Logic Validation": {
+                    "description": "Verification of measure calculations and business relevance",
+                    "criteria": [
+                        "Calculations align with business requirements and definitions",
+                        "Proper handling of filtering and context transitions",
+                        "Appropriate aggregation methods for the data type",
+                        "Error handling for edge cases and missing data",
+                        "Business stakeholder validation of calculation logic"
+                    ]
+                },
+                "Performance Optimization": {
+                    "description": "Measure performance and query efficiency evaluation",
+                    "criteria": [
+                        "Efficient DAX patterns that minimize query execution time",
+                        "Proper use of variables and calculation contexts",
+                        "Avoidance of resource-intensive operations in measures",
+                        "Optimized filtering and aggregation strategies",
+                        "Memory usage considerations for large datasets"
+                    ]
+                },
+                "Metadata Completeness": {
+                    "description": "Documentation and description quality for measures",
+                    "criteria": [
+                        "Clear descriptions explaining calculation purpose",
+                        "Documentation of business rules and assumptions",
+                        "Proper categorization and folder organization",
+                        "Format strings appropriate for data presentation",
+                        "Hidden measures appropriately marked for internal use"
                     ]
                 }
             }
@@ -4138,9 +4264,9 @@ class CopilotDataEvaluator:
                 ui_tracker.add_error("Not connected to any dataset", "connection_error")
                 return {"error": "Not connected to any dataset. Please connect first."}
         
-            # Initialize the tokenizer for GPT-4.1
+            # Initialize the tokenizer for GPT-4o
             try:
-                encoding = tiktoken.encoding_for_model("gpt-4.1")
+                encoding = tiktoken.encoding_for_model("gpt-4o")
             except Exception:
                 # Fallback to cl100k_base encoding if model-specific encoding fails
                 encoding = tiktoken.get_encoding("cl100k_base")
@@ -4169,7 +4295,7 @@ class CopilotDataEvaluator:
                     except Exception as e:
                         logger.warning(f"Failed to send progress callback: {str(e)}")
 
-            # Initialize Azure OpenAI GPT-4.1 client for AI-powered analysis
+            # Initialize Azure OpenAI GPT-4o client for AI-powered analysis
             ai_client = get_ai_client()
             if not ai_client:
                 ui_tracker.add_error("Failed to initialize AI client", "ai_error")
@@ -4759,7 +4885,7 @@ class CopilotDataEvaluator:
             # ================================================================================================
             # AI-POWERED MEASURE QUALITY ANALYSIS
             # ================================================================================================
-            # Analyze measures using GPT-4.1 for 3 specific criteria with intelligent batch processing
+            # Analyze measures using GPT-4o for 3 specific criteria with intelligent batch processing
             
             def create_measure_analysis_prompt() -> str:
                 """Create specialized prompt for AI measure analysis"""
@@ -4845,8 +4971,8 @@ Return JSON with "results" array containing analysis for all measures."""
                 
                 avg_tokens_per_measure = total_tokens / measures_count
                 
-                # GPT-4.1 context window considerations with output token limits
-                max_input_tokens = 100000  # Conservative limit for GPT-4.1 input
+                # GPT-4o context window considerations with output token limits
+                max_input_tokens = 100000  # Conservative limit for GPT-4o input
                 max_output_tokens = 3500   # Maximum output tokens as specified
                 prompt_overhead = 2000     # Tokens for system prompt and formatting
                 
@@ -4887,7 +5013,7 @@ Return JSON with "results" array containing analysis for all measures."""
                         
                         user_prompt = f"""You are analyzing Power BI measures. For each measure, you MUST examine its "context" field and use that comprehensive information to score accurately.
 
-🚨 CRITICAL SCORING RULE: The "context" field contains the complete business logic including all referenced measures. Use this to determine if measure names are self-explanatory and reflect their calculations.
+⚠️ CRITICAL SCORING RULE: The "context" field contains the complete business logic including all referenced measures. Use this to determine if measure names are self-explanatory and reflect their calculations.
 
 STEP-BY-STEP PROCESS (MANDATORY):
 1. Read measure name: e.g., "Pipeline Target"
@@ -4903,7 +5029,7 @@ GOOD SCORING (what you MUST do):
 
 IMPORTANT: Generic names like "Target", "Goal", "Amount" are acceptable if the context makes their purpose clear and aligns with the actual calculation.
 
-🚨 CRITICAL ABBREVIATION RULE: For avoid_abbreviations_score, ONLY look at the measure name itself. Do NOT consider context, expression, or description. If you cannot clearly determine from the measure name alone whether there are abbreviations, DEFAULT TO 0.4 (max score). Only give 0.0 when abbreviations are OBVIOUS and CLEAR in the measure name itself.
+⚠️ CRITICAL ABBREVIATION RULE: For avoid_abbreviations_score, ONLY look at the measure name itself. Do NOT consider context, expression, or description. If you cannot clearly determine from the measure name alone whether there are abbreviations, DEFAULT TO 0.4 (max score). Only give 0.0 when abbreviations are OBVIOUS and CLEAR in the measure name itself.
 
 YOUR TASK: Use the context field to understand the complete business story, then score based on whether the name makes sense with that full context.
 
@@ -4921,7 +5047,7 @@ Return JSON with "results" array containing analysis for ALL {len(measures_for_a
                             logger.info(f"   Context: {context_preview}")
                         
                         response = client.chat.completions.create(
-                            model="gpt-4.1",
+                            model="gpt-4o",
                             messages=[
                                 {"role": "system", "content": create_measure_analysis_prompt()},
                                 {"role": "user", "content": user_prompt}
@@ -4992,7 +5118,7 @@ Return JSON with "results" array containing analysis for ALL {len(measures_for_a
             # ================================================================================================
             # PHASE 4: AI BATCH PROCESSING
             # ================================================================================================
-            # Send measure data to GPT-4.1 in optimized batches for intelligent analysis
+            # Send measure data to GPT-4o in optimized batches for intelligent analysis
             
             # Only proceed with AI analysis if we have measures and AI client
             if len(df) > 0 and ai_client:
@@ -5027,7 +5153,7 @@ Return JSON with "results" array containing analysis for ALL {len(measures_for_a
                 # Process measures in batches with AI analysis
                 all_ai_results = []
                 
-                # Process measures through GPT-4.1 in manageable batches
+                # Process measures through GPT-4o in manageable batches
                 for i in range(0, len(measures_for_analysis), optimal_batch_size):
                     batch_start = i
                     batch_end = min(i + optimal_batch_size, len(measures_for_analysis))
@@ -5419,9 +5545,9 @@ Return JSON with "results" array containing analysis for ALL {len(measures_for_a
                 logger.info("🎯 MEASURES ANALYSIS SUMMARY")
                 logger.info("=" * 80)
                 logger.info(f"📊 Total Measures Analyzed: {total_measures}")
-                logger.info(f"📈 Average Quality Score: {avg_quality_score:.1f}%")
+                logger.info(f"📊 Average Quality Score: {avg_quality_score:.1f}%")
                 logger.info("")
-                logger.info("🚨 SEVERITY DISTRIBUTION:")
+                logger.info("📊 SEVERITY DISTRIBUTION:")
                 logger.info(f"  🔴 CRITICAL: {severity_counts['CRITICAL']:>3} ({(severity_counts['CRITICAL']/total_measures)*100:>5.1f}%)")
                 logger.info(f"  🟠 ISSUE:    {severity_counts['ISSUE']:>3} ({(severity_counts['ISSUE']/total_measures)*100:>5.1f}%)")
                 logger.info(f"  🟡 WARNING:  {severity_counts['WARNING']:>3} ({(severity_counts['WARNING']/total_measures)*100:>5.1f}%)")
@@ -5545,22 +5671,27 @@ Return JSON with "results" array containing analysis for ALL {len(measures_for_a
                     "summary": summary,
                     "measures_data": measures_data,
                     "ai_powered": True,
-                    "model_used": "gpt-4.1"
+                    "model_used": "gpt-4o"
                 }
                 
                 # Add Excel content if available
                 if 'excel_content_for_result' in locals():
                     result["excel_content"] = excel_content_for_result  # Excel binary for download
                 
-                # Generate high-level summary for dashboard display  
+                # Generate high-level summary for dashboard display
+                # Get analysis criteria before adding to summary
+                analysis_criteria = self.tabular_editor._get_analyzer_specific_criteria("measures_analysis")
+                logger.info(f"🔍 DEBUG: Analysis criteria generated: {len(analysis_criteria)} categories")  
                 high_level_summary = {
                     "analysis_type": "measures_analysis",
                     "overall_score": int(avg_quality_score),
                     "detailed_issues": detailed_issues,
                     "key_findings": key_findings[:5],
                     "recommendations": recommendations[:5],
-                    "severity_distribution": severity_counts
+                    "severity_distribution": severity_counts,
+                    "analysis_criteria": analysis_criteria
                 }
+                logger.info(f"🔍 DEBUG: High level summary analysis_criteria keys: {list(high_level_summary.get('analysis_criteria', {}).keys())}")
                 
                 # Attach high-level summary to main result
                 result["high_level_summary"] = high_level_summary
@@ -5625,7 +5756,7 @@ Return JSON with "results" array containing analysis for ALL {len(measures_for_a
 
     def dataset_columns_analysis(self, tables_to_analyze: List[str] = None, fast_mode: bool = False, max_columns_per_table: int = None, table_priority: str = "all", progress_callback=None) -> Dict[str, Any]:
         """
-        AI-Powered dataset column analysis using GPT-4.1 for intelligent assessment against Power BI best practices.
+        AI-Powered dataset column analysis using GPT-4o for intelligent assessment against Power BI best practices.
         
         Evaluates columns against 5 specific rules:
         - CN-001 (0.35pts): Clear business terms and descriptive names
@@ -5731,9 +5862,10 @@ SCORING RULES (must follow exactly):
    - FORBIDDEN: Do NOT evaluate business meaning, clarity, generic terms, or self-explanatory aspects
 
 4. CN-004 Score (max 0.10): Consistent case format
-   - Use PascalCase or Proper Case with spaces
-   - Do not use all lowercase names for business columns
-   - Allow spaces if it improves readability (Sales Territory)
+   - Use PascalCase, Proper Case with spaces, or underscores for readability
+   - Allow spaces and underscores to improve column name readability
+   - Avoid all lowercase names for business columns
+   - Examples: "Sales Territory", "customer_name", "SalesTerritory" all acceptable
    - SPECIAL HANDLING FOR KEY COLUMNS: MAXIMUM SCORE for structural key columns
      * Key columns (is_key=true): Award MAXIMUM 0.10 points (structural columns get full CN-004 scoring)
      * ALL dim* columns: Award MAXIMUM 0.10 points (dimproducthierarchyInt64, dimsegmenthierarchyInt64, etc.)
@@ -5783,7 +5915,7 @@ For each column, return this EXACT JSON structure:"""
                 return []
         
         def analyze_columns_with_ai(client, columns_batch: list, dataset_context: dict, all_column_names: list) -> list:
-            """Analyze a batch of columns using GPT-4.1"""
+            """Analyze a batch of columns using GPT-4o"""
             try:
                 # Create user prompt with column data
                 # Provide complete column name context for proper ambiguity checking with actual table names
@@ -5965,7 +6097,7 @@ For each column, return a JSON object with this EXACT structure:
 Return JSON with "results" array containing analysis for all columns."""
                 
                 response = client.chat.completions.create(
-                    model="gpt-4.1",
+                    model="gpt-4o",
                     messages=[
                         {"role": "system", "content": create_analysis_prompt()},
                         {"role": "user", "content": user_prompt}
@@ -6028,7 +6160,7 @@ Return JSON with "results" array containing analysis for all columns."""
                 ui_tracker.add_error("Not connected to any dataset", "connection_error")
                 return {"error": "Not connected to any dataset. Please connect first."}
 
-            # Initialize Azure OpenAI GPT-4.1 client for AI-powered analysis
+            # Initialize Azure OpenAI GPT-4o client for AI-powered analysis
             ai_client = get_ai_client()
             if not ai_client:
                 ui_tracker.add_error("Failed to initialize AI client", "ai_error")
@@ -6086,7 +6218,7 @@ Return JSON with "results" array containing analysis for all columns."""
                 all_tables_with_counts = [(t, len(t.Columns)) for t in all_tables]
                 all_tables_with_counts.sort(key=lambda x: x[1], reverse=True)
                 tables_to_process = [t[0] for t in all_tables_with_counts[:10]]
-                logger.info(f"📈 Analyzing high-column tables: {[(t.Name, len(t.Columns)) for t in tables_to_process]}")
+                logger.info(f"🔍 Analyzing high-column tables: {[(t.Name, len(t.Columns)) for t in tables_to_process]}")
             else:
                 # Default: analyze all available tables
                 tables_to_process = list(all_tables)
@@ -6176,10 +6308,10 @@ Return JSON with "results" array containing analysis for all columns."""
             # ================================================================================================
             # PHASE 4: AI BATCH PROCESSING
             # ================================================================================================
-            # Send column data to GPT-4.1 in optimized batches for intelligent analysis
+            # Send column data to GPT-4o in optimized batches for intelligent analysis
             
             # Configure batch processing parameters
-            batch_size = 30 if fast_mode else 25  # Smaller batches for more detailed analysis
+            batch_size = 25 if fast_mode else 15  # Smaller batches for more detailed analysis
             total_columns = len(all_columns_data)
             
             logger.info(f"🤖 Starting AI analysis of {total_columns} columns in batches of {batch_size}")
@@ -6209,7 +6341,7 @@ Return JSON with "results" array containing analysis for all columns."""
             # Create batch progress tracker for detailed batch management
             batch_tracker = create_batch_tracker(ui_tracker, batch_size)
             
-            # Process columns through GPT-4.1 in manageable batches
+            # Process columns through GPT-4o in manageable batches
             for i in range(0, total_columns, batch_size):
                 batch_start = i
                 batch_end = min(i + batch_size, total_columns)
@@ -6236,7 +6368,7 @@ Return JSON with "results" array containing analysis for all columns."""
                 )
                 
                  
-                # Send batch to GPT-4.1 for AI-powered analysis against 5 scoring rules
+                # Send batch to GPT-4o for AI-powered analysis against 5 scoring rules
                 ai_results = analyze_columns_with_ai(ai_client, batch_columns, dataset_context, all_column_names)
                 
                 # ================================================================================================
@@ -6454,7 +6586,7 @@ Return JSON with "results" array containing analysis for all columns."""
                 # Formatting and naming convention issues
                 if len(formatting_issues) > 0:
                     format_pct = round((len(formatting_issues)/total_columns)*100, 1)
-                    key_findings.append(f"• {format_pct}% of columns ({len(formatting_issues)} columns) don't follow proper naming conventions (PascalCase, no underscores/spaces)")
+                    key_findings.append(f"• {format_pct}% of columns ({len(formatting_issues)} columns) don't follow consistent naming conventions")
                 
                 # Data type accuracy issues
                 if len(datatype_issues) > 0:
@@ -6487,7 +6619,7 @@ Return JSON with "results" array containing analysis for all columns."""
                 
                 # Formatting recommendations
                 if len(formatting_issues) > 0:
-                    recommendations.append(f"Standardize {len(formatting_issues)} column names to PascalCase format without underscores or spaces to improve readability and follow Power BI best practices")
+                    recommendations.append(f"Review {len(formatting_issues)} column names to ensure consistent formatting patterns and improve readability using clear naming conventions")
                 
                 # Data type recommendations
                 if len(datatype_issues) > 0:
@@ -6599,7 +6731,7 @@ Return JSON with "results" array containing analysis for all columns."""
                 "summary": summary,                      # Detailed statistical analysis
                 "analysis_results": analysis_results,   # Individual column assessments
                 "ai_powered": True,
-                "model_used": "gpt-4.1"
+                "model_used": "gpt-4o"
             }
             
             # Generate executive-level summary for dashboard display
@@ -6823,7 +6955,7 @@ Return JSON with "results" array containing analysis for all columns."""
         # Check CN-004: Formatting issues
         if cn_004_score < cn_004_max * 0.75:
             if cn_004_score == 0:
-                issues.append("❌ Poor formatting - doesn't follow PascalCase naming conventions")
+                issues.append("❌ Poor formatting - doesn't follow consistent naming conventions")
             else:
                 issues.append("⚠️ Formatting inconsistency - minor deviation from naming standards")
         
@@ -6958,99 +7090,11 @@ Return JSON with "results" array containing analysis for all columns."""
         logger.info(f"Generated {len(suggested_hierarchies)} suggested hierarchies")
         return suggested_hierarchies
 
-    def _generate_suggested_relationships(self, table_names: list) -> list:
-        """
-        Generate suggested relationships based on column name matching when no existing relationships are found.
-        Looks for foreign key patterns and common naming conventions.
-        """
-        suggested_relationships = []
-        
-        try:
-            # Get the actual table objects from table names
-            all_tables = self.tabular_editor.model.Tables
-            table_objects = {t.Name: t for t in all_tables}
-            
-            # Build column inventory for matching
-            table_columns = {}
-            for table_name in table_names:
-                if table_name in table_objects:
-                    table = table_objects[table_name]
-                    table_columns[table_name] = [col.Name for col in table.Columns]
-            
-            # Look for potential relationships
-            for from_table_name in table_names:
-                if from_table_name not in table_objects:
-                    continue
-                    
-                from_table = table_objects[from_table_name] 
-                from_columns = list(from_table.Columns)
-                
-                for from_col in from_columns:
-                    from_col_name = from_col.Name
-                    
-                    # Skip obvious non-key columns
-                    if from_col_name.lower() in ['name', 'description', 'date', 'amount', 'value']:
-                        continue
-                    
-                    # Look for matching columns in other tables
-                    for to_table_name in table_names:
-                        if to_table_name == from_table_name or to_table_name not in table_objects:
-                            continue
-                            
-                        to_table = table_objects[to_table_name]
-                        to_columns = list(to_table.Columns)
-                        
-                        for to_col in to_columns:
-                            to_col_name = to_col.Name
-                            
-                            # Direct name match
-                            if from_col_name == to_col_name:
-                                suggested_relationships.append({
-                                    "from_table": from_table_name,
-                                    "from_column": from_col_name,
-                                    "to_table": to_table_name, 
-                                    "to_column": to_col_name,
-                                    "cardinality": "Many-to-One",
-                                    "cross_filter_direction": "Single",
-                                    "is_active": True,
-                                    "relationship_type": "SUGGESTED"
-                                })
-                            
-                            # ID/Key pattern matching
-                            elif (from_col_name.lower().endswith('id') and 
-                                  to_col_name.lower().endswith('id') and
-                                  from_col_name.lower().replace('id', '') == to_col_name.lower().replace('id', '')):
-                                
-                                suggested_relationships.append({
-                                    "from_table": from_table_name,
-                                    "from_column": from_col_name,
-                                    "to_table": to_table_name,
-                                    "to_column": to_col_name,
-                                    "cardinality": "Many-to-One", 
-                                    "cross_filter_direction": "Single",
-                                    "is_active": True,
-                                    "relationship_type": "SUGGESTED"
-                                })
-                                
-        except Exception as e:
-            logger.warning(f"Error generating suggested relationships: {e}")
-        
-        # Remove duplicates
-        unique_relationships = []
-        seen = set()
-        for rel in suggested_relationships:
-            key = (rel["from_table"], rel["from_column"], rel["to_table"], rel["to_column"])
-            if key not in seen:
-                seen.add(key)
-                unique_relationships.append(rel)
-        
-        logger.info(f"Generated {len(unique_relationships)} suggested relationships")
-        return unique_relationships
- 
+
     def evaluate_fact_dimension_analysis(self, tables_to_analyze: List[str] = None, progress_callback=None) -> Dict[str, Any]:
         """
         AI-powered comprehensive analysis to classify tables as fact or dimension tables.
-        Uses GPT-4.1 to provide intelligent, context-aware table classification with detailed reasoning.
+        Uses GPT-4o to provide intelligent, context-aware table classification with detailed reasoning.
         
         Args:
             tables_to_analyze: List of specific table names to analyze (if None, analyzes all)
@@ -7157,7 +7201,7 @@ For each table, analyze and return this EXACT JSON structure:
 5. Flag any unusual patterns or potential design issues"""
 
         def analyze_tables_with_ai(client, tables_data: list, model_context: dict) -> list:
-            """Analyze tables using GPT-4.1 for intelligent classification"""
+            """Analyze tables using GPT-4o for intelligent classification"""
             try:
                 # Create comprehensive table analysis prompt
                 tables_summary = []
@@ -7198,7 +7242,7 @@ CRITICAL ANALYSIS INSTRUCTIONS:
 Please analyze each table and classify as FACT or DIMENSION with detailed reasoning. Return a JSON object with 'tables' array containing one analysis object per table."""
 
                 response = client.chat.completions.create(
-                    model="gpt-4.1",
+                    model="gpt-4o",
                     messages=[
                         {"role": "system", "content": create_fact_dimension_prompt()},
                         {"role": "user", "content": user_prompt}
@@ -7284,7 +7328,7 @@ Please analyze each table and classify as FACT or DIMENSION with detailed reason
                 ui_tracker.add_error("Analysis cancelled by user", "user_cancellation")
                 return {"error": "Analysis stopped by user", "cancelled": True}
 
-            # Initialize Azure OpenAI GPT-4.1 client for AI-powered analysis
+            # Initialize Azure OpenAI GPT-4o client for AI-powered analysis
             ai_client = get_ai_client()
             if not ai_client:
                 ui_tracker.add_error("Failed to initialize AI client", "ai_error")
@@ -7443,7 +7487,7 @@ Please analyze each table and classify as FACT or DIMENSION with detailed reason
             # ================================================================================================
             # PHASE 3: AI BATCH PROCESSING
             # ================================================================================================
-            # Send table data to GPT-4.1 in optimized batches for intelligent classification
+            # Send table data to GPT-4o in optimized batches for intelligent classification
             
             ui_tracker.set_phase("AI Batch Processing", f"Starting AI analysis in batches of {batch_size} tables")
             
@@ -7699,7 +7743,7 @@ Please analyze each table and classify as FACT or DIMENSION with detailed reason
                     },
                     "quality_distribution": quality_distribution,
                     "analysis_timestamp": datetime.now().isoformat(),
-                    "analysis_method": "AI-Powered using GPT-4.1"
+                    "analysis_method": "AI-Powered using GPT-4o"
                 },
                 "table_analysis": table_analysis,
                 "categorized_tables": {
@@ -7721,7 +7765,7 @@ Please analyze each table and classify as FACT or DIMENSION with detailed reason
 
             # Add AI analysis metadata for consistency with other AI-powered analyses
             result["ai_powered"] = True
-            result["model_used"] = "gpt-4.1"
+            result["model_used"] = "gpt-4o"
            
             # Generate high-level summary
             result["high_level_summary"] = self.tabular_editor.generate_analysis_summary("ai_fact_dimension_analysis", result)
@@ -7764,135 +7808,11 @@ Please analyze each table and classify as FACT or DIMENSION with detailed reason
             else:
                 logger.error(f"Error in AI-powered fact/dimension analysis: {str(e)}")
                 return {"error": f"AI analysis failed: {str(e)}"}
-   
-    def _perform_cardinality_validation(self, from_table: str, from_column: str, to_table: str, to_column: str, model_cardinality: str) -> Dict[str, Any]:
-        """
-        Perform data-driven cardinality validation by analyzing actual data patterns
-        """
-        try:
-            logger.info(f"🔍 Analyzing cardinality for {from_table}.{from_column} -> {to_table}.{to_column}")
-            
-            # Escape table names for DAX queries
-            escaped_from_table = f"'{from_table}'" if ' ' in from_table else from_table
-            escaped_to_table = f"'{to_table}'" if ' ' in to_table else to_table
-            
-            # Query to analyze relationship patterns
-            validation_query = f"""
-            EVALUATE
-            ROW(
-                "From_Total_Rows", COUNTROWS({escaped_from_table}),
-                "From_Distinct_Values", DISTINCTCOUNT({escaped_from_table}[{from_column}]),
-                "To_Total_Rows", COUNTROWS({escaped_to_table}),
-                "To_Distinct_Values", DISTINCTCOUNT({escaped_to_table}[{to_column}])
-            )
-            """
-            
-            result = self.tabular_editor.execute_dax_query(validation_query)
-            
-            if result and len(result) > 0:
-                data = result[0]
-                from_total = data.get('[From_Total_Rows]', 0)
-                from_distinct = data.get('[From_Distinct_Values]', 0) 
-                to_total = data.get('[To_Total_Rows]', 0)
-                to_distinct = data.get('[To_Distinct_Values]', 0)
-                
-                logger.info(f"📊 Data metrics: From({from_total}/{from_distinct}) To({to_total}/{to_distinct})")
-                
-                # Determine actual cardinality from data patterns
-                from_has_duplicates = from_total > from_distinct
-                to_has_duplicates = to_total > to_distinct
-                
-                if not from_has_duplicates and not to_has_duplicates:
-                    # Both sides unique
-                    data_cardinality = "One-to-One"
-                    validation_status = "VALID - Unique values on both sides"
-                    recommended_action = "Perfect one-to-one relationship"
-                    
-                elif from_has_duplicates and not to_has_duplicates:
-                    # From side has duplicates, To side unique
-                    data_cardinality = "Many-to-One"
-                    validation_status = "VALID - Multiple source records per target record"
-                    recommended_action = "Standard fact-to-dimension relationship"
-                    
-                elif not from_has_duplicates and to_has_duplicates:
-                    # From side unique, To side has duplicates
-                    data_cardinality = "One-to-Many"
-                    validation_status = "VALID - One source record to multiple target records"
-                    recommended_action = "Review relationship direction - consider reversing"
-                    
-                else:
-                    # Both sides have duplicates
-                    data_cardinality = "Many-to-Many"
-                    validation_status = "COMPLEX - Duplicates on both sides"
-                    recommended_action = "Consider bridge table or review data quality"
-                
-                return {
-                    "data_cardinality": data_cardinality,
-                    "validation_status": validation_status,
-                    "recommended_action": recommended_action,
-                    "data_metrics": f"From: {from_total} rows ({from_distinct} distinct), To: {to_total} rows ({to_distinct} distinct)"
-                }
-            
-            # If no data returned
-            return {
-                "data_cardinality": "Analysis Failed",
-                "validation_status": "ERROR - No data available for analysis", 
-                "recommended_action": "Check if tables contain data",
-                "data_metrics": "No data found"
-            }
-            
-        except Exception as e:
-            logger.error(f"❌ Cardinality validation failed: {str(e)}")
-            return {
-                "data_cardinality": "Analysis Failed",
-                "validation_status": f"ERROR - {str(e)[:80]}",
-                "recommended_action": "Check table/column existence and data access",
-                "data_metrics": "Error retrieving data"
-            }
-            
-    def extract_inactive_usage_from_detailed(self, is_active_detailed: str) -> str:
-        """Extract usage justification from detailed is_active explanation"""
-        if not is_active_detailed or is_active_detailed == "Unknown":
-            return "Not_Applicable"
-        
-        is_active_lower = is_active_detailed.lower()
-        if is_active_lower.startswith("yes"):
-            return "Not_Applicable"
-        elif "used in measure" in is_active_lower or "dax expression" in is_active_lower:
-            return "Used_In_Measures"
-        elif "not used in any measure" in is_active_lower:
-            return "Unjustified"
-        else:
-            return "Unknown"
-    
-    def extract_bidirectional_purpose_from_detailed(self, cross_filter_direction: str) -> str:
-        """Extract bidirectional purpose based on cross filter direction"""
-        if not cross_filter_direction or cross_filter_direction == "Unknown":
-            return "Not_Applicable"
-        
-        if cross_filter_direction.lower() in ["single", "one"]:
-            return "Not_Applicable"
-        elif cross_filter_direction.lower() in ["both", "bidirectional"]:
-            # This could be enhanced to detect security vs other purposes from context
-            return "Performance_Issue"  # Default assumption for "Both" direction
-        else:
-            return "Unknown"
-    
-    def extract_simple_is_active(self, is_active_detailed: str) -> str:
-        """Extract simple Yes/No from detailed is_active explanation"""
-        if not is_active_detailed:
-            return "Unknown"
-        return "Yes" if is_active_detailed.lower().startswith("yes") else "No"
-    
-    def extract_simple_data_type_compatibility(self, data_type_compatibility_detailed: str) -> str:
-        """Extract simple Yes/No from detailed data_type_compatibility explanation"""
-        if not data_type_compatibility_detailed:
-            return "Unknown"
-        return "Yes" if data_type_compatibility_detailed.lower().startswith("yes") else "No"
 
+    
     def evaluate_table_linking(self, tables_to_analyze: List[str] = None, progress_callback=None) -> Dict[str, Any]:
         """
-        AI-Powered table linking evaluation using GPT-4.1 for intelligent relationship assessment against Power BI best practices.
+        AI-Powered table linking evaluation using GPT-4o for intelligent relationship assessment against Power BI best practices.
         
         Evaluates relationships against 4 specific scoring rules:
         - RL-001 (0.3pts): Data Types between the relationships columns are matching
@@ -8012,7 +7932,7 @@ For each relationship, return this EXACT JSON structure:
 7. Provide specific, actionable implementation guidance based on the 4 scoring rules"""
 
         def analyze_relationships_with_ai(client, relationships_batch: list, dataset_context: dict) -> list:
-            """Analyze a batch of relationships using GPT-4.1"""
+            """Analyze a batch of relationships using GPT-4o"""
             try:
                 user_prompt = f"""Analyze these Power BI relationships against the exact scoring rules:
 
@@ -8070,7 +7990,7 @@ For each relationship, return a JSON object with this EXACT structure:
 Return JSON with "results" array containing analysis for all relationships."""
                 
                 response = client.chat.completions.create(
-                    model="gpt-4.1",
+                    model="gpt-4o",
                     messages=[
                         {"role": "system", "content": create_relationship_analysis_prompt()},
                         {"role": "user", "content": user_prompt}
@@ -8211,6 +8131,198 @@ Return JSON with "results" array containing analysis for all relationships."""
             except Exception as e:
                 logger.warning(f"DAX data type detection failed for {table_name}.{column_name}: {e}")
                 return "Unknown"
+        
+        def _generate_suggested_relationships(table_names: list) -> list:
+            """
+            Generate suggested relationships based on column name matching when no existing relationships are found.
+            Looks for foreign key patterns and common naming conventions.
+            """
+            suggested_relationships = []
+            
+            try:
+                # Get the actual table objects from table names
+                all_tables = self.tabular_editor.model.Tables
+                table_objects = {t.Name: t for t in all_tables}
+                
+                # Build column inventory for matching
+                table_columns = {}
+                for table_name in table_names:
+                    if table_name in table_objects and hasattr(table_objects[table_name], 'Columns'):
+                        table_columns[table_name] = [col.Name for col in table_objects[table_name].Columns]
+                
+                # Look for potential relationships
+                for from_table_name in table_names:
+                    if from_table_name not in table_columns:
+                        continue
+                        
+                    for from_column in table_columns[from_table_name]:
+                        # Look for matching columns in other tables
+                        for to_table_name in table_names:
+                            if to_table_name == from_table_name or to_table_name not in table_columns:
+                                continue
+                                
+                            for to_column in table_columns[to_table_name]:
+                                # Simple name matching (case insensitive)
+                                if from_column.lower() == to_column.lower():
+                                    suggested_relationships.append({
+                                        "from_table": from_table_name,
+                                        "from_column": from_column,
+                                        "to_table": to_table_name,
+                                        "to_column": to_column,
+                                        "relationship_type": "MISSING_POTENTIAL",
+                                        "suggested_cardinality": "Many-to-One",
+                                        "suggested_cross_filter": "Single",
+                                        "suggested_active": True,
+                                        "confidence_score": 0.7,
+                                        "reasoning": f"Column name match: {from_column}"
+                                    })
+                                    
+            except Exception as e:
+                logger.warning(f"Error generating suggested relationships: {e}")
+            
+            # Remove duplicates
+            unique_relationships = []
+            seen = set()
+            for rel in suggested_relationships:
+                key = (rel["from_table"], rel["from_column"], rel["to_table"], rel["to_column"])
+                if key not in seen:
+                    unique_relationships.append(rel)
+                    seen.add(key)
+            
+            logger.info(f"Generated {len(unique_relationships)} suggested relationships")
+            return unique_relationships
+        
+        def _perform_cardinality_validation(from_table: str, from_column: str, to_table: str, to_column: str, model_cardinality: str) -> Dict[str, Any]:
+            """
+            Perform data-driven cardinality validation by analyzing actual data patterns
+            """
+            try:
+                logger.info(f"🔍 Analyzing cardinality for {from_table}.{from_column} -> {to_table}.{to_column}")
+                
+                # Escape table names for DAX queries
+                escaped_from_table = f"'{from_table}'" if ' ' in from_table else from_table
+                escaped_to_table = f"'{to_table}'" if ' ' in to_table else to_table
+                
+                # Query to analyze relationship patterns
+                validation_query = f"""
+                EVALUATE
+                ROW(
+                    "From_Total_Rows", COUNTROWS({escaped_from_table}),
+                    "From_Distinct_Values", DISTINCTCOUNT({escaped_from_table}[{from_column}]),
+                    "To_Total_Rows", COUNTROWS({escaped_to_table}),
+                    "To_Distinct_Values", DISTINCTCOUNT({escaped_to_table}[{to_column}])
+                )
+                """
+                
+                result = self.tabular_editor.execute_dax_query(validation_query)
+                
+                if result and len(result) > 0:
+                    row = result[0]
+                    from_total = int(row.get('[From_Total_Rows]', 0))
+                    from_distinct = int(row.get('[From_Distinct_Values]', 0))
+                    to_total = int(row.get('[To_Total_Rows]', 0))
+                    to_distinct = int(row.get('[To_Distinct_Values]', 0))
+                    
+                    # Analyze cardinality patterns
+                    from_has_duplicates = from_total > from_distinct
+                    to_has_duplicates = to_total > to_distinct
+                    
+                    if not from_has_duplicates and not to_has_duplicates:
+                        data_cardinality = "One-to-One"
+                        validation_status = "MATCHES" if model_cardinality == "One-to-One" else f"MISMATCH - Model: {model_cardinality}, Data: One-to-One"
+                        recommended_action = "Consider if One-to-One relationship is appropriate for business logic"
+                        
+                    elif from_has_duplicates and not to_has_duplicates:
+                        data_cardinality = "Many-to-One"
+                        validation_status = "MATCHES" if model_cardinality in ["Many-to-One", "Many:1"] else f"MISMATCH - Model: {model_cardinality}, Data: Many-to-One"
+                        recommended_action = "Optimal for dimensional modeling - fact to dimension relationship"
+                        
+                    elif not from_has_duplicates and to_has_duplicates:
+                        data_cardinality = "One-to-Many"
+                        validation_status = "MATCHES" if model_cardinality in ["One-to-Many", "1:Many"] else f"MISMATCH - Model: {model_cardinality}, Data: One-to-Many"
+                        recommended_action = "Consider reversing relationship direction for better performance"
+                        
+                    else:
+                        data_cardinality = "Many-to-Many"
+                        validation_status = "MATCHES" if model_cardinality == "Many-to-Many" else f"MISMATCH - Model: {model_cardinality}, Data: Many-to-Many"
+                        recommended_action = "Consider bridge table to resolve Many-to-Many relationship"
+                    
+                    return {
+                        "data_cardinality": data_cardinality,
+                        "validation_status": validation_status,
+                        "recommended_action": recommended_action,
+                        "data_metrics": f"From: {from_total} rows ({from_distinct} distinct), To: {to_total} rows ({to_distinct} distinct)"
+                    }
+                
+                # If no data returned
+                return {
+                    "data_cardinality": "Analysis Failed",
+                    "validation_status": "ERROR - No data available for analysis", 
+                    "recommended_action": "Check if tables contain data",
+                    "data_metrics": "No data found"
+                }
+                
+            except Exception as e:
+                logger.error(f"❌ Cardinality validation failed: {str(e)}")
+                return {
+                    "data_cardinality": "Analysis Failed",
+                    "validation_status": f"ERROR - {str(e)[:80]}",
+                    "recommended_action": "Check table/column existence and data access",
+                    "data_metrics": "Error retrieving data"
+                }
+        
+        def extract_inactive_usage_from_detailed(is_active_detailed: str) -> str:
+            """Extract usage justification from detailed is_active explanation"""
+            if not is_active_detailed or is_active_detailed == "Unknown":
+                return "Not_Applicable"
+            
+            is_active_lower = is_active_detailed.lower()
+            if is_active_lower.startswith("yes"):
+                return "Not_Applicable"
+            elif "used in measure" in is_active_lower or "dax expression" in is_active_lower:
+                return "Used_In_Measures"
+            elif "not used in any measure" in is_active_lower:
+                return "Unjustified"
+            else:
+                return "Unknown"
+        
+        def extract_bidirectional_purpose_from_detailed(cross_filter_direction: str) -> str:
+            """Extract bidirectional purpose based on cross filter direction"""
+            if not cross_filter_direction or cross_filter_direction == "Unknown":
+                return "Not_Applicable"
+            
+            if cross_filter_direction.lower() in ["single", "one"]:
+                return "Not_Applicable"
+            elif cross_filter_direction.lower() in ["both", "bidirectional"]:
+                # This could be enhanced to detect security vs other purposes from context
+                return "Performance_Issue"  # Default assumption for "Both" direction
+            else:
+                return "Unknown"
+        
+        def extract_simple_is_active(is_active_detailed: str) -> str:
+            """Extract simple Yes/No from detailed is_active explanation"""
+            if not is_active_detailed:
+                return "Unknown"
+            return "Yes" if is_active_detailed.lower().startswith("yes") else "No"
+        
+        def extract_simple_data_type_compatibility(data_type_compatibility_detailed: str) -> str:
+            """Extract simple Yes/No from detailed data_type_compatibility explanation"""
+            if not data_type_compatibility_detailed:
+                return "Unknown"
+            return "Yes" if data_type_compatibility_detailed.lower().startswith("yes") else "No"
+        
+        def _is_table_hidden(table_name: str) -> bool:
+            """Check if a table is hidden using existing tabular editor pattern"""
+            try:
+                if not self.tabular_editor or not self.tabular_editor.connected:
+                    return False
+                table_obj = next((t for t in self.tabular_editor.model.Tables if t.Name == table_name), None)
+                if table_obj and hasattr(table_obj, 'IsHidden'):
+                    return table_obj.IsHidden
+                return False
+            except Exception as e:
+                logger.debug(f"Could not check if table {table_name} is hidden: {e}")
+                return False
 
         # ================================================================================================
         # MAIN AI-POWERED RELATIONSHIP ANALYSIS - 8 PHASE PROCESS
@@ -8250,7 +8362,7 @@ Return JSON with "results" array containing analysis for all relationships."""
                 ui_tracker.add_error("Not connected to any dataset", "connection_error")
                 return {"error": "Not connected to any dataset. Please connect first."}
 
-            # Initialize Azure OpenAI GPT-4.1 client for AI-powered analysis
+            # Initialize Azure OpenAI GPT-4o client for AI-powered analysis
             ai_client = get_ai_client()
             if not ai_client:
                 ui_tracker.add_error("Failed to initialize AI client", "ai_error")
@@ -8597,7 +8709,7 @@ Return JSON with "results" array containing analysis for all relationships."""
             # ================================================================================================
             # PHASE 4: AI BATCH PROCESSING
             # ================================================================================================
-            # Send relationship data to GPT-4.1 in optimized batches for intelligent analysis
+            # Send relationship data to GPT-4o in optimized batches for intelligent analysis
             
             # Configure batch processing parameters
             batch_size = 8  # Smaller batches for relationship analysis (more complex data)
@@ -8627,7 +8739,7 @@ Return JSON with "results" array containing analysis for all relationships."""
             # Create batch progress tracker for detailed batch management
             batch_tracker = create_batch_tracker(ui_tracker, batch_size) if total_relationships > 0 else None
             
-            # Process relationships through GPT-4.1 in manageable batches
+            # Process relationships through GPT-4o in manageable batches
             if total_relationships > 0:
                 for i in range(0, total_relationships, batch_size):
                     batch_start = i
@@ -8654,7 +8766,7 @@ Return JSON with "results" array containing analysis for all relationships."""
                         total=total_batches
                     )
                     
-                    # Send batch to GPT-4.1 for AI-powered analysis against relationship quality rules
+                    # Send batch to GPT-4o for AI-powered analysis against relationship quality rules
                     ai_results = analyze_relationships_with_ai(ai_client, batch_relationships, dataset_context)
                     
                     # ================================================================================================
@@ -8684,8 +8796,28 @@ Return JSON with "results" array containing analysis for all relationships."""
                         calculated_total_score = DataType_Score + Cardinality_Score + Active_Inactive_Score + CrossFilterDirectional_Score
                         calculated_max_score = 0.3 + 0.35 + 0.2 + 0.15  # Sum of max possible scores (1.0)
                         
+                        # Check for hidden isolated tables and add scoring
+                        from_table = ai_result.get("from_table", "Unknown")
+                        to_table = ai_result.get("to_table", "Unknown")
+                        
+                        # Get isolated tables from workspace_info (where they are stored)
+                        isolated_table_names = workspace_info.get("isolated_tables", [])
+                        
+                        # Check if any tables in this relationship are isolated and hidden
+                        is_hidden_isolated = False
+                        hide_isolated_score = 0.0
+                        
+                        for table_name in [from_table, to_table]:
+                            if table_name in isolated_table_names and _is_table_hidden(table_name):
+                                is_hidden_isolated = True
+                                hide_isolated_score = 0.75
+                                break
+                        
+                        # Add hide isolated score to overall score
+                        final_total_score = calculated_total_score + hide_isolated_score
+                        
                         # Determine issue severity based on overall score percentage
-                        score_percentage = (calculated_total_score / calculated_max_score) if calculated_max_score > 0 else 0
+                        score_percentage = (final_total_score / calculated_max_score) if calculated_max_score > 0 else 0
                         
                         # Apply severity thresholds with color coding for UI display (UPDATED THRESHOLDS)
                         if score_percentage <= 0.59:
@@ -8735,8 +8867,8 @@ Return JSON with "results" array containing analysis for all relationships."""
                             "Data_Type_Compatibility": ai_result.get("data_type_compatibility_detailed", ai_result.get("data_type_compatibility", "Unknown")),
                             # Additional fields for backward compatibility and analysis
                             "Logical_Accuracy": ai_result.get("business_justification", "Unknown"),
-                            "Inactive_Usage_Justification": self.extract_inactive_usage_from_detailed(ai_result.get("is_active_detailed", "")),
-                            "Bidirectional_Purpose": self.extract_bidirectional_purpose_from_detailed(ai_result.get("cross_filter_direction", "")),
+                            "Inactive_Usage_Justification": extract_inactive_usage_from_detailed(ai_result.get("is_active_detailed", "")),
+                            "Bidirectional_Purpose": extract_bidirectional_purpose_from_detailed(ai_result.get("cross_filter_direction", "")),
                             # NEW 4-RULE SCORING SYSTEM
                             "DataType_Score": DataType_Score,
                             "DataType_Max_Score": 0.3,
@@ -8746,10 +8878,11 @@ Return JSON with "results" array containing analysis for all relationships."""
                             "Active/Inactive_Max_Score": 0.2,
                             "CrossFilterDirectional_Score": CrossFilterDirectional_Score,
                             "CrossFilterDirectional_Max_Score": 0.15,
-                            "Overall_Score": calculated_total_score,
+                            "Overall_Score": final_total_score,
                             "Max_Score": calculated_max_score,
                             "Score_Percentage": round(score_percentage * 100, 1),
-                            "Score_Rationale": ai_result.get("detailed_recommendation", "AI analysis incomplete"),
+                            "Hide_IsolatedTable": "Yes" if is_hidden_isolated else "No",
+                            "Recommendation": ai_result.get("detailed_recommendation", "AI analysis incomplete"),
                             "Severity_Priority": severity_priority,
                             "Severity_Color": severity_color_code,
                             "Severity_Hex_Color": severity_hex_color,
@@ -8785,7 +8918,7 @@ Return JSON with "results" array containing analysis for all relationships."""
                 logger.info("📊 No relationships detected in dataset - generating recommendations for potential relationships")
                 
                 # Generate suggested relationships when no existing ones are found
-                all_relationships_data = self._generate_suggested_relationships(tables)
+                all_relationships_data = _generate_suggested_relationships(tables)
                 total_relationships = len(all_relationships_data)
                 logger.info(f"📊 Generated {total_relationships} suggested relationships for analysis")
             # Generate recommendations for existing relationships
@@ -8797,8 +8930,7 @@ Return JSON with "results" array containing analysis for all relationships."""
                     "to_table": existing["To_Table"],
                     "relationship_type": "Power BI Relationship",
                     "description": f"AI-analyzed relationship '{existing['From_Table']}.{existing['From_Column']}' → '{existing['To_Table']}.{existing['To_Column']}'",
-                    "action": f"Review AI recommendations: {existing['Score_Rationale'][:100]}...",
-                    "quality_score": existing["Overall_Score"]
+                    "action": f"Review AI recommendations: {existing['Recommendation'][:100]}...",
                 })
 
             # ================================================================================================
@@ -8875,12 +9007,12 @@ Return JSON with "results" array containing analysis for all relationships."""
                         'From_Table', 'From_Column', 'From_Column_DataType', 
                         'To_Table', 'To_Column', 'To_Column_DataType', 
                         'Issue_Severity', 'Is_Active', 'Cardinality', 'Cross_Filter_Direction', 
-                        'Data_Type_Compatibility',  
+                        'Data_Type_Compatibility', 'Hide_IsolatedTable',  
                         'DataType_Score', 'DataType_Max_Score',
                         'Cardinality_Score', 'Cardinality_Max_Score', 
                         'Active/Inactive_Score', 'Active/Inactive_Max_Score', 
                         'CrossFilterDirectional_Score', 'CrossFilterDirectional_Max_Score',
-                        'Overall_Score', 'Max_Score', 'Score_Rationale'
+                        'Overall_Score', 'Max_Score', 'Recommendation'
                     ]
                     # Note: Relationship_Type, Score_Percentage, Severity_Priority, Severity_Color, 
                     # Severity_Hex_Color, Severity_Visual are kept in result_entry for UI functionality 
@@ -8990,7 +9122,7 @@ Return JSON with "results" array containing analysis for all relationships."""
                 if stats["business_pattern_counts"]:
                     most_common_pattern = max(stats["business_pattern_counts"], key=stats["business_pattern_counts"].get)
                     pattern_count = stats["business_pattern_counts"][most_common_pattern]
-                    insights.append(f"📈 Most common business pattern: {most_common_pattern} ({pattern_count} relationships)")
+                    insights.append(f"📊 Most common business pattern: {most_common_pattern} ({pattern_count} relationships)")
                 
                 # Cardinality distribution insights
                 if stats["cardinality_distribution"]:
@@ -9046,7 +9178,7 @@ Return JSON with "results" array containing analysis for all relationships."""
                     "total_tables_analyzed": len(tables),
                     "total_relationships_found": len(analysis_results),
                     "ai_batches_processed": total_batches,
-                    "processing_method": "GPT-4.1 AI Analysis with Statistical Insights"
+                    "processing_method": "GPT-4o AI Analysis with Statistical Insights"
                 },
                 "results": analysis_results,
                 "existing_relationships": existing_relationships_detailed,
@@ -9095,7 +9227,7 @@ Return JSON with "results" array containing analysis for all relationships."""
                     "to_column": result.get("To_Column", "Unknown"),
                     "relationship_type": result.get("Relationship_Type", "Unknown"),
                     "score_category": result.get("Score_Category", "Unknown"),
-                    "score_rationale": result.get("Score_Rationale", ""),
+                    "score_rationale": result.get("Recommendation", ""),
                     "total_score": result.get("Overall_Score", 0.0),
                     "cardinality": result.get("Cardinality", "Unknown")
                 }
@@ -9242,6 +9374,26 @@ Return JSON with "results" array containing analysis for all relationships."""
         # Ensure KnowledgeBase folder exists
         os.makedirs(KB_FOLDER, exist_ok=True)
         
+        # Load Microsoft hierarchy levels CSV for level ordering recommendations
+        microsoft_hierarchies = {}
+        try:
+            hierarchy_csv_path = os.path.join(root_dir, "microsoft_hierarchy_levels.csv")
+            if os.path.exists(hierarchy_csv_path):
+                import pandas as pd
+                ms_df = pd.read_csv(hierarchy_csv_path)
+                for _, row in ms_df.iterrows():
+                    hierarchy_name = row['Hierarchy Name']
+                    path = row['Path']
+                    if hierarchy_name not in microsoft_hierarchies:
+                        microsoft_hierarchies[hierarchy_name] = []
+                    microsoft_hierarchies[hierarchy_name].append(path)
+                logger.info(f"📋 Loaded {len(microsoft_hierarchies)} Microsoft hierarchy patterns for level ordering")
+            else:
+                logger.warning(f"📋 Microsoft hierarchy CSV not found at {hierarchy_csv_path}")
+        except Exception as e:
+            logger.warning(f"📋 Failed to load Microsoft hierarchy patterns: {e}")
+            microsoft_hierarchies = {}
+        
         from src.authentication_manager import AuthenticationManager
         from src.ui_progress_tracker import create_analysis_tracker, create_batch_tracker
         
@@ -9254,18 +9406,26 @@ Return JSON with "results" array containing analysis for all relationships."""
                 logger.error(f"Failed to get OpenAI client: {e}")
                 return None
         
-        def analyze_hierarchy_direction_with_ai(client, hierarchy_info: dict) -> dict:
+        def analyze_hierarchy_direction_with_ai(client, hierarchy_info: dict, ui_tracker=None) -> dict:
             """
             AI-powered hierarchy direction analysis to determine if hierarchy flows High-to-Low or Low-to-High
             
             Args:
                 client: OpenAI client for AI analysis
                 hierarchy_info: Dictionary containing hierarchy metadata (name, levels, column_path)
+                ui_tracker: UI progress tracker for logging updates
                 
             Returns:
                 Dictionary containing direction analysis results
             """
             try:
+                hierarchy_name = hierarchy_info.get("hierarchy_name", "Unknown")
+                logger.info(f"🧭 Starting direction analysis for hierarchy: {hierarchy_name}")
+                
+                # Update UI progress if tracker is available
+                if ui_tracker:
+                    ui_tracker.update_progress(f"🧭 Analyzing direction for hierarchy '{hierarchy_name}'")
+                
                 direction_prompt = f"""You are an expert Power BI hierarchy analyst specializing in hierarchy direction analysis. Analyze this hierarchy and determine if it flows HIGH-TO-LOW or LOW-TO-HIGH based on semantic analysis of level names and business logic.
 
 HIERARCHY DIRECTION RULES:
@@ -9316,8 +9476,14 @@ Return this EXACT JSON structure:
   "optimization_suggestions": "specific suggestions for improving hierarchy direction if needed"
 }}"""
 
+                logger.info(f"🔄 Sending direction analysis request to AI for '{hierarchy_name}'...")
+                
+                # Update UI progress if tracker is available
+                if ui_tracker:
+                    ui_tracker.update_progress(f"🔄 Processing AI direction analysis for '{hierarchy_name}'")
+                
                 response = client.chat.completions.create(
-                    model="gpt-4.1",
+                    model="gpt-4o",
                     messages=[
                         {"role": "system", "content": "You are an expert Power BI hierarchy direction analyst. Analyze hierarchy level progression to determine optimal direction flow."},
                         {"role": "user", "content": direction_prompt}
@@ -9328,12 +9494,22 @@ Return this EXACT JSON structure:
                 )
                 
                 ai_response = json.loads(response.choices[0].message.content)
+                direction = ai_response.get("direction", "Unknown")
+                confidence = ai_response.get("confidence", "unknown")
+                
+                logger.info(f"✅ Direction analysis complete for '{hierarchy_name}': {direction} (confidence: {confidence})")
+                
+                # Update UI progress if tracker is available
+                if ui_tracker:
+                    ui_tracker.update_progress(f"✅ Direction analysis complete for '{hierarchy_name}': {direction}")
+                
                 return ai_response
                 
             except Exception as e:
-                logger.error(f"AI hierarchy direction analysis failed: {e}")
+                hierarchy_name = hierarchy_info.get("hierarchy_name", "Unknown")
+                logger.error(f"❌ AI hierarchy direction analysis failed for '{hierarchy_name}': {e}")
                 return {
-                    "hierarchy_name": hierarchy_info.get("hierarchy_name", "Unknown"),
+                    "hierarchy_name": hierarchy_name,
                     "direction": "Unknown",
                     "confidence": "low",
                     "direction_reasoning": f"Analysis failed: {str(e)}"
@@ -9381,8 +9557,18 @@ ISSUE SEVERITY (based on total_score/1.0 percentage):
 Return analysis using ONLY these two rules for EXISTING hierarchies only."""
 
         def analyze_hierarchies_with_ai(client, hierarchies_batch: list, dataset_context: dict) -> list:
-            """Analyze a batch of hierarchies using GPT-4.1"""
+            """Analyze a batch of hierarchies using GPT-4o"""
             try:
+                logger.info(f"🤖 Starting GPT-4o analysis for {len(hierarchies_batch)} hierarchies")
+                
+                # Log the hierarchies being analyzed
+                for i, hierarchy in enumerate(hierarchies_batch, 1):
+                    h_name = hierarchy.get('hierarchy_name', 'Unknown')
+                    t_name = hierarchy.get('table_name', 'Unknown') 
+                    logger.info(f"   {i}. {t_name}.{h_name} ({hierarchy.get('level_count', 0)} levels)")
+                
+                logger.info(f"🧠 Preparing AI prompt for Microsoft BI hierarchy analysis...")
+                
                 user_prompt = f"""Analyze these EXISTING Power BI hierarchies using AI-powered table classification and ONLY these two specific scoring rules:
 
 Dataset Context: {json.dumps(dataset_context, indent=2)}
@@ -9439,33 +9625,65 @@ For each existing hierarchy, return this EXACT JSON structure:
 
 Return JSON with "results" array containing analysis for all existing hierarchies."""
                 
+                logger.info(f"🚀 Sending request to GPT-4o model with {len(user_prompt)} character prompt...")
+                
                 response = client.chat.completions.create(
-                    model="gpt-4.1",
+                    model="gpt-4o",
                     messages=[
                         {"role": "system", "content": create_hierarchy_analysis_prompt()},
                         {"role": "user", "content": user_prompt}
                     ],
                     temperature=0.1,
                     response_format={"type": "json_object"},
-                    max_tokens=4000
+                    max_tokens=6000  # Increased from 4000 to handle more hierarchies
                 )
                 
+                logger.info(f"✅ Received response from GPT-4o")
+                
                 # Parse AI response
-                ai_response = json.loads(response.choices[0].message.content)
+                response_content = response.choices[0].message.content
+                logger.info(f"📄 GPT-4o response length: {len(response_content)} characters")
+                logger.info(f"🔍 Parsing JSON response from AI...")
+                
+                ai_response = json.loads(response_content)
+                logger.info(f"✅ Successfully parsed JSON response from AI")
                 
                 # Handle different response formats
                 if "results" in ai_response:
-                    return ai_response["results"]
+                    results = ai_response["results"]
+                    logger.info(f"📊 Found 'results' key with {len(results)} hierarchy analyses")
                 elif "hierarchies" in ai_response:
-                    return ai_response["hierarchies"]
+                    results = ai_response["hierarchies"]
+                    logger.info(f"📊 Found 'hierarchies' key with {len(results)} hierarchy analyses")
                 elif isinstance(ai_response, list):
-                    return ai_response
+                    results = ai_response
+                    logger.info(f"📊 Response is direct list with {len(results)} hierarchy analyses")
                 else:
-                    logger.warning(f"Unexpected AI response format: {list(ai_response.keys())}")
-                    return []
+                    logger.warning(f"⚠️ Unexpected AI response format: {list(ai_response.keys())}")
+                    results = []
+                
+                logger.info(f"🎯 GPT-4o returned {len(results)} hierarchy analyses (expected: {len(hierarchies_batch)})")
+                
+                if len(results) != len(hierarchies_batch):
+                    logger.warning(f"⚠️ AI RESULT MISMATCH: Expected {len(hierarchies_batch)} results but got {len(results)}")
+                    logger.info(f"📝 Input hierarchies sent to AI:")
+                    for i, h in enumerate(hierarchies_batch, 1):
+                        logger.info(f"   {i}. {h.get('table_name', 'Unknown')}.{h.get('hierarchy_name', 'Unknown')}")
+                    logger.info(f"📝 Output results received from AI:")
+                    for i, r in enumerate(results, 1):
+                        logger.info(f"   {i}. {r.get('table_name', 'Unknown')}.{r.get('hierarchy_name', 'Unknown')}")
+                else:
+                    logger.info(f"✅ AI result count matches input - {len(results)} hierarchies analyzed successfully")
+                logger.info(f"🎯 Returning {len(results)} analyzed hierarchies to main process")
+                return results
                     
+            except json.JSONDecodeError as e:
+                logger.error(f"❌ JSON parsing failed for GPT-4o response: {e}")
+                logger.error(f"📝 Response content preview (first 500 chars): {response_content[:500]}...")
+                return []
             except Exception as e:
-                logger.error(f"AI hierarchy analysis failed: {e}")
+                logger.error(f"❌ AI hierarchy analysis failed with error: {e}")
+                logger.error(f"🔧 Error type: {type(e).__name__}")
                 return []
 
         # ================================================================================================
@@ -9505,7 +9723,7 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                 ui_tracker.add_error("Not connected to any dataset", "connection_error")
                 return {"error": "Not connected to any dataset. Please connect first."}
 
-            # Initialize Azure OpenAI GPT-4.1 client for AI-powered analysis
+            # Initialize Azure OpenAI GPT-4o client for AI-powered analysis
             ai_client = get_ai_client()
             if not ai_client:
                 ui_tracker.add_error("Failed to initialize AI client", "ai_error")
@@ -9531,13 +9749,19 @@ Return JSON with "results" array containing analysis for all existing hierarchie
             analysis_results = []
             all_tables = self.tabular_editor.model.Tables
             
+            logger.info(f"📁 Dataset contains {len(all_tables)} tables total")
+            
             # ================================================================================================
             # PHASE 2: SMART TABLE FILTERING
             # ================================================================================================
             # Apply intelligent table selection based on user preferences
             
+            logger.info(f"🔍 PHASE 2: Starting smart table filtering...")
+            ui_tracker.set_phase("Smart Table Filtering", "Identifying relevant tables for hierarchy analysis")
+            
             if tables_to_analyze:
                 # User-specified table selection
+                logger.info(f"🎯 User specified {len(tables_to_analyze)} tables for analysis")
                 available_tables = [t.Name for t in all_tables]
                 invalid_tables = [t for t in tables_to_analyze if t not in available_tables]
                 if invalid_tables:
@@ -9548,7 +9772,14 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                 # Default: analyze all available tables
                 tables = [t.Name for t in all_tables]
                 logger.info(f"🔍 Analyzing all {len(tables)} tables")
-                logger.info(f"📋 First 10 tables: {tables[:10]}")
+                logger.info(f"📋 All tables: {tables}")
+                
+                # Debug: Check for Pipeline table specifically
+                pipeline_tables = [t for t in tables if 'pipeline' in t.lower()]
+                if pipeline_tables:
+                    logger.info(f"🔍 Pipeline-related tables found: {pipeline_tables}")
+                else:
+                    logger.warning("⚠️ No Pipeline-related tables found in model")
 
             # Check for user cancellation at the start
             if self._check_cancellation("Table hierarchies evaluation"):
@@ -9558,15 +9789,134 @@ Return JSON with "results" array containing analysis for all existing hierarchie
             debug_info = {"function_started": True}
 
             # ================================================================================================
-            # PHASE 3: HIERARCHY DISCOVERY & PREPARATION
+            # PHASE 2.5: SIMPLE TABLE CLASSIFICATION INTEGRATION  
             # ================================================================================================
+            # Get table classifications using the same logic as fact/dimension analysis for consistency
+            # ================================================================================================
+            # PHASE 2.5: DIRECT TABLE CLASSIFICATION FOR HIERARCHY ANALYSIS
+            # ================================================================================================
+            # Apply fact/dimension classification rules directly within hierarchy analysis
+            
+            logger.info("🔄 Performing direct table classification using comprehensive rules...")
+            table_classifications = {}
+            
+            def apply_classification_rules(table_name):
+                """Apply comprehensive fact/dimension classification rules directly"""
+                try:
+                    table = next((t for t in self.tabular_editor.model.Tables if t.Name == table_name), None)
+                    if not table:
+                        return "DIMENSION", "Table object not accessible - defaulting to DIMENSION"
+                    
+                    # Rule Application: FT-001/DT-001 - Relationship Analysis (Primary Rule)
+                    many_side_rels = 0
+                    one_side_rels = 0
+                    
+                    try:
+                        if hasattr(self.tabular_editor, 'model') and self.tabular_editor.model:
+                            for relationship in self.tabular_editor.model.Relationships:
+                                if hasattr(relationship, 'FromTable') and hasattr(relationship, 'ToTable'):
+                                    if relationship.FromTable.Name.lower() == table_name.lower():
+                                        many_side_rels += 1  # Table is on "many" side (FACT indicator)
+                                    elif relationship.ToTable.Name.lower() == table_name.lower():
+                                        one_side_rels += 1   # Table is on "one" side (DIMENSION indicator)
+                    except:
+                        pass
+                    
+                    # Rule Application: FT-003/FT-004/DT-004 - Measure Density Analysis
+                    measure_count = len(table.Measures) if hasattr(table, 'Measures') else 0
+                    
+                    # Rule Application: FT-002/DT-002/FT-003/DT-003 - Column Analysis
+                    numeric_cols = 0
+                    text_cols = 0
+                    id_cols = 0
+                    
+                    try:
+                        for column in table.Columns:
+                            col_name = column.Name.lower()
+                            if any(pattern in col_name for pattern in ['amount', 'value', 'quantity', 'price', 'revenue', 'cost', 'score', 'pipeline', 'seats']):
+                                numeric_cols += 1
+                            elif any(pattern in col_name for pattern in ['id', 'key']):
+                                id_cols += 1
+                            elif any(pattern in col_name for pattern in ['region', 'area', 'category', 'type', 'name', 'description']):
+                                text_cols += 1
+                    except:
+                        pass
+                    
+                    # Apply Classification Rules
+                    classification_reasoning = []
+                    
+                    # Primary Rule: FT-001/DT-001 - Relationship Analysis
+                    if many_side_rels > one_side_rels:
+                        classification = "FACT"
+                        classification_reasoning.append(f"FT-001: More many-side relationships ({many_side_rels}) than one-side ({one_side_rels})")
+                    elif one_side_rels > many_side_rels:
+                        classification = "DIMENSION"
+                        classification_reasoning.append(f"DT-001: More one-side relationships ({one_side_rels}) than many-side ({many_side_rels})")
+                    else:
+                        # Secondary Rules: Measure and Column Analysis
+                        fact_score = 0
+                        dim_score = 0
+                        
+                        # FT-004/DT-004: Measure Density Analysis
+                        if measure_count >= 3:
+                            fact_score += 2
+                            classification_reasoning.append(f"FT-004: High measure density ({measure_count} measures)")
+                        elif measure_count <= 1:
+                            dim_score += 2
+                            classification_reasoning.append(f"DT-004: Low measure density ({measure_count} measures)")
+                        
+                        # FT-003: Aggregatable numeric fields
+                        if numeric_cols >= 2:
+                            fact_score += 1
+                            classification_reasoning.append(f"FT-003: Multiple aggregatable numeric columns ({numeric_cols})")
+                        
+                        # DT-003: Descriptive text attributes
+                        if text_cols >= 3:
+                            dim_score += 1
+                            classification_reasoning.append(f"DT-003: Multiple descriptive text columns ({text_cols})")
+                        
+                        # Final classification based on scoring
+                        if fact_score > dim_score:
+                            classification = "FACT"
+                        else:
+                            classification = "DIMENSION"
+                    
+                    reasoning = f"Direct rule analysis: {'; '.join(classification_reasoning)}"
+                    return classification, reasoning
+                    
+                except Exception as e:
+                    return "DIMENSION", f"Classification error: {str(e)[:50]} - defaulting to DIMENSION"
+            
+            # Apply classification rules to all tables that have hierarchies
+            for table_name in tables:
+                classification, reasoning = apply_classification_rules(table_name)
+                table_classifications[table_name] = classification
+                logger.info(f"📋 {table_name} → {classification}")
+                logger.debug(f"📋 Reasoning: {reasoning}")
+            
+            logger.info(f"✅ Direct classification complete for {len(table_classifications)} tables")
+
+            # ================================================================================================
+                        # ================================================================================================
+            # PHASE 3: HIERARCHY DISCOVERY & PREPARATION
+            # ===============================================================================================================================================
             # Gather hierarchy metadata and prepare data structures for AI analysis
+
+            logger.info(f"🔍 PHASE 3: Starting hierarchy discovery and preparation...")
+            ui_tracker.set_phase("Hierarchy Discovery", f"Scanning {len(tables)} tables for existing hierarchies")
 
             # Initialize analysis results
             recommendations = []
             existing_hierarchies_detailed = []
             
             logger.info(f"📊 Starting analysis of {len(tables)} tables for existing hierarchies...")
+            logger.info(f"🔍 Table list: {tables[:5]}{'...' if len(tables) > 5 else ''}")  # Debug: Show first few tables
+            
+            # Debug: Check if we have any table classifications
+            logger.info(f"📋 Table classifications available: {len(table_classifications)} entries")
+            if table_classifications:
+                sample_table = list(table_classifications.keys())[0]
+                logger.info(f"📋 Sample classification: {sample_table} → {table_classifications[sample_table]}")
 
             # Step 1: Get detailed existing hierarchies using Tabular Editor object model
             # IMPORTANT: Only analyzing EXISTING hierarchies as per user requirements
@@ -9576,18 +9926,71 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                 
                 # Use Tabular Editor's native object model to find EXISTING hierarchies only
                 existing_hierarchies = []
-                for table_name in tables:
+                logger.info(f"🔍 Searching for hierarchies in {len(tables)} tables...")
+                ui_tracker.update_progress(
+                    f"Scanning tables for existing hierarchies: {len(tables)} tables to analyze",
+                    current=0,
+                    total=len(tables)
+                )
+                
+                # Debug: List all tables being analyzed
+                logger.info(f"🔍 Tables to analyze: {tables}")
+                
+                for i, table_name in enumerate(tables, 1):
+                    logger.info(f"📅 Scanning table {i}/{len(tables)}: '{table_name}'")
+                    ui_tracker.update_progress(
+                        f"Scanning table '{table_name}' for hierarchies ({i}/{len(tables)})",
+                        current=i,
+                        total=len(tables)
+                    )
+                    
                     # Get the actual table object from the model using the table name
                     table_obj = next((t for t in all_tables if t.Name == table_name), None)
-                    if table_obj and hasattr(table_obj, 'Hierarchies'):
-                        for hierarchy in table_obj.Hierarchies:
-                             existing_hierarchies.append({
-                                'table_name': table_obj.Name,
-                                'hierarchy_name': hierarchy.Name,
-                                'hierarchy': hierarchy
-                            })
+                    if table_obj:
+                        if hasattr(table_obj, 'Hierarchies') and table_obj.Hierarchies:
+                            hierarchy_count = len(table_obj.Hierarchies)
+                            logger.info(f"📊 Table '{table_name}': Found {hierarchy_count} hierarchies")
+                            for hierarchy in table_obj.Hierarchies:
+                                hierarchy_name = hierarchy.Name
+                                logger.info(f"   📋 Hierarchy: '{hierarchy_name}'")
+                                existing_hierarchies.append({
+                                    'table_name': table_obj.Name,
+                                    'hierarchy_name': hierarchy_name,
+                                    'hierarchy': hierarchy
+                                })
+                        else:
+                            logger.info(f"📊 Table '{table_name}': No hierarchies found")
+                    else:
+                        logger.warning(f"⚠️ Table object not found: {table_name}")
+                
+                # Debug: List all found hierarchies with detailed tracking
+                logger.info(f"📊 All hierarchies found during discovery:")
+                hierarchy_discovery_summary = {}
+                for i, h in enumerate(existing_hierarchies, 1):
+                    table_name = h['table_name']
+                    hierarchy_name = h['hierarchy_name']
+                    if table_name not in hierarchy_discovery_summary:
+                        hierarchy_discovery_summary[table_name] = []
+                    hierarchy_discovery_summary[table_name].append(hierarchy_name)
+                    logger.info(f"   {i:2d}. {table_name}.{hierarchy_name}")
+                
+                # Summary by table
+                logger.info(f"📊 Hierarchy discovery summary by table:")
+                for table_name, hierarchies in hierarchy_discovery_summary.items():
+                    logger.info(f"   📋 {table_name}: {len(hierarchies)} hierarchies")
+                    for h in hierarchies:
+                        logger.info(f"      - {h}")
                 
                 hierarchies_result = existing_hierarchies
+                logger.info(f"📊 Total hierarchies found: {len(hierarchies_result)}")
+                
+                # CRITICAL DEBUG: Verify hierarchy count consistency
+                if len(hierarchies_result) != 18:
+                    logger.warning(f"⚠️ HIERARCHY COUNT MISMATCH: Expected 18, found {len(hierarchies_result)}")
+                    logger.warning(f"⚠️ This indicates an issue with hierarchy discovery")
+                else:
+                    logger.info(f"✅ HIERARCHY COUNT CORRECT: Found all 18 expected hierarchies")
+                
                 if hierarchies_result and len(hierarchies_result) > 0:
                     logger.info(f"📊 Found {len(hierarchies_result)} existing hierarchies via object model")
                     debug_info["object_model_success"] = True
@@ -9596,12 +9999,20 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                     
                     # Build hierarchy data for AI analysis using object model
                     all_hierarchies_data = []
+                    total_hierarchies_to_process = len(hierarchies_result)
                     
-                    for hierarchy_info in hierarchies_result:
+                    for i, hierarchy_info in enumerate(hierarchies_result, 1):
                         # Extract hierarchy information from object model
                         table_name = hierarchy_info['table_name']
                         hierarchy_name = hierarchy_info['hierarchy_name']
                         hierarchy = hierarchy_info['hierarchy']
+                        
+                        # Update progress tracking for hierarchy processing
+                        ui_tracker.update_progress(
+                            f"Processing hierarchy {i}/{total_hierarchies_to_process}: '{hierarchy_name}' in table '{table_name}'",
+                            current=i,
+                            total=total_hierarchies_to_process
+                        )
                         
                         # Check for cancellation during hierarchy processing
                         if self._check_cancellation(f"Processing hierarchy: {hierarchy_name}"):
@@ -9627,8 +10038,10 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                         
                         logger.info(f"🔍 Found hierarchy '{hierarchy_name}' in table '{table_name}' with {level_count} levels")
                         
-                        # Perform AI-powered hierarchy direction analysis
+                        # Perform AI-powered hierarchy direction analysis with UI tracking
                         logger.info(f"🧭 Analyzing hierarchy direction for '{hierarchy_name}'...")
+                        ui_tracker.update_progress(f"🧭 Starting direction analysis for hierarchy '{hierarchy_name}' in table '{table_name}'")
+                        
                         hierarchy_direction_info = {
                             "hierarchy_name": hierarchy_name,
                             "table_name": table_name,
@@ -9637,11 +10050,16 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                             "column_names": column_names
                         }
                         
-                        ai_direction_analysis = analyze_hierarchy_direction_with_ai(ai_client, hierarchy_direction_info)
+                        ai_direction_analysis = analyze_hierarchy_direction_with_ai(ai_client, hierarchy_direction_info, ui_tracker)
                         
                         logger.info(f"🧭 AI determined hierarchy '{hierarchy_name}' direction: {ai_direction_analysis.get('direction', 'Unknown')} (confidence: {ai_direction_analysis.get('confidence', 'unknown')})")
+                        ui_tracker.update_progress(f"🧭 Completed direction analysis for '{hierarchy_name}': {ai_direction_analysis.get('direction', 'Unknown')}")
                         
-                        # Prepare hierarchy data for AI analysis with enhanced direction analysis
+                        # Prepare hierarchy data for AI analysis with enhanced direction analysis and table classification
+                        # Get table classification from fact/dimension analysis for consistency
+                        table_classification = table_classifications.get(table_name, "DIMENSION")
+                        classification_source = "fact_dimension_analysis" if table_name in table_classifications else "fallback"
+                        
                         hierarchy_data = {
                             "hierarchy_name": hierarchy_name,
                             "table_name": table_name,
@@ -9649,13 +10067,41 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                             "column_path": column_path,
                             "table_id": f"table_{table_name}",
                             "hierarchy_id": f"hierarchy_{hierarchy_name}",
-                            "ai_direction_analysis": ai_direction_analysis
+                            "ai_direction_analysis": ai_direction_analysis,
+                            "ai_table_classification": table_classification,
+                            "classification_source": classification_source,
+                            "classification_reasoning": f"Table classified as {table_classification} using {classification_source}"
                         }
                         
                         all_hierarchies_data.append(hierarchy_data)
                     
                     debug_info["processed_count"] = len(all_hierarchies_data)
                     logger.info(f"📊 Successfully processed {len(all_hierarchies_data)} existing hierarchies")
+                    
+                    # Validation: Log classification consistency between fact/dimension and hierarchy analysis
+                    logger.info(f"📊 Table Classification Summary for Hierarchy Analysis:")
+                    classified_tables = set()
+                    for hierarchy_data in all_hierarchies_data:
+                        table_name = hierarchy_data.get("table_name", "Unknown")
+                        if table_name not in classified_tables:
+                            classification = hierarchy_data.get("ai_table_classification", "Unknown")
+                            source = hierarchy_data.get("classification_source", "Unknown")
+                            logger.info(f"  📋 {table_name}: {classification} (source: {source})")
+                            classified_tables.add(table_name)
+                    
+                    logger.info(f"✅ Classification validation complete - {len(classified_tables)} unique tables classified")
+                    
+                    # CRITICAL DEBUG: Track hierarchy data preparation
+                    logger.info(f"📊 Hierarchy data preparation summary:")
+                    for i, hierarchy_data in enumerate(all_hierarchies_data, 1):
+                        h_name = hierarchy_data.get("hierarchy_name", "Unknown")
+                        t_name = hierarchy_data.get("table_name", "Unknown")
+                        logger.info(f"   {i:2d}. {t_name}.{h_name} (prepared for AI analysis)")
+                    
+                    if len(all_hierarchies_data) != len(hierarchies_result):
+                        logger.error(f"❌ HIERARCHY DATA PREPARATION LOSS: Started with {len(hierarchies_result)}, prepared {len(all_hierarchies_data)}")
+                    else:
+                        logger.info(f"✅ HIERARCHY DATA PREPARATION OK: All {len(all_hierarchies_data)} hierarchies prepared")
                 else:
                     debug_info["no_hierarchies_reason"] = "No hierarchies found in model structure"
                     debug_info["method_call_success"] = False
@@ -9671,7 +10117,7 @@ Return JSON with "results" array containing analysis for all existing hierarchie
             # ================================================================================================
             # PHASE 4: AI BATCH PROCESSING
             # ================================================================================================
-            # Send hierarchy data to GPT-4.1 in optimized batches for intelligent analysis
+            # Send hierarchy data to GPT-4o in optimized batches for intelligent analysis
             
             # Configure batch processing parameters
             batch_size = 10  # Smaller batches for hierarchy analysis
@@ -9701,13 +10147,18 @@ Return JSON with "results" array containing analysis for all existing hierarchie
             # Create batch progress tracker for detailed batch management
             batch_tracker = create_batch_tracker(ui_tracker, batch_size) if total_hierarchies > 0 else None
             
-            # Process hierarchies through GPT-4.1 in manageable batches
+            # Process hierarchies through GPT-4o in manageable batches
             if total_hierarchies > 0:
+                logger.info(f"📊 BATCH PROCESSING: Starting with {total_hierarchies} hierarchies")
+                processed_count = 0
+                
                 for i in range(0, total_hierarchies, batch_size):
                     batch_start = i
                     batch_end = min(i + batch_size, total_hierarchies)
                     batch_hierarchies = all_hierarchies_data[batch_start:batch_end]
                     current_batch = (batch_start // batch_size) + 1
+                    
+                    logger.info(f"📦 Processing batch {current_batch}: hierarchies {batch_start+1}-{batch_end} ({len(batch_hierarchies)} hierarchies)")
                     
                     # Check for user cancellation before each AI batch
                     if self._check_cancellation(f"AI hierarchy analysis batch {current_batch}"):
@@ -9729,429 +10180,976 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                     )
                     
                     
-                     # Send batch to GPT-4.1 for AI-powered analysis against hierarchy quality rules
+                     # Send batch to GPT-4o for AI-powered analysis against hierarchy quality rules
+                    logger.info(f"🤖 Sending batch {current_batch} to AI for analysis ({len(batch_hierarchies)} hierarchies)")
+                    
+                    # CRITICAL DEBUG: Track batch input
+                    logger.info(f"📊 Batch {current_batch} input hierarchies:")
+                    for i, h in enumerate(batch_hierarchies, 1):
+                        h_name = h.get("hierarchy_name", "Unknown")
+                        t_name = h.get("table_name", "Unknown")
+                        logger.info(f"   Input {i}: {t_name}.{h_name}")
+                    
                     ai_results = analyze_hierarchies_with_ai(ai_client, batch_hierarchies, dataset_context)
+                    logger.info(f"✅ AI analysis completed for batch {current_batch} - received {len(ai_results)} results")
+                    
+                    # CRITICAL DEBUG: Track batch output vs input
+                    logger.info(f"📊 Batch {current_batch} output hierarchies:")
+                    for i, result in enumerate(ai_results, 1):
+                        h_name = result.get("hierarchy_name", "Unknown")
+                        t_name = result.get("table_name", "Unknown")
+                        logger.info(f"   Output {i}: {t_name}.{h_name}")
+                    
+                    if len(ai_results) != len(batch_hierarchies):
+                        logger.error(f"❌ BATCH PROCESSING LOSS: Sent {len(batch_hierarchies)}, got {len(ai_results)} results")
+                        logger.error(f"❌ Missing hierarchies in batch {current_batch}!")
+                    else:
+                        logger.info(f"✅ BATCH PROCESSING OK: All {len(ai_results)} hierarchies returned from AI")
                     
                     # ================================================================================================
                     # PHASE 5: SCORING & CATEGORIZATION
                     # ================================================================================================
                     # Process AI responses and calculate severity levels based on scoring rules
                     
+                    logger.info(f"🔄 Starting scoring and categorization for {len(ai_results)} AI results")
                     # Transform AI results into structured analysis entries
+                    logger.info(f"🔍 Processing AI results from GPT-4o batch {current_batch}")
+                    processed_in_batch = 0
                     for ai_result in ai_results:
-                        # Get table name and hierarchy information for this specific result
-                        table_name = ai_result.get("table_name", "Unknown")
-                        hierarchy_name = ai_result.get("hierarchy_name", "Unknown")
-                        column_path = ai_result.get("column_path", "")
+                        processed_in_batch += 1
+                        try:
+                            # Get table name and hierarchy information for this specific result
+                            table_name = ai_result.get("table_name", "Unknown")
+                            hierarchy_name = ai_result.get("hierarchy_name", "Unknown")
+                            column_path = ai_result.get("column_path", "")
+                            
+                            # Initialize score_rationale to ensure it always has a value
+                            score_rationale = f"Analysis for hierarchy '{hierarchy_name}' in table '{table_name}'"
                         
-                        # ================================================================================================
-                        # MICROSOFT HIERARCHY PATTERN RECOGNITION
-                        # ================================================================================================
-                        logger.info(f"🏷️ Identifying Microsoft hierarchy pattern for '{hierarchy_name}'...")
+                            logger.info(f"📊 Processing hierarchy {processed_in_batch}/{len(ai_results)}: '{hierarchy_name}' in table '{table_name}'") 
                         
-                        # Define Microsoft standard hierarchy patterns
-                        ms_hierarchy_patterns = {
-                            "Function Hierarchies": {
-                                "keywords": ["org", "executive", "exec", "function", "channel"],
-                                "patterns": ["Org Exec Summary", "Org Exec", "Function Summary", "Function Detail"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.3
-                            },
-                            "Account Hierarchy": {
-                                "keywords": ["account", "cost", "element", "class", "group", "line item"],
-                                "patterns": ["Class", "Sub-Class", "Group", "Line Item", "Account"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.4
-                            },
-                            "Geography Hierarchy": {
-                                "keywords": ["geography", "mars", "sales", "area", "region", "country", "location"],
-                                "patterns": ["Area", "Region", "Sub Region", "Country", "City", "Location"],
-                                "type": "Dimension", 
-                                "confidence_boost": 0.4
-                            },
-                            "Product Hierarchy": {
-                                "keywords": ["product", "division", "category", "family", "pfam", "sku"],
-                                "patterns": ["Division", "Category", "Family", "Product", "SKU"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.4
-                            },
-                            "Business Hierarchy": {
-                                "keywords": ["business", "stream", "unit"],
-                                "patterns": ["Business Summary", "Business Unit", "Business Stream"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.3
-                            },
-                            "Segmentation Hierarchy": {
-                                "keywords": ["segment", "subsegment", "customer"],
-                                "patterns": ["Segment", "Subsegment"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.3
-                            },
-                            "Pricing Hierarchy": {
-                                "keywords": ["pricing", "level", "purchase", "user"],
-                                "patterns": ["Pricing Level", "Purchase Type", "User Type"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.3
-                            },
-                            "Date Hierarchy": {
-                                "keywords": ["date", "fiscal", "calendar", "year", "quarter", "month"],
-                                "patterns": ["Year", "Quarter", "Month", "Week", "Date"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.5
-                            },
-                            "Company Hierarchy": {
-                                "keywords": ["company", "sap", "subsidiary"],
-                                "patterns": ["Company Type", "Company"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.3
-                            },
-                            "Responsibility Hierarchy": {
-                                "keywords": ["responsibility", "ownership", "reports", "person"],
-                                "patterns": ["Reports To", "Person", "Profit Center"],
-                                "type": "Dimension",
-                                "confidence_boost": 0.3
+                            # ================================================================================================
+                            # MICROSOFT HIERARCHY PATTERN RECOGNITION
+                            # ================================================================================================
+                            logger.info(f"🏷️ Identifying Microsoft hierarchy pattern for '{hierarchy_name}'...")
+                            ui_tracker.update_progress(
+                                f"Analyzing pattern for hierarchy '{hierarchy_name}' in table '{table_name}'",
+                                current=processed_count + processed_in_batch,
+                                total=total_hierarchies
+                            )
+                        
+                            # Define Microsoft standard hierarchy patterns based on official Microsoft BI standards
+                            ms_hierarchy_patterns = {
+                                "Function Hierarchies": {
+                                    "keywords": ["org", "executive", "exec", "function", "channel", "summary"],
+                                    "patterns": ["Org Exec Summary", "Org Exec", "Function Summary", "Function Detail", "Executive"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,  # Base business pattern score for Microsoft standards
+                                    "confidence_boost": 0.0  # Additional boost for exceptional patterns
+                                },
+                                "Account Hierarchy": {
+                                    "keywords": ["account", "cost", "element", "class", "group", "line item", "balance", "sheet"],
+                                    "patterns": ["Class", "Sub-Class", "Group", "Line Item", "Line Item Detail", "Account", "Balance Sheet"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Geography Hierarchy": {
+                                    "keywords": ["geography", "mars", "sales", "area", "region", "country", "location", "subsidiary", "district", "continent", "state", "city", "postal", "ww"],
+                                    "patterns": ["WW Area", "Big Area", "Area", "Region", "Sub Region", "Country", "City", "Location", "Sales District", "Continent", "State", "Province", "PostalCode"],
+                                    "type": "Dimension", 
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Product Hierarchy": {
+                                    "keywords": ["product", "division", "category", "family", "pfam", "sku", "revsum", "reporting", "super", "rev sum", "business unit"],
+                                    "patterns": ["Reporting Summary", "RevSum", "Division", "Super Division", "Business Unit", "Product Unit", "Category", "Family", "Product", "SKU", "Part Number"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Business Hierarchy": {
+                                    "keywords": ["business", "stream", "unit", "summary"],
+                                    "patterns": ["Business Summary", "Business Unit", "Business Stream", "Business Stram Summary", "Business Stram Group"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Segmentation Hierarchy": {
+                                    "keywords": ["segment", "subsegment", "customer"],
+                                    "patterns": ["Segment", "Subsegment", "Customer Segments"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Pricing Hierarchy": {
+                                    "keywords": ["pricing", "level", "purchase", "user", "detail"],
+                                    "patterns": ["Pricing Level", "Purchase Type", "User Type", "Detail Pricing Level"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Date Hierarchy": {
+                                    "keywords": ["date", "fiscal", "calendar", "year", "quarter", "month", "week", "semester", "half"],
+                                    "patterns": ["FiscalYear", "Fiscal Year", "CalendarYear", "Calendar Year", "FiscalHalf", "FiscalQuarter", "FiscalMonth", "FiscalWeek", "CalendarQuarter", "CalendarMonth", "CalendarWeek"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Company Hierarchy": {
+                                    "keywords": ["company", "sap", "subsidiary", "type", "detail"],
+                                    "patterns": ["SAP Company Type", "Company Type", "Company", "SAP Company"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Responsibility Hierarchy": {
+                                    "keywords": ["responsibility", "ownership", "reports", "person", "profit", "center"],
+                                    "patterns": ["Reports To Hierarchy", "Person", "Profit Center", "Ownership"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Allocation Hierarchy": {
+                                    "keywords": ["allocation", "rule", "cycle", "segment"],
+                                    "patterns": ["Allocation Cycle", "Allocation Segment", "Allocation Rule"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Adjust Type Hierarchy": {
+                                    "keywords": ["adjust", "type", "detail"],
+                                    "patterns": ["Adjust Type", "Adjust Type Detail"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                },
+                                "Industry Hierarchy": {
+                                    "keywords": ["industry", "vertical", "category"],
+                                    "patterns": ["Industry", "Vertical", "Sub Vertical", "Vertical Category"],
+                                    "type": "Dimension",
+                                    "base_score": 0.6,
+                                    "confidence_boost": 0.0
+                                }
                             }
-                        }
                         
-                        # Analyze hierarchy name and column path for Microsoft patterns
-                        ms_pattern_detected = "Unknown"
-                        ms_confidence_boost = 0.0
-                        ms_pattern_evidence = []
+                            # Analyze hierarchy name and column path for Microsoft patterns
+                            ms_pattern_detected = "Unknown"
+                            ms_confidence_boost = 0.0
+                            ms_pattern_evidence = []
+                            microsoft_base_score = 0.0  # Base score for Microsoft patterns
                         
-                        hierarchy_text = f"{hierarchy_name} {column_path}".lower()
+                            hierarchy_text = f"{hierarchy_name} {column_path}".lower()
+                            
+                            # Enhanced pattern matching with multiple detection strategies
+                            best_pattern_score = 0.0
+                            best_pattern_name = "Unknown"
+                            best_base_score = 0.0
                         
-                        for pattern_name, pattern_info in ms_hierarchy_patterns.items():
-                            # Check for keyword matches
-                            keyword_matches = sum(1 for keyword in pattern_info["keywords"] if keyword in hierarchy_text)
-                            
-                            # Check for structural pattern matches
-                            pattern_matches = sum(1 for pattern in pattern_info["patterns"] if pattern.lower() in hierarchy_text)
-                            
-                            # Calculate pattern score
-                            keyword_score = keyword_matches / len(pattern_info["keywords"])
-                            pattern_score = pattern_matches / len(pattern_info["patterns"]) if pattern_info["patterns"] else 0
-                            total_score = (keyword_score * 0.6) + (pattern_score * 0.4)
-                            
-                            if total_score > 0.3:  # Threshold for pattern detection
-                                ms_pattern_detected = pattern_name
-                                ms_confidence_boost = pattern_info["confidence_boost"] * total_score
-                                ms_pattern_evidence.append(f"{pattern_name}: {keyword_matches} keywords, {pattern_matches} patterns (score: {total_score:.2f})")
+                            for pattern_name, pattern_info in ms_hierarchy_patterns.items():
+                                # Strategy 1: Direct keyword matching
+                                keyword_matches = sum(1 for keyword in pattern_info["keywords"] if keyword in hierarchy_text)
+                                keyword_score = keyword_matches / len(pattern_info["keywords"]) if pattern_info["keywords"] else 0
                                 
-                                # Strong pattern match overrides default
-                                if total_score > 0.6:
+                                # Strategy 2: Pattern structure matching  
+                                pattern_matches = sum(1 for pattern in pattern_info["patterns"] if pattern.lower() in hierarchy_text)
+                                pattern_score = pattern_matches / len(pattern_info["patterns"]) if pattern_info["patterns"] else 0
+                                
+                                # Strategy 3: Hierarchy name exact matching (for common Microsoft names)
+                                name_match_score = 0.0
+                                hierarchy_name_clean = hierarchy_name.lower().replace(" ", "").replace("_", "")
+                                for pattern in pattern_info["patterns"]:
+                                    pattern_clean = pattern.lower().replace(" ", "").replace("_", "").replace("-", "")
+                                    if pattern_clean in hierarchy_name_clean or hierarchy_name_clean in pattern_clean:
+                                        name_match_score = 1.0
+                                        break
+                                
+                                # Calculate composite pattern score with multiple strategies
+                                total_score = (keyword_score * 0.4) + (pattern_score * 0.3) + (name_match_score * 0.3)
+                                
+                                # Microsoft standard patterns should score well with even minimal matching
+                                if total_score > 0.2 or name_match_score > 0:  # Lower threshold for Microsoft patterns
+                                    if total_score > best_pattern_score:
+                                        best_pattern_score = total_score
+                                        best_pattern_name = pattern_name
+                                        best_base_score = pattern_info["base_score"]
+                                        ms_confidence_boost = pattern_info["confidence_boost"] * total_score
+                                        ms_pattern_evidence.append(f"{pattern_name}: {keyword_matches} keywords, {pattern_matches} patterns, name_match: {name_match_score:.1f} (score: {total_score:.2f})")
+                                
+                                # Strong pattern match overrides everything
+                                if total_score > 0.7 or name_match_score == 1.0:
                                     break
                         
-                        logger.info(f"📋 Microsoft Pattern: {ms_pattern_detected} (boost: +{ms_confidence_boost:.2f})")
-                        
-                        # ================================================================================================
-                        # AI-BASED SUBRULE CLASSIFICATION SYSTEM - INLINE ANALYSIS
-                        # ================================================================================================
-                        logger.info(f"🤖 Classifying table '{table_name}' using AI-based subrule system...")
-                        
-                        # Initialize classification variables (no default assumption)
-                        ai_table_type = "Unknown"  # Will be determined by evidence
-                        classification_confidence = "medium"
-                        classification_reasoning = "AI subrule analysis completed"
-                        
-                        try:
-                            # Get table structure and relationships for subrule analysis
-                            table = None
-                            measures = []
-                            columns = []
-                            relationships = []
+                            ms_pattern_detected = best_pattern_name
+                            microsoft_base_score = best_base_score
                             
-                            # Find the table in the model
-                            if hasattr(self.tabular_editor, 'model') and self.tabular_editor.model:
-                                for tbl in self.tabular_editor.model.Tables:
-                                    if tbl.Name == table_name:
-                                        table = tbl
-                                        break
-                            
-                            if table:
-                                # Get measures and columns
-                                if hasattr(table, 'Measures'):
-                                    measures = [m for m in table.Measures]
-                                if hasattr(table, 'Columns'):
-                                    columns = [c for c in table.Columns]
+                            logger.info(f"📋 Microsoft Pattern: {ms_pattern_detected} (base score: {microsoft_base_score:.2f}, boost: +{ms_confidence_boost:.2f})")
+                            if ms_pattern_evidence:
+                                logger.info(f"📋 Pattern evidence: {ms_pattern_evidence[0]}")  # Log best match evidence
+                        
+                            # ================================================================================================
+                            # TABLE CLASSIFICATION USING CACHED FACT/DIMENSION ANALYSIS
+                            # ================================================================================================
+                            logger.info(f"🔄 Using cached fact/dimension classification for table '{table_name}'...")
+                            ui_tracker.update_progress(
+                                f"Classifying table type for '{table_name}'",
+                                current=processed_count + processed_in_batch,
+                                total=total_hierarchies
+                            )
+                        
+                            # Use cached table classification from fact/dimension analysis
+                            logger.info(f"🔍 Looking up classification for table '{table_name}'...")
+                        
+                            if table_name in table_classifications:
+                                # Get simple classification from fact/dimension analysis
+                                ai_table_type = table_classifications[table_name]
+                                classification_confidence = "medium"  # Default confidence
                                 
-                                # Get relationships involving this table
-                                if hasattr(self.tabular_editor.model, 'Relationships'):
-                                    for rel in self.tabular_editor.model.Relationships:
-                                        if (hasattr(rel, 'FromTable') and rel.FromTable.Name == table_name) or \
-                                           (hasattr(rel, 'ToTable') and rel.ToTable.Name == table_name):
-                                            relationships.append(rel)
+                                # Always provide detailed analysis regardless of source
+                                detailed_reasoning_parts = []
+                                
+                                try:
+                                    # Get table for detailed analysis
+                                    table = next((t for t in self.tabular_editor.model.Tables if t.Name == table_name), None)
+                                    if table:
+                                        # Analyze relationships
+                                        many_side_rels = 0
+                                        one_side_rels = 0
+                                        
+                                        try:
+                                            if hasattr(self.tabular_editor, 'model') and self.tabular_editor.model:
+                                                for relationship in self.tabular_editor.model.Relationships:
+                                                    if hasattr(relationship, 'FromTable') and hasattr(relationship, 'ToTable'):
+                                                        if relationship.FromTable.Name.lower() == table_name.lower():
+                                                            many_side_rels += 1  # Table is on "many" side (FACT indicator)
+                                                        elif relationship.ToTable.Name.lower() == table_name.lower():
+                                                            one_side_rels += 1   # Table is on "one" side (DIMENSION indicator)
+                                        except:
+                                            pass
+                                        
+                                        # Analyze measures
+                                        measure_count = len(table.Measures) if hasattr(table, 'Measures') else 0
+                                        
+                                        # Analyze columns
+                                        numeric_cols = 0
+                                        try:
+                                            for column in table.Columns:
+                                                col_name = column.Name.lower()
+                                                if any(pattern in col_name for pattern in ['amount', 'value', 'quantity', 'price', 'revenue', 'cost', 'score', 'pipeline', 'seats']):\
+                                                    numeric_cols += 1
+                                        except:
+                                            pass
+                                        
+                                        # Build detailed reasoning
+                                        if ai_table_type == "FACT":
+                                            if many_side_rels > one_side_rels:
+                                                detailed_reasoning_parts.append(f"Has {many_side_rels} outgoing relationships vs {one_side_rels} incoming (indicates transactional/fact nature)")
+                                            if measure_count >= 3:
+                                                detailed_reasoning_parts.append(f"Contains {measure_count} calculated measures (typical of fact tables for aggregations)")
+                                            if numeric_cols >= 2:
+                                                detailed_reasoning_parts.append(f"Has {numeric_cols} aggregatable numeric columns (indicates quantitative data storage)")
+                                        else:  # DIMENSION
+                                            if one_side_rels > many_side_rels:
+                                                detailed_reasoning_parts.append(f"Has {one_side_rels} incoming relationships vs {many_side_rels} outgoing (indicates lookup/dimension nature)")
+                                            if measure_count <= 1:
+                                                detailed_reasoning_parts.append(f"Low measure density ({measure_count} measures, typical of dimension tables)")
+                                
+                                except Exception as e:
+                                    logger.warning(f"Could not perform detailed analysis for {table_name}: {e}")
+                                
+                                # Set comprehensive reasoning
+                                if detailed_reasoning_parts:
+                                    classification_reasoning = "; ".join(detailed_reasoning_parts)
+                                else:
+                                    classification_reasoning = f"Classified as {ai_table_type} based on fact/dimension analysis"
                             
-                            # ================================================================================================
-                            # SUBRULE SCORING SYSTEM
-                            # ================================================================================================
-                            fact_score = 0.0
-                            dimension_score = 0.0
-                            rule_evidence = []
-                            
-                            # Count relationships for primary classification rule
-                            many_side_rels = 0  # Table is on "many" side (many-to-one relationships)
-                            one_side_rels = 0   # Table is on "one" side (one-to-many relationships)
-                            
-                            for rel in relationships:
-                                if hasattr(rel, 'FromTable') and rel.FromTable.Name == table_name:
-                                    if hasattr(rel, 'FromCardinality') and 'Many' in str(rel.FromCardinality):
-                                        many_side_rels += 1
-                                if hasattr(rel, 'ToTable') and rel.ToTable.Name == table_name:
-                                    if hasattr(rel, 'ToCardinality') and 'One' in str(rel.ToCardinality):
-                                        one_side_rels += 1
-                            
-                            # FT-001: If table having many side relationships greater than one side relationship and contains measures → it is a FACT table (0.3 points)
-                            if many_side_rels > one_side_rels and len(measures) > 0:
-                                fact_score += 0.3
-                                rule_evidence.append(f"FT-001: Many-side relationships ({many_side_rels}) > one-side relationships ({one_side_rels}) + contains measures ({len(measures)}) → FACT table")
-                            
-                            # DT-001: If table having one side relationships greater than many side relationship and contains measures → it is a Dimension table (0.3 points)
-                            if one_side_rels > many_side_rels and len(measures) > 0:
-                                dimension_score += 0.3
-                                rule_evidence.append(f"DT-001: One-side relationships ({one_side_rels}) > many-side relationships ({many_side_rels}) + contains measures ({len(measures)}) → DIMENSION table")
-                            
-                            # FT-002: Contains foreign keys linking to Dimensions (0.25 points)
-                            fk_count = 0
-                            for col in columns:
-                                if hasattr(col, 'Name'):
-                                    col_name = col.Name.lower()
-                                    if any(suffix in col_name for suffix in ['id', '_id', 'key', '_key']):
-                                        fk_count += 1
-                            
-                            if fk_count >= 2:  # Multiple foreign keys indicate fact table
-                                fact_score += 0.25
-                                rule_evidence.append(f"FT-002: {fk_count} foreign key columns identified")
-                            
-                            # FT-003: Contains additive/aggregatable numeric fields (0.3 points)
-                            numeric_fields = 0
-                            aggregatable_keywords = ['amount', 'value', 'quantity', 'price', 'revenue', 'cost', 'score', 'adds', 'pipeline', 'seats']
-                            for col in columns:
-                                if hasattr(col, 'Name') and hasattr(col, 'DataType'):
-                                    col_name = col.Name.lower()
-                                    if any(keyword in col_name for keyword in aggregatable_keywords):
-                                        numeric_fields += 1
-                            
-                            if numeric_fields >= 2:
-                                fact_score += 0.3
-                                rule_evidence.append(f"FT-003: {numeric_fields} aggregatable numeric fields (business events/transactions/measurements)")
-                            
-                            # FT-004: Measure Density Analysis - High measure count indicates transactional fact tables (0.15 points)
-                            total_columns = len(columns)
-                            if total_columns > 0:
-                                measure_density = len(measures) / total_columns
-                                if measure_density > 0.3:  # >30% measures indicates fact table
-                                    fact_score += 0.15
-                                    rule_evidence.append(f"FT-004: High measure density {measure_density:.1%} indicates transactional fact table")
-                            
-                            # DT-002: Contains primary keys linking to Fact tables (0.25 points)
-                            pk_count = 0
-                            for col in columns:
-                                if hasattr(col, 'Name'):
-                                    col_name = col.Name.lower()
-                                    if col_name in [table_name.lower() + 'id', table_name.lower() + '_id', 'id']:
-                                        pk_count += 1
-                            
-                            if pk_count >= 1:
-                                dimension_score += 0.25
-                                rule_evidence.append(f"DT-002: {pk_count} primary key columns linking to Fact tables")
-                            
-                            # DT-003: Contains text columns with descriptive attributes (0.3 points)
-                            text_fields = 0
-                            descriptive_keywords = ['name', 'description', 'region', 'subregion', 'area', 'category', 'type', 'status', 'title']
-                            for col in columns:
-                                if hasattr(col, 'Name') and hasattr(col, 'DataType'):
-                                    col_name = col.Name.lower()
-                                    data_type = str(col.DataType).lower()
-                                    if 'string' in data_type or 'text' in data_type:
-                                        if any(keyword in col_name for keyword in descriptive_keywords):
-                                            text_fields += 1
-                            
-                            if text_fields >= 2:
-                                dimension_score += 0.3
-                                rule_evidence.append(f"DT-003: {text_fields} descriptive text attributes (region, subregion, area)")
-                            
-                            # DT-004: Measure Density Analysis - Low measure count indicates dimension tables (0.15 points)
-                            if total_columns > 0:
-                                measure_density = len(measures) / total_columns
-                                if measure_density <= 0.1:  # ≤10% measures indicates dimension table
-                                    dimension_score += 0.15
-                                    rule_evidence.append(f"DT-004: Low measure density {measure_density:.1%} indicates dimension table")
-                            
-                            # ================================================================================================
-                            # CLASSIFICATION DECISION WITH UPDATED SCORING SYSTEM
-                            # ================================================================================================
-                            # Max possible score for each side: FT(0.3+0.25+0.3+0.15=1.0) and DT(0.3+0.25+0.3+0.15=1.0)
-                            max_possible_score = 1.0
-                            
-                            # Apply Microsoft hierarchy pattern boost to dimension score (hierarchies are typically dimensions)
-                            if ms_pattern_detected != "Unknown":
-                                dimension_score += ms_confidence_boost
-                                rule_evidence.append(f"MS-Pattern: {ms_pattern_detected} (+{ms_confidence_boost:.2f})")
-                            
-                            # ================================================================================================
-                            # BINARY CLASSIFICATION DECISION WITH HQ-001 CONSIDERATION
-                            # ================================================================================================
-                            # Calculate adjusted percentages for classification decision
-                            fact_percentage = (fact_score / max_possible_score) * 100
-                            dimension_percentage = (dimension_score / max_possible_score) * 100
-                            adjusted_dim_percentage = dimension_percentage + (ms_confidence_boost * 25)  # Convert boost to percentage
-                            
-                            # Determine table type based on actual evidence analysis (not forced override)
-                            if fact_score > dimension_score:
-                                ai_table_type = "Fact"
-                                classification_confidence = "high" if fact_percentage >= 75 else ("medium" if fact_percentage >= 50 else "low")
-                                rule_evidence.append(f"Analysis: Fact table indicators stronger ({fact_score:.1f} vs {dimension_score:.1f})")
-                            elif dimension_score > fact_score:
-                                ai_table_type = "Dimension" 
-                                classification_confidence = "high" if adjusted_dim_percentage >= 75 else ("medium" if adjusted_dim_percentage >= 50 else "low")
-                                rule_evidence.append(f"Analysis: Dimension table indicators stronger ({dimension_score:.1f} vs {fact_score:.1f})")
+                                logger.info(f"✅ Table '{table_name}' classified as {ai_table_type} from fact/dimension analysis")
                             else:
-                                # Both scores are equal (including both being 0) - use hierarchy characteristics for decision
-                                if fact_score == 0 and dimension_score == 0:
-                                    # No clear indicators - use table characteristics
-                                    if len(measures) > 0:
-                                        ai_table_type = "Fact"
-                                        rule_evidence.append(f"Tie-breaker: Table has {len(measures)} measures - classified as Fact")
-                                        classification_confidence = "low"
+                                # Enhanced fallback classification applying comprehensive fact/dimension rules
+                                logger.warning(f"⚠️ Table '{table_name}' not found in cached classifications - applying comprehensive rules")
+                            
+                                try:
+                                    # Apply comprehensive fact/dimension classification rules
+                                    table = next((t for t in self.tabular_editor.model.Tables if t.Name == table_name), None)
+                                    if table:
+                                        # Rule Application: FT-001/DT-001 - Relationship Analysis
+                                        many_side_rels = 0
+                                        one_side_rels = 0
+                                        
+                                        try:
+                                            if hasattr(self.tabular_editor, 'model') and self.tabular_editor.model:
+                                                for relationship in self.tabular_editor.model.Relationships:
+                                                    if hasattr(relationship, 'FromTable') and hasattr(relationship, 'ToTable'):
+                                                        if relationship.FromTable.Name.lower() == table_name.lower():
+                                                            many_side_rels += 1  # Table is on "many" side (FACT indicator)
+                                                        elif relationship.ToTable.Name.lower() == table_name.lower():
+                                                            one_side_rels += 1   # Table is on "one" side (DIMENSION indicator)
+                                        except:
+                                            pass
+                                        
+                                        # Rule Application: FT-003/FT-004/DT-004 - Measure Density Analysis
+                                        measure_count = len(table.Measures) if hasattr(table, 'Measures') else 0
+                                        
+                                        # Rule Application: FT-002/DT-002/FT-003/DT-003 - Column Analysis
+                                        numeric_cols = 0
+                                        text_cols = 0
+                                        id_cols = 0
+                                        
+                                        try:
+                                            for column in table.Columns:
+                                                col_name = column.Name.lower()
+                                                if any(pattern in col_name for pattern in ['amount', 'value', 'quantity', 'price', 'revenue', 'cost', 'score', 'pipeline', 'seats']):
+                                                    numeric_cols += 1
+                                                elif any(pattern in col_name for pattern in ['id', 'key']):
+                                                    id_cols += 1
+                                                elif any(pattern in col_name for pattern in ['region', 'area', 'category', 'type', 'name', 'description']):
+                                                    text_cols += 1
+                                        except:
+                                            pass
+                                        
+                                        # Apply Classification Rules
+                                        classification_reasoning = []
+                                        
+                                        # Primary Rule: Relationship Analysis
+                                        if many_side_rels > one_side_rels:
+                                            ai_table_type = "FACT"
+                                            classification_reasoning.append(f"More many-side relationships ({many_side_rels}) than one-side ({one_side_rels})")
+                                        elif one_side_rels > many_side_rels:
+                                            ai_table_type = "DIMENSION"
+                                            classification_reasoning.append(f"More one-side relationships ({one_side_rels}) than many-side ({many_side_rels})")
+                                        else:
+                                            # Secondary Rules: Measure and Column Analysis
+                                            fact_score = 0
+                                            dim_score = 0
+                                            
+                                            # Measure Density Analysis
+                                            if measure_count >= 3:
+                                                fact_score += 2
+                                                classification_reasoning.append(f"High measure density ({measure_count} measures)")
+                                            elif measure_count <= 1:
+                                                dim_score += 2
+                                                classification_reasoning.append(f"Low measure density ({measure_count} measures)")
+                                            
+                                            # Aggregatable numeric fields
+                                            if numeric_cols >= 2:
+                                                fact_score += 1
+                                                classification_reasoning.append(f"Multiple aggregatable numeric columns ({numeric_cols})")
+                                            
+                                            # Descriptive text attributes
+                                            if text_cols >= 3:
+                                                dim_score += 1
+                                                classification_reasoning.append(f"Multiple descriptive text columns ({text_cols})")
+                                            
+                                            # Final classification based on scoring
+                                            if fact_score > dim_score:
+                                                ai_table_type = "FACT"
+                                            else:
+                                                ai_table_type = "DIMENSION"
+                                        
+                                        classification_reasoning = f"Comprehensive rule analysis: {'; '.join(classification_reasoning)}"
                                     else:
-                                        ai_table_type = "Dimension"
-                                        rule_evidence.append(f"Tie-breaker: Table has no measures - classified as Dimension")
-                                        classification_confidence = "low"
-                                else:
-                                    # Scores are equal but non-zero - prefer Dimension for hierarchies
-                                    ai_table_type = "Dimension"
-                                    rule_evidence.append(f"Analysis: Equal scores ({fact_score:.1f} vs {dimension_score:.1f}) - defaulting to Dimension for hierarchy")
-                                    classification_confidence = "low"
+                                        ai_table_type = "DIMENSION"
+                                        classification_reasoning = "Fallback: Table object not accessible - defaulting to DIMENSION"
+                                
+                                except Exception as fallback_error:
+                                    logger.warning(f"⚠️ Fallback classification failed for '{table_name}': {fallback_error}")
+                                    ai_table_type = "DIMENSION"
+                                    classification_reasoning = "Error in classification - defaulting to DIMENSION"
+                                
+                                classification_confidence = "medium"  # Enhanced fallback confidence
                             
-                            # Add HQ-001 awareness note (but don't override classification)
-                            if ai_table_type == "Fact":
-                                rule_evidence.append("HQ-001 NOTE: Hierarchy in Fact table - consider moving to Dimension table")
+                            logger.info(f"✅ Table '{table_name}' classified as {ai_table_type} ({classification_confidence} confidence)")
+                            logger.info(f"📋 Reasoning: {classification_reasoning}")
+                        
+                            # Add table type to ai_result for use in CSV generation
+                            ai_result["table_type"] = ai_table_type
+                            ai_result["ai_classification_confidence"] = classification_confidence
+                        
+                            # Calculate HQ-001 score based on table classification (handle both formats)
+                            if ai_table_type.upper() in ["DIMENSION", "DIM"]:
+                                hq_001_score = 0.4  # Dimension tables with hierarchies get full HQ-001 score
                             else:
-                                rule_evidence.append("HQ-001 ALIGNED: Hierarchy appropriately placed in Dimension table")
+                                hq_001_score = 0.0  # Fact tables with hierarchies get 0 HQ-001 score (concern)
+                        
+                            # Override the GPT HQ-001 score with evidence-based score
+                            ai_result["hq_001_score"] = hq_001_score
+                        
+                            # Extract HQ-002 score from AI response or use Microsoft pattern base score
+                            original_hq_002_score = float(ai_result.get("hq_002_score", 0.0))  # Business pattern from AI
                             
-                            # Generate comprehensive reasoning with proper classification logic
-                            evidence_summary = "; ".join(rule_evidence[:4]) if rule_evidence else "Basic analysis completed"
-                            ms_pattern_text = f" | MS Pattern: {ms_pattern_detected}" if ms_pattern_detected != "Unknown" else ""
-                            hq_001_status = "ALIGNED" if ai_table_type == "Dimension" else "CONCERN"
-                            classification_reasoning = f"Evidence-Based Classification: {ai_table_type} | Fact Score: {fact_score:.1f}/4.0 ({fact_percentage:.0f}%) | Dimension Score: {dimension_score:.1f}/4.0 ({dimension_percentage:.0f}%){ms_pattern_text} | HQ-001: {hq_001_status} | {evidence_summary}"
-                            
-                            logger.info(f"🎯 AI Classification: {table_name} → {ai_table_type} ({classification_confidence} confidence) - Evidence-based analysis")
-                            logger.info(f"📊 Rule Scores - Fact: {fact_score:.1f}/4.0, Dimension: {dimension_score:.1f}/4.0 | MS Pattern: {ms_pattern_detected} | HQ-001: {hq_001_status}")
-                            
-                        except Exception as e:
-                            logger.warning(f"⚠️ Subrule analysis failed for '{table_name}': {e} - Using fallback analysis")
-                            # Fallback: Use basic heuristic instead of defaulting to Dimension
-                            # If table has measures, likely Fact; otherwise likely Dimension
-                            try:
-                                table = next((t for t in self.semantic_model.Tables if t.Name == table_name), None)
-                                if table and hasattr(table, 'Measures') and len(table.Measures) > 0:
-                                    ai_table_type = "Fact"
-                                    classification_reasoning = f"Fallback analysis: Table has {len(table.Measures)} measures - likely Fact table"
-                                else:
-                                    ai_table_type = "Dimension"
-                                    classification_reasoning = f"Fallback analysis: Table has no measures - likely Dimension table"
-                            except:
-                                ai_table_type = "Dimension"  # Final fallback only if all else fails
-                                classification_reasoning = f"Subrule analysis failed: {str(e)[:50]} - final fallback to Dimension"
-                            classification_confidence = "low"
-                        
-                        # Add table type to ai_result for use in CSV generation
-                        ai_result["table_type"] = ai_table_type
-                        ai_result["ai_classification_confidence"] = classification_confidence
-                        
-                        # Calculate HQ-001 score based on subrule classification result (not GPT analysis)
-                        if ai_table_type == "Dimension":
-                            hq_001_score = 0.4  # Dimension tables with hierarchies get full HQ-001 score
-                        else:
-                            hq_001_score = 0.0  # Fact tables with hierarchies get 0 HQ-001 score (concern)
-                        
-                        # Override the GPT HQ-001 score with evidence-based score
-                        ai_result["hq_001_score"] = hq_001_score
-                        
-                        # Extract HQ-002 score from AI response (business pattern quality)
-                        hq_002_score = float(ai_result.get("hq_002_score", 0.0))  # Business pattern (max 0.6)
-                        
-                        # Calculate composite scores for severity determination
-                        calculated_total_score = hq_001_score + hq_002_score
-                        calculated_max_score = 0.4 + 0.6  # Sum of max possible scores
-                        
-                        # Determine issue severity based on overall score percentage
-                        score_percentage = (calculated_total_score / calculated_max_score) if calculated_max_score > 0 else 0
-                        
-                        # Apply severity thresholds with color coding for UI display
-                        if score_percentage < 0.60:
-                            issue_severity = "critical"     # <60% - Poor hierarchy design
-                            severity_priority = 1
-                            severity_color_code = "RED"
-                            severity_hex_color = "#FF0000"
-                        elif 0.60 <= score_percentage <= 0.74:
-                            issue_severity = "issue"        # 60-74% - Significant improvements needed
-                            severity_priority = 2
-                            severity_color_code = "ORANGE"
-                            severity_hex_color = "#FFA500"
-                        elif 0.75 <= score_percentage <= 0.84:
-                            issue_severity = "warning"      # 75-84% - Minor optimizations recommended
-                            severity_priority = 3
-                            severity_color_code = "YELLOW"
-                            severity_hex_color = "#FFFF00"
-                        else:  # 0.85 and above
-                            issue_severity = "good"         # 85%+ - Excellent hierarchy design
-                            severity_priority = 4
-                            severity_color_code = "GREEN"
-                            severity_hex_color = "#00FF00"
-                        
-                        # Calculate Score_Category using same logic as original method for backward compatibility
-                        if calculated_total_score >= 0.8:
-                            score_category = "Excellent"
-                        elif calculated_total_score >= 0.6:
-                            score_category = "Good" 
-                        elif calculated_total_score >= 0.4:
-                            score_category = "Fair"
-                        else:
-                            score_category = "Poor"
-                        
-                        # Generate Score_Rationale based on final classification and HQ-001 alignment
-                        if ai_table_type == "Dimension":
-                            if hq_001_score >= 0.4:
-                                # Dimension table with hierarchy - good alignment
-                                if calculated_total_score >= 0.8:
-                                    score_rationale = "Excellent: Hierarchy properly placed in Dimension table with high quality patterns"
-                                elif calculated_total_score >= 0.6:
-                                    score_rationale = "Good: Hierarchy appropriately placed in Dimension table with room for pattern improvements"
-                                else:
-                                    score_rationale = "The hierarchy is placed in a Dimension table but could benefit from business pattern optimization"
+                            # Use Microsoft pattern base score if a pattern was detected, otherwise use AI score
+                            if microsoft_base_score > 0.0:
+                                hq_002_score = microsoft_base_score + ms_confidence_boost
+                                # Ensure we don't exceed the maximum possible score of 0.6
+                                hq_002_score = min(hq_002_score, 0.6)
+                                logger.info(f"📊 Using Microsoft pattern score: {hq_002_score:.2f} (base: {microsoft_base_score:.2f} + boost: {ms_confidence_boost:.2f}) for pattern '{ms_pattern_detected}'")
                             else:
-                                score_rationale = "Dimension table classification but low HQ-001 score - verify table structure"
-                        else:  # Fact table
-                            if hq_001_score == 0.0:
-                                # Fact table with hierarchy - HQ-001 concern
-                                score_rationale = "Consider moving the hierarchy to a Dimension table to align with best practices for hierarchy placement"
+                                hq_002_score = original_hq_002_score
+                                logger.info(f"📊 Using AI-generated score: {hq_002_score:.2f} (no Microsoft pattern detected)")
+                                
+                            # Override the AI HQ-002 score with Microsoft pattern score if applicable
+                            ai_result["hq_002_score"] = hq_002_score
+                        
+                            # Calculate composite scores for severity determination
+                            calculated_total_score = hq_001_score + hq_002_score
+                            calculated_max_score = 0.4 + 0.6  # Sum of max possible scores
+                            
+                            logger.info(f"📊 Calculating scores for '{hierarchy_name}': HQ-001={hq_001_score:.2f}, HQ-002={hq_002_score:.2f}, Total={calculated_total_score:.2f}")
+                        
+                            # Determine issue severity based on overall score percentage
+                            score_percentage = (calculated_total_score / calculated_max_score) if calculated_max_score > 0 else 0
+                        
+                            # Apply severity thresholds with color coding for UI display
+                            if score_percentage < 0.60:
+                                issue_severity = "critical"     # <60% - Poor hierarchy design
+                                severity_priority = 1
+                                severity_color_code = "RED"
+                                severity_hex_color = "#FF0000"
+                            elif 0.60 <= score_percentage <= 0.74:
+                                issue_severity = "issue"        # 60-74% - Significant improvements needed
+                                severity_priority = 2
+                                severity_color_code = "ORANGE"
+                                severity_hex_color = "#FFA500"
+                            elif 0.75 <= score_percentage <= 0.84:
+                                issue_severity = "warning"      # 75-84% - Minor optimizations recommended
+                                severity_priority = 3
+                                severity_color_code = "YELLOW"
+                                severity_hex_color = "#FFFF00"
+                            else:  # 0.85 and above
+                                issue_severity = "good"         # 85%+ - Excellent hierarchy design
+                                severity_priority = 4
+                                severity_color_code = "GREEN"
+                                severity_hex_color = "#00FF00"
+                        
+                            # Calculate Score_Category using same logic as original method for backward compatibility
+                            if calculated_total_score >= 0.8:
+                                score_category = "Excellent"
+                            elif calculated_total_score >= 0.6:
+                                score_category = "Good" 
+                            elif calculated_total_score >= 0.4:
+                                score_category = "Fair"
                             else:
-                                score_rationale = "Fact table with hierarchy - review table classification and structure"
+                                score_category = "Poor"
                         
-                        # Build streamlined result entry with essential hierarchy analysis data
-                        result_entry = {
-                            "Table": ai_result.get("table_name", "Unknown"),
-                            "Table_Type": ai_result.get("table_type", "Unknown"),
-                            "Issue_Severity": issue_severity,
-                            "Hierarchy_Name": ai_result.get("hierarchy_name", "Unknown"),
-                            "Column_Path": ai_result.get("column_path", "Column details unavailable"),
-                            "Business_Pattern_Direction": ai_result.get("hierarchy_direction", "Unknown"),
-                            "Level_Count": int(ai_result.get("level_count", 0)),
-                            "Dimension_Alignment_Score": hq_001_score,
-                            "Business_Pattern_Score": hq_002_score,
-                            "Overall_Score": calculated_total_score,
-                            "Dimension_Alignment_MaxScore": 0.4,  # H-001: Hierarchies should always be established in dimension tables
-                            "Business_Pattern_MaxScore": 0.6,    # H-002: Hierarchies should have clear logical/business pattern
-                            "Max_Score": 1.0,             # H-001 (0.4) + H-002 (0.6) = 1.0
-                            "Score_Rationale": score_rationale
-                        }
+                            # Generate enhanced Score_Rationale with specific pattern recommendations
+                            hierarchy_name = ai_result.get("hierarchy_name", "Unknown")
+                            column_path = ai_result.get("column_path", "")
+                            level_count = int(ai_result.get("level_count", 0))
+                            business_pattern = ai_result.get("business_pattern", "generic")
+                            hierarchy_direction = ai_result.get("hierarchy_direction", "Unknown")
+                            
+                            # Get specific recommendations based on Microsoft pattern analysis
+                            pattern_recommendations = []
+                            level_recommendations = []
+                            direction_recommendations = []
+                            
+                            # Analyze detected Microsoft pattern for specific recommendations
+                            if ms_pattern_detected != "Unknown":
+                                if ms_pattern_detected == "Geography Hierarchy":
+                                    optimal_levels = ["Country/Region", "State/Province", "City", "Postal Code"]
+                                    if level_count > 7:
+                                        level_recommendations.append(f"Consider reducing from {level_count} to 4-6 levels for optimal geography navigation")
+                                    elif level_count < 3:
+                                        level_recommendations.append(f"Consider adding geographic detail levels (currently {level_count} levels)")
+                                    pattern_recommendations.append("Ensure geographic levels follow Country > State > City > Postal hierarchy")
+                                
+                                elif ms_pattern_detected == "Product Hierarchy":
+                                    if level_count > 6:
+                                        level_recommendations.append(f"Product hierarchies work best with 3-5 levels (currently {level_count})")
+                                    pattern_recommendations.append("Follow Division > Category > Subcategory > Product > SKU pattern")
+                                    if "sku" not in column_path.lower() and level_count > 3:
+                                        pattern_recommendations.append("Consider adding SKU level for detailed product analysis")
+                                
+                                elif ms_pattern_detected == "Date Hierarchy":
+                                    if "fiscal" in hierarchy_name.lower():
+                                        pattern_recommendations.append("Fiscal hierarchies should follow Fiscal Year > Quarter > Month > Date pattern")
+                                    else:
+                                        pattern_recommendations.append("Calendar hierarchies should follow Year > Quarter > Month > Week > Date pattern")
+                                    if level_count != 4:
+                                        level_recommendations.append(f"Date hierarchies typically have 4-5 levels (currently {level_count})")
+                                
+                                elif ms_pattern_detected == "Account Hierarchy":
+                                    pattern_recommendations.append("Account hierarchies should group by cost centers, departments, or organizational units")
+                                    if level_count > 6:
+                                        level_recommendations.append(f"Consider simplifying account structure (currently {level_count} levels)")
+                                
+                                elif ms_pattern_detected == "Function Hierarchies":
+                                    pattern_recommendations.append("Organizational hierarchies should follow Executive > Function > Department > Team structure")
+                                    if level_count < 3:
+                                        level_recommendations.append("Consider adding more organizational detail for better drill-down analysis")
+                            
+                            # Direction optimization recommendations
+                            if hierarchy_direction == "Low to High" and ms_pattern_detected in ["Geography Hierarchy", "Product Hierarchy", "Date Hierarchy"]:
+                                direction_recommendations.append("Consider reversing direction to High-to-Low for better drill-down user experience")
+                            elif hierarchy_direction == "Unknown":
+                                direction_recommendations.append("Define clear hierarchy direction for optimal user navigation")
+                            
+                            # ================================================================================================
+                            # MICROSOFT HIERARCHY LEVEL ORDERING ANALYSIS
+                            # ================================================================================================
+                            # Generate level ordering recommendations based on Microsoft standards or business logic
+                            level_specific_recommendations = []
+                            
+                            if column_path and column_path != "Column details unavailable":
+                                levels = [level.strip() for level in column_path.split(" > ")]
+                                logger.info(f"📊 Analyzing level ordering for {len(levels)} levels: {levels}")
+                                
+                                # Check if this matches a Microsoft hierarchy pattern
+                                best_ms_match = None
+                                best_ms_path = None
+                                
+                                if ms_pattern_detected != "Unknown":
+                                    # Find matching Microsoft hierarchy pattern
+                                    for ms_name, ms_paths in microsoft_hierarchies.items():
+                                        if ms_pattern_detected.lower() in ms_name.lower() or any(keyword in ms_name.lower() for keyword in ms_pattern_detected.lower().split()):
+                                            best_ms_match = ms_name
+                                            best_ms_path = ms_paths[0] if ms_paths else None
+                                            break
+                                
+                                # Also check for Product pattern specifically since it's commonly misclassified
+                                if not best_ms_match:
+                                    hierarchy_name_lower = hierarchy_name.lower()
+                                    if any(keyword in hierarchy_name_lower for keyword in ['product', 'sku', 'item', 'parent']):
+                                        # Look for Product hierarchy in Microsoft patterns
+                                        for ms_name, ms_paths in microsoft_hierarchies.items():
+                                            if 'product' in ms_name.lower():
+                                                best_ms_match = ms_name
+                                                best_ms_path = ms_paths[0] if ms_paths else None
+                                                ms_pattern_detected = "Product Hierarchy"
+                                                logger.info(f"📋 Detected Product hierarchy pattern based on hierarchy name: {hierarchy_name}")
+                                                break
+                                
+                                if best_ms_match and best_ms_path:
+                                    # Microsoft hierarchy pattern found - provide detailed level positioning analysis
+                                    expected_levels = [level.strip() for level in best_ms_path.split(" > ")]
+                                    logger.info(f"📋 Found Microsoft pattern '{best_ms_match}' with expected levels: {expected_levels}")
+                                    
+                                    # Detailed level count analysis
+                                    if len(levels) != len(expected_levels):
+                                        if len(levels) < len(expected_levels):
+                                            missing_count = len(expected_levels) - len(levels)
+                                            level_specific_recommendations.append(f"Microsoft {best_ms_match} standard requires {len(expected_levels)} levels, currently has {len(levels)}. Missing {missing_count} level(s)")
+                                        else:
+                                            extra_count = len(levels) - len(expected_levels)
+                                            level_specific_recommendations.append(f"Microsoft {best_ms_match} standard expects {len(expected_levels)} levels, currently has {len(levels)}. Consider consolidating {extra_count} extra level(s)")
+                                    
+                                    # Recommend correct Microsoft level ordering with position-specific guidance
+                                    level_specific_recommendations.append(f"Recommended Microsoft structure: {' > '.join(expected_levels)}")
+                                    
+                                    # Detailed position-by-position analysis
+                                    position_analysis = []
+                                    concept_matches = []
+                                    
+                                    # Analyze each position in detail
+                                    for pos in range(1, max(len(levels), len(expected_levels)) + 1):
+                                        if pos <= len(levels) and pos <= len(expected_levels):
+                                            current_level = levels[pos-1]
+                                            expected_concept = expected_levels[pos-1]
+                                            
+                                            # Check concept alignment
+                                            concept_keywords = expected_concept.lower().replace('/', ' ').split()
+                                            level_matches = any(keyword in current_level.lower() for keyword in concept_keywords)
+                                            
+                                            if level_matches:
+                                                concept_matches.append(f"Position {pos}: '{current_level}' correctly represents {expected_concept}")
+                                            else:
+                                                position_analysis.append(f"Position {pos}: '{current_level}' should represent {expected_concept} concept")
+                                                # Suggest specific repositioning
+                                                for check_pos, check_concept in enumerate(expected_levels, 1):
+                                                    check_keywords = check_concept.lower().replace('/', ' ').split()
+                                                    if any(keyword in current_level.lower() for keyword in check_keywords) and check_pos != pos:
+                                                        position_analysis.append(f"  → '{current_level}' better suited for position {check_pos} ({check_concept})")
+                                                        break
+                                        
+                                        elif pos <= len(expected_levels):  # Missing level
+                                            missing_concept = expected_levels[pos-1]
+                                            position_analysis.append(f"Missing position {pos}: Add level representing {missing_concept}")
+                                        
+                                        elif pos <= len(levels):  # Extra level
+                                            extra_level = levels[pos-1]
+                                            position_analysis.append(f"Extra position {pos}: '{extra_level}' should be consolidated or removed")
+                                    
+                                    # Add the most important positioning recommendations
+                                    if position_analysis:
+                                        level_specific_recommendations.extend(position_analysis[:4])  # Top 4 position issues
+                                    
+                                    # Add successful alignments for context
+                                    if concept_matches:
+                                        level_specific_recommendations.append(f"Correctly positioned: {'; '.join(concept_matches[:2])}")
+                                
+                                else:
+                                    # Non-Microsoft hierarchy - apply business logic for level ordering
+                                    logger.info(f"🔍 Applying business logic analysis for non-Microsoft hierarchy")
+                                    
+                                    # Analyze level progression for logical business hierarchy
+                                    business_progression_patterns = {
+                                        "geographic": ["continent", "country", "region", "state", "city", "district", "location"],
+                                        "organizational": ["company", "division", "department", "team", "group", "unit", "person"],
+                                        "product": ["category", "family", "group", "type", "model", "variant", "sku"],
+                                        "time": ["year", "quarter", "month", "week", "day"],
+                                        "financial": ["segment", "business", "cost center", "account", "subaccount"]
+                                    }
+                                    
+                                    # Detect hierarchy type and recommend detailed column ordering
+                                    detected_type = "general"
+                                    best_pattern = None
+                                    
+                                    for pattern_type, keywords in business_progression_patterns.items():
+                                        level_text = " ".join(levels).lower()
+                                        # Enhanced pattern detection
+                                        keyword_matches = sum(1 for keyword in keywords if keyword in level_text)
+                                        if keyword_matches >= 2:  # Need at least 2 matching keywords
+                                            detected_type = pattern_type
+                                            best_pattern = keywords
+                                            break
+                                        elif keyword_matches >= 1 and detected_type == "general":
+                                            detected_type = pattern_type
+                                            best_pattern = keywords
+                                    
+                                    # Enhanced custom hierarchy analysis with detailed logical pattern detection  
+                                    if detected_type != "general" and best_pattern:
+                                        # Provide detailed column ordering recommendations with position analysis
+                                        optimal_length = min(len(levels) + 1, len(best_pattern))
+                                        recommended_structure = best_pattern[:optimal_length]
+                                        level_specific_recommendations.append(f"Detected {detected_type} hierarchy. Recommended structure: {' > '.join(recommended_structure)}")
+                                        
+                                        # Advanced column positioning analysis
+                                        positioning_guidance = []
+                                        correct_positions = []
+                                        
+                                        for pos, current_level in enumerate(levels, 1):
+                                            level_lower = current_level.lower()
+                                            best_match_pos = None
+                                            best_match_concept = None
+                                            match_confidence = 0
+                                            
+                                            # Find best conceptual match in recommended structure
+                                            for concept_pos, concept in enumerate(recommended_structure, 1):
+                                                concept_parts = concept.replace('/', ' ').split()
+                                                current_matches = sum(1 for part in concept_parts if part in level_lower)
+                                                confidence = current_matches / len(concept_parts) if concept_parts else 0
+                                                
+                                                if confidence > match_confidence:
+                                                    match_confidence = confidence
+                                                    best_match_pos = concept_pos
+                                                    best_match_concept = concept
+                                            
+                                            # Provide specific positioning guidance
+                                            if best_match_pos and match_confidence > 0.3:  # Good conceptual match
+                                                if best_match_pos == pos:
+                                                    correct_positions.append(f"Position {pos}: '{current_level}' correctly represents {best_match_concept}")
+                                                else:
+                                                    if best_match_pos < pos:
+                                                        positioning_guidance.append(f"'{current_level}' should be position {best_match_pos} (currently {pos}) - represents {best_match_concept}")
+                                                    else:
+                                                        positioning_guidance.append(f"'{current_level}' should be position {best_match_pos} (currently {pos}) - represents {best_match_concept}")
+                                            else:
+                                                # Fallback: analyze based on naming patterns
+                                                if any(pattern in level_lower for pattern in ['parent', 'super', 'main', 'primary']):
+                                                    if pos > 2:
+                                                        positioning_guidance.append(f"'{current_level}' contains high-level indicator - should be position 1-2 (currently {pos})")
+                                                elif any(pattern in level_lower for pattern in ['sub', 'detail', 'item', 'specific']):
+                                                    recommended_pos = len(levels) if len(levels) > 1 else 2
+                                                    if pos < recommended_pos:
+                                                        positioning_guidance.append(f"'{current_level}' contains detail indicator - should be position {recommended_pos} (currently {pos})")
+                                        
+                                        # Add positioning recommendations
+                                        if positioning_guidance:
+                                            level_specific_recommendations.append(f"Position improvements: {'; '.join(positioning_guidance[:3])}")
+                                        
+                                        # Add correct positions for context
+                                        if correct_positions:
+                                            level_specific_recommendations.append(f"Well positioned: {'; '.join(correct_positions[:2])}")
+                                        
+                                        # Check for missing intermediate levels
+                                        if len(levels) < len(recommended_structure) - 1:
+                                            missing_concepts = recommended_structure[len(levels):len(levels)+2]  # Next 1-2 missing concepts
+                                            level_specific_recommendations.append(f"Consider adding: {' and '.join(missing_concepts)} levels for better drill-down")
+                                    else:
+                                        # General hierarchy analysis with enhanced column positioning logic
+                                        position_analysis = []
+                                        structure_issues = []
+                                        
+                                        # Analyze each level for positioning clues
+                                        for pos, level in enumerate(levels, 1):
+                                            level_lower = level.lower()
+                                            
+                                            # High-level indicators (should be early positions)
+                                            if any(pattern in level_lower for pattern in ['parent', 'super', 'main', 'primary', 'master']):
+                                                optimal_pos = 1 if 'parent' in level_lower or 'super' in level_lower else 2
+                                                if pos > optimal_pos:
+                                                    position_analysis.append(f"'{level}' (position {pos}) should be position {optimal_pos} - contains high-level indicator")
+                                            
+                                            # Mid-level indicators
+                                            elif any(pattern in level_lower for pattern in ['group', 'category', 'type', 'class']):
+                                                optimal_pos = min(3, len(levels) // 2 + 1)
+                                                if abs(pos - optimal_pos) > 1:
+                                                    position_analysis.append(f"'{level}' (position {pos}) should be position {optimal_pos} - represents grouping concept")
+                                            
+                                            # Detail-level indicators (should be late positions)
+                                            elif any(pattern in level_lower for pattern in ['detail', 'item', 'specific', 'individual']):
+                                                optimal_pos = len(levels)
+                                                if pos < optimal_pos - 1:
+                                                    position_analysis.append(f"'{level}' (position {pos}) should be position {optimal_pos} - contains detail indicator")
+                                            
+                                            # Sub-level indicators (should not be first)
+                                            elif 'sub' in level_lower and pos == 1:
+                                                position_analysis.append(f"'{level}' (position {pos}) should not be top level - contains 'sub' indicator")
+                                        
+                                        # Logical flow analysis
+                                        if len(levels) >= 3:
+                                            # Check for logical broad-to-specific progression
+                                            first_level = levels[0].lower()
+                                            last_level = levels[-1].lower()
+                                            
+                                            # First should be broad, last should be specific
+                                            first_is_broad = any(pattern in first_level for pattern in ['total', 'all', 'overall', 'parent', 'super'])
+                                            last_is_specific = any(pattern in last_level for pattern in ['detail', 'item', 'specific', 'individual'])
+                                            
+                                            if not first_is_broad and not last_is_specific:
+                                                structure_issues.append(f"Hierarchy should flow broad-to-specific: '{levels[0]}' → ... → '{levels[-1]}'")
+                                        
+                                        # Add analysis results
+                                        if position_analysis:
+                                            level_specific_recommendations.extend(position_analysis[:3])
+                                        
+                                        if structure_issues:
+                                            level_specific_recommendations.extend(structure_issues[:2])
+                                        
+                                        # General guidance if no specific issues found
+                                        if not position_analysis and not structure_issues:
+                                            level_specific_recommendations.append(f"Review {len(levels)}-level structure for logical broad-to-specific progression")
+                                    
+                                    # General business hierarchy guidance
+                                    if len(levels) > 6:
+                                        level_specific_recommendations.append(f"Consider reducing from {len(levels)} to 4-6 levels for optimal user navigation")
+                                    elif len(levels) < 2:
+                                        level_specific_recommendations.append(f"Consider adding intermediate levels for better drill-down analysis (currently only {len(levels)} level(s))")
+                                    
+                                    # Check for logical progression (broad to specific)
+                                    level_specific_recommendations.append("Ensure levels flow from broad to specific concepts for optimal drill-down navigation")
+                                
+                                # Add level-specific recommendations to the main recommendations list
+                                if level_specific_recommendations:
+                                    pattern_recommendations.extend(level_specific_recommendations[:3])  # Add top 3 level-specific recommendations
+                                    logger.info(f"📋 Added {len(level_specific_recommendations)} level-specific recommendations")
+                            
+                            # Business pattern score analysis
+                            if hq_002_score < 0.3:
+                                if ms_pattern_detected == "Unknown":
+                                    pattern_recommendations.append("Hierarchy doesn't follow standard Microsoft BI patterns - consider restructuring based on level analysis above")
+                                else:
+                                    pattern_recommendations.append("Hierarchy doesn't follow standard Microsoft BI patterns - consider restructuring")
+                            elif hq_002_score < 0.5:
+                                if ms_pattern_detected == "Unknown":
+                                    pattern_recommendations.append("Hierarchy partially follows business logic but needs optimization based on level analysis")
+                                else:
+                                    pattern_recommendations.append("Hierarchy partially follows Microsoft standards but needs optimization")
+                            
+                            # Generate comprehensive score rationale with level ordering analysis (no sentiment prefixes)
+                            if ai_table_type.upper() in ["DIMENSION", "DIM"]:
+                                if hq_001_score >= 0.4:
+                                    # Dimension table with hierarchy - provide level ordering guidance
+                                    if calculated_total_score >= 0.8:
+                                        if ms_pattern_detected != "Unknown":
+                                            score_rationale = f"Hierarchy properly placed in Dimension table with {ms_pattern_detected.lower()} pattern"
+                                        else:
+                                            score_rationale = f"Well-structured hierarchy in Dimension table with clear business logic"
+                                    elif calculated_total_score >= 0.6:
+                                        # Build specific recommendations including level ordering analysis
+                                        recommendations = []
+                                        recommendations.extend(pattern_recommendations)
+                                        recommendations.extend(level_recommendations)
+                                        recommendations.extend(direction_recommendations)
+                                        recommendations.extend(level_specific_recommendations)  # Add level ordering recommendations
+                                        
+                                        if recommendations:
+                                            rec_text = "; ".join(recommendations[:3])  # Show top 3 recommendations including level ordering
+                                            if ms_pattern_detected != "Unknown":
+                                                score_rationale = f"Dimension table placement correct. Level ordering guidance: {rec_text}"
+                                            else:
+                                                score_rationale = f"Custom hierarchy in Dimension table. Level ordering analysis: {rec_text}"
+                                        else:
+                                            if ms_pattern_detected != "Unknown":
+                                                score_rationale = f"Hierarchy appropriately placed in Dimension table following {ms_pattern_detected.lower()} pattern"
+                                            else:
+                                                score_rationale = f"Custom hierarchy appropriately placed in Dimension table"
+                                    else:
+                                        # Lower scores need more specific guidance with level ordering analysis
+                                        recommendations = []
+                                        recommendations.extend(pattern_recommendations)
+                                        recommendations.extend(level_recommendations)
+                                        recommendations.extend(level_specific_recommendations)  # Add level ordering recommendations
+                                        
+                                        if recommendations:
+                                            rec_text = "; ".join(recommendations[:3])  # Show top 3 recommendations including level ordering
+                                            if ms_pattern_detected != "Unknown":
+                                                score_rationale = f"Dimension table placement correct but needs pattern optimization. Level ordering priority: {rec_text}"
+                                            else:
+                                                score_rationale = f"Custom hierarchy needs improvement. Level ordering analysis: {rec_text}"
+                                        else:
+                                            score_rationale = "Hierarchy is placed in a Dimension table but could benefit from business pattern optimization"
+                                else:
+                                    score_rationale = "Dimension table classification but low alignment score - verify table structure"
+                            else:  # Fact table
+                                if hq_001_score == 0.0:
+                                    # Fact table with hierarchy - HQ-001 concern - Enhanced diagnostic recommendations
+                                    diagnostic_info = []
+                                    
+                                    # Enhanced classification reasoning with detailed analysis
+                                    if 'classification_reasoning' in locals() and classification_reasoning:
+                                        # Parse and enhance the reasoning
+                                        reasoning_parts = []
+                                        
+                                        # Check for relationship patterns
+                                        if "outgoing relationships" in classification_reasoning.lower() or "many-side" in classification_reasoning.lower():
+                                            import re
+                                            # Try multiple patterns
+                                            match = re.search(r'(\d+) outgoing relationships vs (\d+) incoming', classification_reasoning)
+                                            if not match:
+                                                match = re.search(r'(\d+).*relationships.*vs.*(\d+)', classification_reasoning)
+                                            if match:
+                                                many_count, one_count = match.groups()
+                                                reasoning_parts.append(f"Has {many_count} outgoing relationships vs {one_count} incoming (indicates transactional/fact nature)")
+                                        
+                                        # Check for measure patterns
+                                        if "measure" in classification_reasoning.lower():
+                                            match = re.search(r'(\d+) calculated measures|(\d+) measures', classification_reasoning)
+                                            if match:
+                                                measure_count = match.group(1) or match.group(2)
+                                                reasoning_parts.append(f"Contains {measure_count} calculated measures (typical of fact tables for aggregations)")
+                                        
+                                        # Check for numeric column patterns
+                                        if "numeric columns" in classification_reasoning.lower() or "aggregatable" in classification_reasoning.lower():
+                                            match = re.search(r'(\d+).*numeric columns|(\d+).*aggregatable', classification_reasoning)
+                                            if match:
+                                                numeric_count = match.group(1) or match.group(2)
+                                                reasoning_parts.append(f"Has {numeric_count} aggregatable numeric columns (indicates quantitative data storage)")
+                                        
+                                        # If no specific patterns found, use the full classification reasoning
+                                        if not reasoning_parts:
+                                            # Clean up generic phrases but keep meaningful content
+                                            clean_reasoning = classification_reasoning.replace("Using fact/dimension analysis: ", "")
+                                            clean_reasoning = clean_reasoning.replace("Classified as FACT based on fact/dimension analysis", "Structure and content indicate fact table characteristics")
+                                            reasoning_parts.append(clean_reasoning)
+                                        
+                                        enhanced_reasoning = "; ".join(reasoning_parts)
+                                        diagnostic_info.append(f"Classified as FACT table because: {enhanced_reasoning}")
+                                    else:
+                                        diagnostic_info.append("Classified as FACT table based on structural analysis")
+                                    
+                                    # Build specific actionable recommendations
+                                    action_items = []
+                                    
+                                    if ms_pattern_detected != "Unknown":
+                                        # Microsoft pattern detected - provide in-place hierarchy improvement guidance
+                                        action_items.append(f"Optimize {ms_pattern_detected} hierarchy structure in current table")
+                                        
+                                        # Include detailed level ordering from Microsoft standards
+                                        if level_specific_recommendations:
+                                            # Find the Microsoft structure recommendation
+                                            ms_structure = next((rec for rec in level_specific_recommendations if 'Recommended Microsoft structure:' in rec or 'structure:' in rec.lower()), None)
+                                            if ms_structure:
+                                                clean_structure = ms_structure.replace('Recommended Microsoft structure: ', '').replace('Recommended structure: ', '')
+                                                action_items.append(f"Reorder hierarchy levels as: {clean_structure}")
+                                            
+                                            # Add specific column positioning issues
+                                            positioning_recs = [rec for rec in level_specific_recommendations if 'Position ' in rec or "should be moved" in rec or "appears to be" in rec]
+                                            if positioning_recs:
+                                                action_items.append(f"Column positioning: {'; '.join(positioning_recs[:2])}")
+                                            
+                                            # Add missing column guidance
+                                            missing_recs = [rec for rec in level_specific_recommendations if 'Missing Position' in rec]
+                                            if missing_recs:
+                                                action_items.append(f"Add columns: {'; '.join(missing_recs[:1])}")
+                                        
+                                        score_rationale = f"ANALYSIS: {ms_pattern_detected} hierarchy listed in fact table. {'; '.join(diagnostic_info[:1])}. IMPROVEMENTS: {' | '.join(action_items[:3])}"
+                                    else:
+                                        # Custom hierarchy - provide in-place improvement analysis
+                                        action_items.append("Optimize hierarchy column structure within current table")
+                                        
+                                        # Include detailed business logic level ordering
+                                        if level_specific_recommendations:
+                                            # Find structure recommendation
+                                            structure_rec = next((rec for rec in level_specific_recommendations if 'structure:' in rec.lower() or 'ordering:' in rec.lower()), None)
+                                            if structure_rec:
+                                                action_items.append(f"Column ordering: {structure_rec}")
+                                            
+                                            # Add column positioning analysis
+                                            position_recs = [rec for rec in level_specific_recommendations if 'positioning' in rec.lower() or 'should be moved' in rec or 'position' in rec.lower()]
+                                            if position_recs:
+                                                action_items.append(f"Reposition columns: {'; '.join(position_recs[:2])}")
+                                            
+                                            # Add current structure analysis if available
+                                            if len(levels) > 1:
+                                                current_analysis = f"Current order ({' > '.join(levels)}) needs optimization for logical progression"
+                                                action_items.append(current_analysis)
+                                        
+                                        score_rationale = f"ANALYSIS: Custom hierarchy found in fact table. {'; '.join(diagnostic_info[:1])}. IMPROVEMENTS: {' | '.join(action_items[:3])}"
+                                else:
+                                    score_rationale = f"Fact table contains hierarchy - consider separating mixed fact/dimension table into proper star schema"
                         
-                        # Add processed entry to final results collection
-                        analysis_results.append(result_entry)
-                        existing_hierarchies_detailed.append(result_entry)
+                            # Build streamlined result entry with essential hierarchy analysis data
+                            result_entry = {
+                                "Table": ai_result.get("table_name", "Unknown"),
+                                "Table_Type": ai_result.get("table_type", "Unknown"),
+                                "Classification_Reasoning": classification_reasoning if 'classification_reasoning' in locals() else "Standard classification",
+                                "Issue_Severity": issue_severity,
+                                "Hierarchy_Name": ai_result.get("hierarchy_name", "Unknown"),
+                                "Column_Path": ai_result.get("column_path", "Column details unavailable"),
+                                "Business_Pattern_Direction": ai_result.get("hierarchy_direction", "Unknown"),
+                                "Level_Count": int(ai_result.get("level_count", 0)),
+                                "Dimension_Alignment_Score": hq_001_score,
+                                "Business_Pattern_Score": hq_002_score,
+                                "Overall_Score": calculated_total_score,
+                                "Dimension_Alignment_MaxScore": 0.4,  # H-001: Hierarchies should always be established in dimension tables
+                                "Business_Pattern_MaxScore": 0.6,    # H-002: Hierarchies should have clear logical/business pattern
+                                "Max_Score": 1.0,             # H-001 (0.4) + H-002 (0.6) = 1.0
+                                "Recommendations": score_rationale
+                            }
+                        
+                            # Add processed entry to final results collection
+                            analysis_results.append(result_entry)
+                            existing_hierarchies_detailed.append(result_entry)
+                        
+                            logger.info(f"✅ Successfully processed hierarchy: {hierarchy_name} in {table_name} - Score: {calculated_total_score:.2f}/1.0 ({issue_severity})")
+                            logger.info(f"🔢 Progress: {len(analysis_results)} hierarchies completed, {total_hierarchies - len(analysis_results)} remaining")
+                            
+                            ui_tracker.update_progress(
+                                f"Completed analysis of '{hierarchy_name}' - Score: {calculated_total_score:.2f}/1.0",
+                                current=len(analysis_results),
+                                total=total_hierarchies
+                            )
+                        
+                        except Exception as hierarchy_error:
+                            logger.error(f"❌ Failed to process hierarchy '{hierarchy_name}' in table '{table_name}': {hierarchy_error}")
+                            # Create a fallback entry so we don't lose the hierarchy completely
+                            fallback_entry = {
+                                "Table": table_name,
+                                "Table_Type": "Unknown",
+                                "Issue_Severity": "critical",
+                                "Hierarchy_Name": hierarchy_name,
+                                "Column_Path": "Processing failed",
+                                "Business_Pattern_Direction": "Unknown",
+                                "Level_Count": 0,
+                                "Dimension_Alignment_Score": 0.0,
+                                "Business_Pattern_Score": 0.0,
+                                "Overall_Score": 0.0,
+                                "Dimension_Alignment_MaxScore": 0.4,
+                                "Business_Pattern_MaxScore": 0.6,
+                                "Max_Score": 1.0,
+                                "Recommendations": f"Processing failed: {str(hierarchy_error)[:100]}"
+                            }
+                            analysis_results.append(fallback_entry)
+                            existing_hierarchies_detailed.append(fallback_entry)
+                            logger.info(f"🔧 Added fallback entry for failed hierarchy: {hierarchy_name}")
+                            logger.info(f"🔢 DEBUG: After fallback - analysis_results count: {len(analysis_results)}, existing_hierarchies_detailed count: {len(existing_hierarchies_detailed)}")
                     
                     # Complete batch processing with comprehensive statistics using UI tracker
+                    logger.info(f"✅ Completed batch {current_batch}/{total_batches}: Processed {len(ai_results)} hierarchies")
+                    logger.info(f"📊 Batch {current_batch} summary: {processed_in_batch} hierarchies scored and categorized")
+                    processed_count += len(batch_hierarchies)
+                    
                     batch_tracker.complete_batch(
                         batch_number=current_batch,
                         total_batches=total_batches,
@@ -10160,6 +11158,73 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                 
                 # Log processing completion for UI parsing (specific pattern required by UI regex)
                 logger.info(f"🤖 Processed AI analysis of {total_batches} batches ({total_hierarchies} hierarchies)")
+                logger.info(f"📊 RESULT COUNT: {len(analysis_results)} hierarchy entries added to final results")
+                
+                # CRITICAL DEBUG: Comprehensive result tracking with detailed loss analysis
+                logger.info(f"📊 COMPREHENSIVE RESULT TRACKING:")
+                logger.info(f"   Initial hierarchies discovered: {len(hierarchies_result)}")
+                logger.info(f"   Hierarchies prepared for AI: {len(all_hierarchies_data)}")
+                logger.info(f"   Total hierarchies processed: {total_hierarchies}")
+                logger.info(f"   Final analysis results: {len(analysis_results)}")
+                
+                if len(analysis_results) != len(hierarchies_result):
+                    logger.error(f"❌ FINAL RESULT COUNT MISMATCH:")
+                    logger.error(f"   Expected: {len(hierarchies_result)} (discovered)")
+                    logger.error(f"   Got: {len(analysis_results)} (final results)")
+                    logger.error(f"   Lost: {len(hierarchies_result) - len(analysis_results)} hierarchies")
+                    
+                    # RECOVERY ACTION: Add missing hierarchies as fallback entries to prevent loss
+                    logger.warning(f"🔧 RECOVERY: Adding {len(hierarchies_result) - len(analysis_results)} missing hierarchies as fallback entries")
+                    
+                    # Get list of processed hierarchy names
+                    processed_names = {(r.get("Table", ""), r.get("Hierarchy_Name", "")) for r in analysis_results}
+                    
+                    # Add missing hierarchies from original discovery
+                    for original_hierarchy in hierarchies_result:
+                        original_key = (original_hierarchy.get("table_name", ""), original_hierarchy.get("hierarchy_name", ""))
+                        if original_key not in processed_names:
+                            logger.warning(f"🔧 RECOVERY: Adding missing hierarchy {original_key[1]} from table {original_key[0]}")
+                            recovery_entry = {
+                                "Table": original_hierarchy.get("table_name", "Unknown"),
+                                "Table_Type": "DIMENSION",
+                                "Issue_Severity": "warning",
+                                "Hierarchy_Name": original_hierarchy.get("hierarchy_name", "Unknown"),
+                                "Column_Path": " > ".join(level.get("Name", "") for level in original_hierarchy.get("levels", [])) if original_hierarchy.get("levels") else "Levels not available",
+                                "Business_Pattern_Direction": "High to Low",
+                                "Level_Count": len(original_hierarchy.get("levels", [])),
+                                "Dimension_Alignment_Score": 0.4,  # Default for dimension table
+                                "Business_Pattern_Score": 0.3,     # Conservative score
+                                "Overall_Score": 0.7,              # 0.4 + 0.3
+                                "Dimension_Alignment_MaxScore": 0.4,
+                                "Business_Pattern_MaxScore": 0.6,
+                                "Max_Score": 1.0,
+                                "Recommendations": "Hierarchy recovered from discovery - requires manual review"
+                            }
+                            analysis_results.append(recovery_entry)
+                            existing_hierarchies_detailed.append(recovery_entry)
+                    
+                    logger.info(f"✅ RECOVERY COMPLETE: Final analysis results count: {len(analysis_results)}")
+                else:
+                    logger.info(f"✅ FINAL RESULT COUNT OK: All {len(analysis_results)} hierarchies processed successfully")
+                
+                # Debug: List all processed hierarchies with comparison to discovery
+                logger.info("📋 Final processed hierarchies:")
+                processed_hierarchy_names = []
+                for i, result in enumerate(analysis_results, 1):
+                    hierarchy_name = result.get("Hierarchy_Name", "Unknown")
+                    table_name = result.get("Table", "Unknown")
+                    processed_hierarchy_names.append(f"{table_name}.{hierarchy_name}")
+                    logger.info(f"   {i:2d}. {table_name}.{hierarchy_name}")
+                
+                # Check for missing hierarchies by comparing with discovery
+                discovered_hierarchy_names = [f"{h['table_name']}.{h['hierarchy_name']}" for h in hierarchies_result]
+                missing_hierarchies = set(discovered_hierarchy_names) - set(processed_hierarchy_names)
+                if missing_hierarchies:
+                    logger.error(f"❌ MISSING HIERARCHIES:")
+                    for missing in missing_hierarchies:
+                        logger.error(f"   LOST: {missing}")
+                else:
+                    logger.info(f"✅ NO MISSING HIERARCHIES: All discovered hierarchies were processed")
                 
                 # Also update UI tracker for comprehensive tracking
                 ui_tracker.update_progress(
@@ -10192,7 +11257,7 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                     'Dimension_Alignment_MaxScore': 0.4,  # H-001: Hierarchies should always be established in dimension tables
                     'Business_Pattern_MaxScore': 0.6,    # H-002: Hierarchies should have clear logical/business pattern
                     'Max_Score': 1.0,             # H-001 (0.4) + H-002 (0.6) = 1.0
-                    'Score_Rationale': 'CRITICAL: No hierarchies found in model - hierarchies are essential for business intelligence reporting and user navigation'
+                    'Recommendations': 'CRITICAL: No hierarchies found in model - hierarchies are essential for business intelligence reporting and user navigation'
                 }]
 
             # Generate high-level recommendations based on HQ-001 and HQ-002 scoring logic
@@ -10206,9 +11271,9 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                 
                 # Generate concise, high-level recommendation based on scoring
                 if overall_score >= 0.85:
-                    recommendations.append(f"EXCELLENT: Hierarchy '{hierarchy_name}' in table '{table_name}' demonstrates excellent design quality")
+                    recommendations.append(f"Hierarchy '{hierarchy_name}' in table '{table_name}' demonstrates excellent design quality")
                 elif overall_score >= 0.75:
-                    recommendations.append(f"GOOD: Hierarchy '{hierarchy_name}' in table '{table_name}' is well-designed with minor optimization opportunities")
+                    recommendations.append(f"Hierarchy '{hierarchy_name}' in table '{table_name}' is well-designed with minor optimization opportunities")
                 elif overall_score >= 0.60:
                     if table_type == "Fact":
                         recommendations.append(f"NEEDS OPTIMIZATION: Hierarchy '{hierarchy_name}' should be moved from Fact table '{table_name}' to a Dimension table")
@@ -10304,8 +11369,13 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                     'Business_Pattern_Direction', 'Level_Count', 
                     'Dimension_Alignment_Score', 'Dimension_Alignment_MaxScore', 'Business_Pattern_Score', 'Business_Pattern_MaxScore', 'Overall_Score',
                     'Max_Score',
-                    'Score_Rationale'
+                    'Recommendations'
                 ]
+                
+                # Debug: Final counts before CSV creation
+                logger.info(f"📊 DEBUG: Creating CSV with {len(analysis_results)} entries from analysis_results")
+                for i, result in enumerate(analysis_results, 1):
+                    logger.info(f"   {i}. {result.get('Table', 'Unknown')}.{result.get('Hierarchy_Name', 'Unknown')}")
                 
                 # Create DataFrame with comprehensive analysis results
                 hierarchy_df = pd.DataFrame(analysis_results, columns=csv_columns)
@@ -10385,18 +11455,18 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                     insights.append(f"✅ Excellent: {(good_count / total_count * 100):.1f}% of hierarchies demonstrate high-quality design patterns")
             else:
                 # Critical no hierarchies case - generate urgent insights
-                insights.append("🚨 CRITICAL: No existing hierarchies found in the model")
+                insights.append("❌ CRITICAL: No existing hierarchies found in the model")
                 insights.append("⚠️ This significantly impacts user experience and reporting capabilities")
                 insights.append("🎯 IMMEDIATE ACTION REQUIRED: Create hierarchies for essential business dimensions")
                 insights.append("📋 Priority hierarchy patterns: Time (Year/Quarter/Month), Geography (Country/Region/City), Product (Category/Subcategory/Product)")
                 insights.append("🔧 Use Power BI Desktop to create hierarchies that align with business reporting needs")
-                insights.append("📈 Hierarchies improve navigation, drill-down capabilities, and overall user experience")
+                insights.append("📊 Hierarchies improve navigation, drill-down capabilities, and overall user experience")
             
             # Pattern analysis insights (only for real hierarchies)
             if has_real_hierarchies and stats["pattern_counts"]:
                 most_common_pattern = max(stats["pattern_counts"], key=stats["pattern_counts"].get)
                 pattern_count = stats["pattern_counts"][most_common_pattern]
-                insights.append(f"📈 Most common business pattern: {most_common_pattern} ({pattern_count} hierarchies)")
+                insights.append(f"📊 Most common business pattern: {most_common_pattern} ({pattern_count} hierarchies)")
             
             # Level distribution insights (only for real hierarchies)
             if has_real_hierarchies and stats["level_distribution"]:
@@ -10462,13 +11532,13 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                     "total_tables_analyzed": len(tables),
                     "total_hierarchies_found": len(analysis_results),
                     "ai_batches_processed": total_batches,
-                    "processing_method": "GPT-4.1 AI Analysis with Statistical Insights"
+                    "processing_method": "GPT-4o AI Analysis with Statistical Insights"
                 },
                 "results": analysis_results,
                 "existing_hierarchies": existing_hierarchies_detailed,
-                "recommendations": recommendations,
+                "recommendations": recommendations[:3] if recommendations else [],  # LIMIT TO TOP 3 RECOMMENDATIONS FOR UI
                 "statistical_analysis": stats,
-                "insights": insights,
+                "insights": insights[:3] if insights else [],  # LIMIT TO TOP 3 INSIGHTS FOR UI
                 "csv_output": {
                     "filename": csv_filename,
                     "filepath": csv_filepath,
@@ -10517,7 +11587,7 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                     "hierarchy_name": result.get("Hierarchy_Name", "Unknown"),
                     "table_type": result.get("Table_Type", "Unknown"),
                     "score_category": result.get("Score_Category", "Unknown"),
-                    "score_rationale": result.get("Score_Rationale", ""),
+                    "score_rationale": result.get("Recommendations", ""),
                     "total_score": result.get("Overall_Score", 0.0),
                     "level_count": result.get("Level_Count", 0)
                 }
@@ -10603,7 +11673,6 @@ Return JSON with "results" array containing analysis for all existing hierarchie
                 "analysis_type": "comprehensive_hierarchy_evaluation"
             }
 
-
     def evaluate_security_compliance(self, progress_callback=None) -> Dict[str, Any]:
         """
         Comprehensive security compliance evaluation with three scoring rules:
@@ -10675,7 +11744,7 @@ Return JSON:
 {{"sensitive_data_analysis":{{"has_sensitive_data":false,"confidence_score":0.0,"sensitive_columns":[],"sensitivity_type":"None","explanation":"","risk_level":"None"}},"financial_data_analysis":{{"has_financial_data":false,"revenue_columns":[],"target_columns":[],"budget_columns":[],"confidence_score":0.0,"explanation":""}},"account_linkage_analysis":{{"has_account_columns":false,"account_columns":[],"tpid_columns":[],"mssales_id_columns":[],"seller_columns":[],"linkage_quality":"None","explanation":""}}}}"""
 
                 response = client.chat.completions.create(
-                    model="gpt-4.1",
+                    model="gpt-4o",
                     messages=[
                         {"role": "system", "content": "Return only valid JSON. No extra text."},
                         {"role": "user", "content": prompt}
@@ -10737,7 +11806,7 @@ Return JSON:
 {{"has_security_roles":true,"security_analysis":"brief analysis","security_table_types":[{{"type":"user_subsidiary","confidence":0.8,"tables_involved":["table1"],"evidence":"evidence","filter_examples":["filter"]}}],"detected_security_patterns":[{{"pattern_name":"name","pattern_type":"user_subsidiary","implementation":"how","tables":["table1"],"effectiveness":"high"}}],"security_recommendations":["rec1"],"mssales_compatibility":{{"compatible":true,"issues":[],"suggestions":[]}}}}"""
             
             response = client.chat.completions.create(
-                model="gpt-4.1",
+                model="gpt-4o",
                 messages=[
                     {"role": "system", "content": "Return only valid JSON. No extra text."},
                     {"role": "user", "content": prompt}
@@ -10986,7 +12055,7 @@ Return JSON:
                 ui_tracker.add_error("Not connected to any dataset", "connection_error")
                 return {"error": "Tabular editor not connected"}
             
-            # Initialize Azure OpenAI GPT-4.1 client for AI-powered analysis
+            # Initialize Azure OpenAI GPT-4o client for AI-powered analysis
             ai_client = get_ai_client()
             if not ai_client:
                 ui_tracker.add_error("Failed to initialize AI client", "ai_error")
@@ -11075,13 +12144,13 @@ Return JSON:
             # ================================================================================================
             # Process tables in batches with AI analysis for comprehensive security evaluation
             
-            ui_tracker.set_phase("AI Batch Processing", "Analyzing tables with GPT-4.1 for security compliance")
+            ui_tracker.set_phase("AI Batch Processing", "Analyzing tables with GPT-4o for security compliance")
             
             # Configure batch processing parameters (one table per batch for granular progress)
             batch_size = 1  # One table per batch for granular progress tracking
             total_batches = len(all_tables)
             
-            logger.info(f"🛡️ Starting security analysis of {total_tables} tables in batches of {batch_size}")
+            logger.info(f"🔍 Starting security analysis of {total_tables} tables in batches of {batch_size}")
             
             # Initialize table completion tracking
             self._completed_tables = set()
@@ -11112,7 +12181,7 @@ Return JSON:
                 batch_tracker.start_batch(current_batch, total_batches, [{"table_name": t} for t in batch_tables])
                 
                 # Log batch processing message for UI parsing (specific pattern required by UI regex)
-                logger.info(f"🛡️ Security analyzing batch {current_batch} of {total_batches} ({len(batch_tables)} tables)")
+                logger.info(f"🔍 Security analyzing batch {current_batch} of {total_batches} ({len(batch_tables)} tables)")
                 
                 # Also update UI tracker for comprehensive tracking
                 ui_tracker.update_progress(
@@ -11156,7 +12225,7 @@ Return JSON:
                         # Set Rule 1 to zero if sensitive data found
                         if sensitive_analysis["has_sensitive_data"]:
                             rule1_total_score = -rule1_max_score  # Sensitive data found - no score
-                            logger.info(f"🚨 Sensitive data detected in {table_name}: {sensitive_analysis['sensitivity_type']} (penalty: -{penalty:.3f})")
+                            logger.info(f"⚠️ Sensitive data detected in {table_name}: {sensitive_analysis['sensitivity_type']} (penalty: -{penalty:.3f})")
                         
                         # Extract financial data analysis (RULE 2)
                         financial_analysis = combined_analysis["financial_data_analysis"]
@@ -11255,7 +12324,7 @@ Return JSON:
                     else:
                         penalty = 0.4  # STRICT penalty for unprotected financial tables
                         rule2_total_score -= penalty
-                        logger.error(f"🚨 Rule 2: {financial_table} is NOT protected by MSSales security (penalty: -{penalty:.3f})")
+                        logger.error(f"❌ Rule 2: {financial_table} is NOT protected by MSSales security (penalty: -{penalty:.3f})")
                 
                 # Create security compliance results for each financial table
                 for financial_table in financial_tables:
@@ -11276,7 +12345,7 @@ Return JSON:
                 # No security roles - apply maximum penalty
                 penalty = 0.4 * len(financial_tables)
                 rule2_total_score -= penalty
-                logger.error(f"🚨 Rule 2: No security roles defined - All {len(financial_tables)} financial tables are unprotected (penalty: -{penalty:.3f})")
+                logger.error(f"❌ Rule 2: No security roles defined - All {len(financial_tables)} financial tables are unprotected (penalty: -{penalty:.3f})")
                 
                 # Create security compliance results for each financial table (all unprotected)
                 for financial_table in financial_tables:
@@ -11341,7 +12410,7 @@ Return JSON:
                     logger.info(f"    📋 Linkage quality: {table_account_info.get('linkage_quality', 'None')}")
                 else:
                     # Financial table has NO account linkage - score is 0
-                    logger.error(f"🚨 Rule 3: {financial_table} has financial data but NO account linkage (score: 0)")
+                    logger.error(f"❌ Rule 3: {financial_table} has financial data but NO account linkage (score: 0)")
                     # No penalty applied - just no points awarded (score remains 0 for this table)
             
             # Calculate DYNAMIC maximum scores based on number of financial tables found
@@ -11988,7 +13057,7 @@ Return JSON:
                     
                     # Overall compliance recommendations
                     if compliance_percentage < 30:
-                        result["recommendations"].append("🚨 CRITICAL: Security compliance critically low - immediate comprehensive security overhaul required")
+                        result["recommendations"].append("❌ CRITICAL: Security compliance critically low - immediate comprehensive security overhaul required")
                     elif compliance_percentage < 50:
                         result["recommendations"].append("⚠️ WARNING: Security compliance below acceptable threshold - significant security improvements needed")
                     elif compliance_percentage >= 75:
@@ -12100,7 +13169,7 @@ Return JSON:
                 "total_tables_analyzed": total_tables,
                 "analysis_results": result.get("csv_analysis_results", []),  # Individual table assessments
                 "ai_powered": True,
-                "model_used": "gpt-4.1"
+                "model_used": "gpt-4o"
             })
             
             # Generate high_level_summary for webapp Analysis Summary panel
@@ -12176,7 +13245,7 @@ Return JSON:
                     "timestamp": datetime.now().isoformat()
                 }
 
-    def evaluate_metadata_analysis(self, tables_to_analyze: list = None) -> dict:
+    def evaluate_metadata_analysis(self, tables_to_analyze: list = None, progress_callback=None) -> dict:
         """
         Comprehensive metadata quality analysis using Python-based DAX expressions.
         
@@ -12186,10 +13255,14 @@ Return JSON:
         
         Args:
             tables_to_analyze: Optional list of specific table names to analyze
+            progress_callback: Optional callback for progress updates
         
         Returns:
             Dictionary containing analysis results with Excel file generation
         """
+        import time
+        from src.ui_progress_tracker import create_analysis_tracker
+        
         try:
             # Step 1: Check if connected to a dataset
             if not self.tabular_editor.connected:
@@ -12204,26 +13277,17 @@ Return JSON:
             # Initialize tracking variables
             metadata_results = []
             
-            # Track progress - use simplified approach to avoid import issues
-            logger.info("🔍 Starting Metadata Analysis - Step 1: Dataset Connected")
+            # Initialize centralized UI progress tracker
+            ui_tracker = create_analysis_tracker(
+                progress_callback=progress_callback,
+                session_id=f"metadata_analysis_{int(time.time())}"
+            )
             
-            class ProgressTracker:
-                def update_progress(self, progress, message): 
-                    logger.info(f"Progress {progress}%: {message}")
-                def add_error(self, message, error_type): 
-                    logger.error(f"{error_type}: {message}")
-                def complete_analysis(self, success, summary, results_data=None):
-                    if success:
-                        logger.info(f"Analysis completed successfully: {summary}")
-                    else:
-                        logger.error(f"Analysis failed: {summary}")
-                    return {"success": success, "summary": summary, "results_data": results_data or {}}
-            
-            ui_tracker = ProgressTracker()
+            ui_tracker.set_phase("Initial Setup & Validation", "Starting Metadata Analysis")
             ui_tracker.update_progress(5, "Step 1: Connected to dataset successfully")
             
             # Step 2: Retrieve metadata information using Python-based DAX expressions
-            logger.info("📊 Step 2: Retrieving metadata information using DAX expressions")
+            ui_tracker.set_phase("Data Collection", "Retrieving metadata information using DAX expressions")
             ui_tracker.update_progress(10, "Step 2: Retrieving tables, columns, and measures...")
             
             # Get all tables using INFO functions (confirmed working)
@@ -12259,12 +13323,11 @@ Return JSON:
             """
             
             # Execute DAX queries to get metadata
-            logger.info("Executing DAX query for tables...")
+            ui_tracker.update_progress(15, "Executing DAX query for tables...")
             tables_result = self.tabular_editor.execute_dax_query(tables_dax)
-            logger.info(f"Tables query returned {len(tables_result) if tables_result else 0} rows")
+            ui_tracker.update_progress(20, f"Tables query returned {len(tables_result) if tables_result else 0} rows")
             if tables_result and len(tables_result) > 0:
-                logger.info(f"First table row keys: {list(tables_result[0].keys())}")
-                logger.info(f"First table row data: {tables_result[0]}")
+                ui_tracker.update_progress(22, f"Processing {len(tables_result)} table records")
             ui_tracker.update_progress(25, "Retrieved table metadata")
             
             # Get table ID to name mapping for columns and measures
@@ -12277,12 +13340,11 @@ Return JSON:
             )
             """
             
-            logger.info("Getting table ID mappings...")
+            ui_tracker.update_progress(30, "Getting table ID mappings...")
             table_ids_result = self.tabular_editor.execute_dax_query(table_ids_dax)
-            logger.info(f"Table IDs query returned {len(table_ids_result) if table_ids_result else 0} rows")
+            ui_tracker.update_progress(35, f"Table IDs query returned {len(table_ids_result) if table_ids_result else 0} rows")
             if table_ids_result and len(table_ids_result) > 0:
-                logger.info(f"First table ID row keys: {list(table_ids_result[0].keys())}")
-                logger.info(f"First table ID row data: {table_ids_result[0]}")
+                ui_tracker.update_progress(38, f"Processing table ID mappings")
             
             # Build the mapping
             table_id_to_name = {}
@@ -12293,26 +13355,23 @@ Return JSON:
                     table_name = row.get('TableName') or row.get('[TableName]') or row.get('Name') or row.get('[Name]')
                     if table_id is not None and table_name:
                         table_id_to_name[table_id] = table_name
-                        logger.info(f"Mapped Table ID {table_id} -> {table_name}")
             
-            logger.info("Executing DAX query for columns...")
+            ui_tracker.update_progress(40, "Executing DAX query for columns...")
             columns_result = self.tabular_editor.execute_dax_query(columns_dax)
-            logger.info(f"Columns query returned {len(columns_result) if columns_result else 0} rows")
+            ui_tracker.update_progress(45, f"Columns query returned {len(columns_result) if columns_result else 0} rows")
             if columns_result and len(columns_result) > 0:
-                logger.info(f"First column row keys: {list(columns_result[0].keys())}")
-                logger.info(f"First column row data: {columns_result[0]}")
+                ui_tracker.update_progress(48, f"Processing {len(columns_result)} column records")
             ui_tracker.update_progress(50, "Retrieved column metadata")
             
-            logger.info("Executing DAX query for measures...")
+            ui_tracker.update_progress(55, "Executing DAX query for measures...")
             measures_result = self.tabular_editor.execute_dax_query(measures_dax)
-            logger.info(f"Measures query returned {len(measures_result) if measures_result else 0} rows")
+            ui_tracker.update_progress(65, f"Measures query returned {len(measures_result) if measures_result else 0} rows")
             if measures_result and len(measures_result) > 0:
-                logger.info(f"First measure row keys: {list(measures_result[0].keys())}")
-                logger.info(f"First measure row data: {measures_result[0]}")
+                ui_tracker.update_progress(70, f"Processing {len(measures_result)} measure records")
             ui_tracker.update_progress(75, "Retrieved measure metadata")
             
             # Step 3: Apply scoring logic to metadata
-            logger.info("🎯 Step 3: Applying scoring logic (0.25 for descriptions, 0 for missing)")
+            ui_tracker.set_phase("Scoring & Analysis", "Applying scoring logic (0.25 for descriptions, 0 for missing)")
             ui_tracker.update_progress(80, "Step 3: Applying scoring logic...")
             
             # Process Tables
@@ -12326,7 +13385,7 @@ Return JSON:
                     description = (table_row.get('Description') or 
                                  table_row.get('[Description]') or '')
                     
-                    logger.info(f"Processing table: {table_name}, Description: {description}")
+                    # Process table silently for better performance
                     
                     # Scoring logic: 0.25 if has description, 0 if missing
                     table_desc_score = 0.25 if description.strip() else 0.0
@@ -12615,7 +13674,7 @@ Return JSON:
                 }
             )
             
-            logger.info("✅ Metadata Analysis completed successfully")
+            # Analysis completed - tracked by ui_tracker.complete_analysis below
             
             # Build comprehensive summary object for UI compatibility
             summary_for_ui = {
@@ -12701,7 +13760,7 @@ Return JSON:
                     "timestamp": datetime.now().isoformat()
                 }
 
-        
+       
 class PowerBIMCPServer:
     def __init__(self):
         self.server = Server("MCP")
@@ -13021,7 +14080,7 @@ class PowerBIMCPServer:
             ),
             Tool(
                 name="evaluate_measures_analysis",
-                description="Comprehensive AI-powered measure quality analysis. Evaluates DAX expressions, naming conventions, and AI quality assessment using GPT-4.1. Generates detailed CSV output with severity categorization, statistical analysis, and comprehensive logging.",
+                description="Comprehensive AI-powered measure quality analysis. Evaluates DAX expressions, naming conventions, and AI quality assessment using GPT-4o. Generates detailed CSV output with severity categorization, statistical analysis, and comprehensive logging.",
                 inputSchema={
                     "type": "object",
                     "properties": {},
@@ -13681,7 +14740,7 @@ class PowerBIMCPServer:
                 # Show categorized tables summary
                 categorized = result['categorized_tables']
                 if categorized['fact_tables']:
-                    response_lines.append(f"📈 Fact Tables ({len(categorized['fact_tables'])}):")
+                    response_lines.append(f"📁 Fact Tables ({len(categorized['fact_tables'])}):")
                     for table in categorized['fact_tables'][:5]:  # Show first 5
                         response_lines.append(f"   • {table}")
                     if len(categorized['fact_tables']) > 5:
@@ -13717,7 +14776,7 @@ class PowerBIMCPServer:
                                      if table['quality_level'] == 'Poor']
                 if poor_quality_tables:
                     response_lines.extend([
-                        "🚨 Tables Needing Attention (Poor Quality):",
+                        "⚠️ Tables Needing Attention (Poor Quality):",
                     ])
                     for table in poor_quality_tables[:3]:  # Show first 3
                         recommendations = table['recommendations'][:2]  # Show first 2 recommendations
@@ -13857,7 +14916,7 @@ class PowerBIMCPServer:
                 # Show high priority recommendations if available
                 recommendations = result.get('top_recommendations', [])
                 if recommendations:
-                    response_lines.append("🚨 Top Priority Recommendations:")
+                    response_lines.append("🎯 Top Priority Recommendations:")
                     for i, rec in enumerate(recommendations[:3], 1):  # Show first 3
                         response_lines.append(f"   {i}. {rec}")
                     response_lines.append("")
@@ -13954,7 +15013,7 @@ class PowerBIMCPServer:
                 if recommendations:
                     high_priority = [r for r in recommendations if r.get('priority') in ['HIGH', 'CRITICAL']]
                     if high_priority:
-                        response_lines.append("🚨 High Priority Recommendations:")
+                        response_lines.append("🎯 High Priority Recommendations:")
                         for i, rec in enumerate(high_priority[:3], 1):  # Show first 3
                             category = rec.get('category', 'General')
                             table = rec.get('table', 'Unknown')

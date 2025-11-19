@@ -168,7 +168,7 @@ class AIBatchTracker:
         # Send final completion update
         total_time = time.time() - self.processing_stats["start_time"]
         self.ui_tracker.update_progress(
-            f"🎉 AI batch processing complete! Processed {len(all_results)} columns in {total_time:.1f} seconds",
+            f"✅ AI batch processing complete! Processed {len(all_results)} columns in {total_time:.1f} seconds",
             current=len(batches),
             total=len(batches),
             extra_data={
@@ -197,7 +197,7 @@ class AIBatchTracker:
         
         # Start processing indicator
         self._send_intermediate_update(
-            f"🤖 AI analyzing batch {batch_num}/{total_batches} - Preparing GPT-4.1 request...",
+            f"🤖 AI analyzing batch {batch_num}/{total_batches} - Preparing GPT-4o request...",
             "ai_processing_start",
             {"batch_number": batch_num, "batch_size": len(batch_data)}
         )
@@ -228,11 +228,11 @@ class AIBatchTracker:
             
             # Create varied progress messages to show activity
             progress_messages = [
-                f"GPT-4.1 processing {len(batch_data)} columns...",
+                f"GPT-4o processing {len(batch_data)} columns...",
                 f"AI analyzing column patterns and naming conventions...",
                 f"Evaluating data types and business clarity...",
                 f"Generating recommendations and scores...",
-                f"Processing response from GPT-4.1..."
+                f"Processing response from GPT-4o..."
             ]
             
             message_idx = min(update_count - 1, len(progress_messages) - 1)
@@ -300,7 +300,7 @@ class AIBatchTracker:
             
             # Make the OpenAI API call
             response = ai_client.chat.completions.create(
-                model="gpt-4.1",
+                model="gpt-4o",
                 messages=[
                     {"role": "system", "content": analysis_prompt},
                     {"role": "user", "content": user_prompt}

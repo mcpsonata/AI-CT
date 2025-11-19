@@ -137,21 +137,31 @@ class RunAllCoordinator:
         logger.info(f"🚀 Starting Run All workflow for session: {session_id}")
         
         try:
-            # 1. Initialize session management
-            self.session_manager = create_run_all_session_manager(session_id)
+            # 1. Create overall UIProgressTracker for Run All progress
+            run_all_tracker = UIProgressTracker(
+                progress_callback=progress_callback,
+                session_id=session_id
+            )
+            run_all_tracker.start_analysis(
+                analysis_name='Run All Analysis',
+                total_items=len(self.analyzer_definitions)
+            )
+            
+            # 2. Initialize session management
+            self.session_manager = create_run_all_session_manager(session_id, progress_callback)
             session_summary = self.session_manager.initialize_run_all(self.analyzer_definitions)
             
-            # 2. Set up streaming for Run All mode  
+            # 3. Set up streaming for Run All mode  
             if self.streaming_manager:
                 self.streaming_manager.create_run_all_stream(
                     session_id, 
                     self.session_manager.analyzer_sessions
                 )
             
-            # 3. Send initial Run All start notification
+            # 4. Send initial Run All start notification
             await self._send_run_all_start_notification(session_summary, progress_callback)
             
-            # 4. Store active session info
+            # 5. Store active session info
             self.active_sessions[session_id] = {
                 "start_time": workflow_start_time,
                 "session_manager": self.session_manager,
@@ -160,13 +170,21 @@ class RunAllCoordinator:
                 "fast_mode": fast_mode
             }
             
-            # 5. Execute each analyzer sequentially with real-time coordination
+            # 6. Execute each analyzer sequentially with real-time coordination
             all_results = {}
             
             while True:
                 analyzer_info = self.session_manager.start_next_analyzer()
                 if not analyzer_info:
                     break  # All analyzers complete
+                
+                # Update overall Run All progress
+                analyzer_number = self.session_manager.current_analyzer_index + 1
+                run_all_tracker.update_progress(
+                    f"Executing analyzer {analyzer_number}/{len(self.analyzer_definitions)}: {analyzer_info.analyzer_name}",
+                    current=analyzer_number - 1,
+                    total=len(self.analyzer_definitions)
+                )
                 
                 logger.info(f"🔧 Executing analyzer: {analyzer_info.analyzer_name}")
                 
@@ -202,13 +220,19 @@ class RunAllCoordinator:
                     if has_more and self.streaming_manager:
                         await self._coordinate_analyzer_transition(session_id)
             
-            # 6. Send final completion notification
+            # 7. Complete overall Run All tracker
+            run_all_tracker.complete_analysis(
+                success=True,
+                summary=f"Run All completed: {len(all_results)} analyzers processed"
+            )
+            
+            # 8. Send final completion notification
             total_duration = time.time() - workflow_start_time
             await self._send_run_all_completion_notification(
                 all_results, total_duration, progress_callback
             )
             
-            # 7. Cleanup session
+            # 9. Cleanup session
             self._cleanup_session(session_id)
             
             logger.info(f"✅ Run All workflow complete in {total_duration:.1f}s with {len(all_results)} results")
@@ -407,7 +431,7 @@ class RunAllCoordinator:
         
         completion_notification = {
             "type": "run_all_complete",
-            "message": f"🎉 Run All analysis complete! {len(all_results)} analyzers finished in {total_duration:.1f}s",
+            "message": f"✅ Run All analysis complete! {len(all_results)} analyzers finished in {total_duration:.1f}s",
             "total_duration": total_duration,
             "analyzers_completed": len(all_results),
             "analyzers_failed": session_summary.get("failed_analyzers", 0),
@@ -428,7 +452,7 @@ class RunAllCoordinator:
                 "run_all_complete"
             )
         
-        logger.info(f"🎉 Sent Run All completion notification: {len(all_results)} analyzers in {total_duration:.1f}s")
+        logger.info(f"✅ Sent Run All completion notification: {len(all_results)} analyzers in {total_duration:.1f}s")
     
     def _extract_analyzer_statistics(self, results: Dict[str, Any]) -> Dict[str, Any]:
         """Extract statistics from analyzer results for session tracking."""

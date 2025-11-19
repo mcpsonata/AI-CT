@@ -13,7 +13,7 @@ import threading
 import queue
 import signal
 import atexit
-from flask import Flask, render_template, request, jsonify, Response, stream_with_context
+from flask import Flask, render_template, request, jsonify, Response, stream_with_context, redirect, url_for, session as flask_session
 from flask_cors import CORS
 from azure.identity import AzureCliCredential
 from openai import AzureOpenAI
@@ -28,6 +28,8 @@ from enhanced_streaming import EnhancedStreamingManager
 from process_streamer import ProcessStreamManager, ProcessStreamer
 from log_streamer import LogCapture
 from session_security import session_security, require_valid_session, session_isolation_check, secure_chat_endpoint
+from auth_manager import MSALAuthManager, require_auth
+from security_headers import add_security_headers
 
 # Create a queue for workflow updates
 workflow_updates_queue = {}
@@ -287,9 +289,44 @@ class PowerBIMCPServer:
 app = Flask(__name__)
 CORS(app)
 
+# SECURITY: Configure Flask to work behind Azure Front Door proxy
+# This ensures Flask generates correct HTTPS URLs even though it receives HTTP requests
+# WARNING: Only enable ProxyFix if your ACI is NOT directly exposed to the internet
+# Azure Front Door must be the only way to access your application
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+# Verify we're in a proxy environment before trusting proxy headers
+is_behind_proxy = os.getenv('BEHIND_PROXY', 'true').lower() == 'true'
+
+if is_behind_proxy:
+    app.wsgi_app = ProxyFix(
+        app.wsgi_app,
+        x_for=1,      # Trust 1 proxy for X-Forwarded-For
+        x_proto=1,    # Trust 1 proxy for X-Forwarded-Proto (https)
+        x_host=1,     # Trust 1 proxy for X-Forwarded-Host
+        x_port=1,     # Trust 1 proxy for X-Forwarded-Port
+        x_prefix=1    # Trust 1 proxy for X-Forwarded-Prefix
+    )
+    logger.info("✅ ProxyFix middleware enabled - trusting Azure Front Door headers")
+else:
+    logger.warning("⚠️ ProxyFix disabled - running without proxy (development mode)")
+
+# Set preferred URL scheme from environment (defaults to https for production)
+app.config['PREFERRED_URL_SCHEME'] = os.getenv('PREFERRED_URL_SCHEME', 'https')
+
+# Add security headers to all responses
+add_security_headers(app)
+
+# Initialize MSAL Authentication (this sets up session config)
+auth_manager = MSALAuthManager(app)
+
+# Initialize Flask-Session for proper session management (after config is set)
+from flask_session import Session
+Session(app)
+
 # Get Azure OpenAI credentials from environment variables
 azure_endpoint = os.getenv("PROJECT_ENDPOINT")
-azure_deployment = os.getenv("MODEL_DEPLOYMENT_NAME", "gpt-4.1")
+azure_deployment = os.getenv("MODEL_DEPLOYMENT_NAME", "gpt-4o")
 api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2025-01-01-preview")
 
 # Initialize Azure OpenAI client - will be set up using authentication manager
@@ -308,9 +345,9 @@ def initialize_azure_openai():
             logger.warning("Shared AuthenticationManager not available, cannot initialize Azure OpenAI client")
             client = None
         
-        # Initialize the tiktoken encoder for GPT-4.1
+        # Initialize the tiktoken encoder for GPT-4o
         try:
-            # For Azure OpenAI, we need to use the cl100k_base encoding for GPT-4.1
+            # For Azure OpenAI, we need to use the cl100k_base encoding for GPT-4o
             encoding = tiktoken.get_encoding("cl100k_base")
             logger.info("Successfully initialized tiktoken encoder for token counting")
         except Exception as e:
@@ -1152,13 +1189,13 @@ class MCPToolManager:
                     # Register in session-specific handler (if available)
                     if session_log_handler:
                         session_log_handler.register_progress_session(expected_tracker_session, session_id)
-                        print(f"🔗 Pre-registered progress tracker session '{expected_tracker_session}' -> webapp session '{session_id}' (session-specific handler)")
+                        print(f"🔄 Pre-registered progress tracker session '{expected_tracker_session}' -> webapp session '{session_id}' (session-specific handler)")
                     
                     # ALWAYS also register in global handler (this is what actually handles the logs)
                     global session_aware_log_handler
                     if session_aware_log_handler:
                         session_aware_log_handler.register_progress_session(expected_tracker_session, session_id)
-                        print(f"🔗 Pre-registered progress tracker session '{expected_tracker_session}' -> webapp session '{session_id}' (global handler)")
+                        print(f"🔄 Pre-registered progress tracker session '{expected_tracker_session}' -> webapp session '{session_id}' (global handler)")
 
             if tool_name not in self.available_tools:
                 return {
@@ -1205,7 +1242,7 @@ class MCPToolManager:
                     
                     # DISABLED: Session isolation - let each session maintain its own connection
                     # self._cleanup_conflicting_connections(session_id, workspace, dataset)
-                    logger.info(f"🔗 Session {session_id} connecting to {workspace} -> {dataset} without interfering with other sessions")
+                    logger.info(f"✅ Session {session_id} connecting to {workspace} -> {dataset} without interfering with other sessions")
                     
                     # Update local session connections (for workflow tracking)
                     if session_id not in self.session_connections:
@@ -1332,13 +1369,13 @@ class MCPToolManager:
     def auto_detect_and_execute_tools(self, user_message: str, session_id: str = None) -> List[Dict[str, Any]]:
         """
         Automatically detect and execute appropriate tools based on user message.
-        Uses GPT-4.1 to understand the user's intent and extract relevant parameters.
+        Uses GPT-4o to understand the user's intent and extract relevant parameters.
         Returns a list of executed tool results.
         """
         results = []
         
         try:
-            # Create a structured list of available tools for GPT-4.1
+            # Create a structured list of available tools for GPT-4o
             tools_info = []
             for tool_name, tool_info in self.available_tools.items():
                 tool_data = {
@@ -1357,7 +1394,7 @@ class MCPToolManager:
                 "connected_dataset": session_connection.get("dataset")
             }
             
-            # Create the prompt for GPT-4.1 to analyze the user message
+            # Create the prompt for GPT-4o to analyze the user message
             tools_info_str = json.dumps(tools_info, indent=2)
             connection_state_str = json.dumps(connection_state, indent=2)
             
@@ -1487,14 +1524,9 @@ class MCPToolManager:
             "check", "review", "audit", "compliance", "quality"
         ]
         
-        # Check if this is a connection request (should NOT be blocked)
-        connection_keywords = ["connect to", "connect dataset", "connect power bi", "establish connection"]
-        is_connection_request = any(keyword in user_message.lower() for keyword in connection_keywords)
-        
         is_analysis_request = any(keyword in user_message.lower() for keyword in analysis_keywords)
         
-        # Only validate connection for analysis requests that are NOT connection attempts
-        if is_analysis_request and not is_connection_request and session_id:
+        if is_analysis_request and session_id:
             # Check if we have an active dataset connection for analysis requests
             # Check local session_connections first (updated by workflow), then global as fallback
             session_connection = self.session_connections.get(session_id, {})
@@ -1505,51 +1537,62 @@ class MCPToolManager:
                     session_connection = tool_manager.session_connections.get(session_id, {})
             
             if not session_connection.get("dataset"):
-                # Check if this is a stale session (frontend persisted but backend restarted)
-                stale_session_detected = session_id and len(self.session_connections) == 0 and len(getattr(tool_manager, 'session_connections', {})) == 0
+                # Check if this is a connection request - these should bypass all validation
+                connection_keywords = ["connect to", "connection", "connect dataset", "connect to power bi"]
+                is_connection_request = any(keyword in user_message.lower() for keyword in connection_keywords)
                 
-                if stale_session_detected:
-                    logger.warning(f"🔄 STALE SESSION DETECTED - session {session_id} exists but no backend connections (likely backend restart)")
+                if is_connection_request:
+                    logger.info(f"🔌 Connection request detected - bypassing validation to allow connection")
+                    # Skip all validation and proceed to execute the connection request
+                    pass
+                else:
+                    # Not a connection request - validate that a connection exists
+                    # Check if this is a stale session (frontend persisted but backend restarted)
+                    stale_session_detected = session_id and len(self.session_connections) == 0 and len(getattr(tool_manager, 'session_connections', {})) == 0
+                    
+                    if stale_session_detected:
+                        logger.warning(f"🔄 STALE SESSION DETECTED - session {session_id} exists but no backend connections (likely backend restart)")
+                        return {
+                            "status": "connection_required", 
+                            "message": "🔄 **Session Reconnection Required**\n\nYour session was disconnected (likely due to server restart). Please reconnect to your Power BI dataset using the connection panel above, then try your analysis again.",
+                            "thought_process": [],
+                            "workflow_results": [],
+                            "requires_connection": True,
+                            "session_id": session_id,
+                            "total_time": 0.0,
+                            "stale_session": True
+                        }
+                    
+                    # Regular validation failure - no connection and not a connection request
+                    logger.warning(f"⚠️ ANALYSIS VALIDATION FAILED - no dataset connection for session {session_id}")
+                    logger.error(f"� DETAILED Analysis validation: user_message='{user_message}', session_id='{session_id}'")
+                    logger.error(f"❌ DETAILED self.session_connections = {self.session_connections}")
+                    logger.error(f"� DETAILED tool_manager.session_connections = {getattr(tool_manager, 'session_connections', {}) if tool_manager else 'N/A'}")
+                    logger.error(f"� DETAILED session_connection retrieved = {session_connection}")
+                    logger.error(f"� DETAILED Available session IDs in self: {list(self.session_connections.keys())}")
+                    logger.error(f"� DETAILED Available session IDs in global: {list(getattr(tool_manager, 'session_connections', {}).keys()) if tool_manager else 'N/A'}")
+                    logger.error(f"� DETAILED Requested session ID: '{session_id}' (type: {type(session_id)}, len: {len(session_id) if session_id else 0})")
+                    
+                    # Enhanced debugging - check if session ID exists with different formatting
+                    for sid in self.session_connections.keys():
+                        logger.error(f"❌ DETAILED Self comparing '{session_id}' == '{sid}': {session_id == sid} (types: {type(session_id)} vs {type(sid)})")
+                    
+                    # Enhanced debugging for global connections
+                    global_connections = getattr(tool_manager, 'session_connections', {}) if tool_manager else {}
+                    for sid in global_connections.keys():
+                        logger.error(f"� DETAILED Global comparing '{session_id}' == '{sid}': {session_id == sid} (types: {type(session_id)} vs {type(sid)})")
+                    
+                    logger.error(f"❌ CRITICAL: Analysis blocked despite session connection existing - investigating session ID mismatch!")
+                    
                     return {
-                        "status": "connection_required", 
-                        "message": "🔄 **Session Reconnection Required**\n\nYour session was disconnected (likely due to server restart). Please reconnect to your Power BI dataset using the connection panel above, then try your analysis again.",
+                        "status": "connection_required",
+                        "message": "⚠️ **Dataset Connection Required**\n\nYou need to connect to a Power BI dataset before running analysis. Please use the connection panel above to connect to your dataset first.",
                         "thought_process": [],
                         "workflow_results": [],
                         "requires_connection": True,
                         "session_id": session_id,
-                        "total_time": 0.0,
-                        "stale_session": True
+                        "total_time": 0.0
                     }
-                # Continue with existing validation logic below
-                logger.warning(f"🚨 ANALYSIS VALIDATION FAILED - no dataset connection for session {session_id}")
-                logger.error(f"� DETAILED Analysis validation: user_message='{user_message}', session_id='{session_id}'")
-                logger.error(f"🚨 DETAILED self.session_connections = {self.session_connections}")
-                logger.error(f"� DETAILED tool_manager.session_connections = {getattr(tool_manager, 'session_connections', {}) if tool_manager else 'N/A'}")
-                logger.error(f"� DETAILED session_connection retrieved = {session_connection}")
-                logger.error(f"� DETAILED Available session IDs in self: {list(self.session_connections.keys())}")
-                logger.error(f"� DETAILED Available session IDs in global: {list(getattr(tool_manager, 'session_connections', {}).keys()) if tool_manager else 'N/A'}")
-                logger.error(f"� DETAILED Requested session ID: '{session_id}' (type: {type(session_id)}, len: {len(session_id) if session_id else 0})")
-                
-                # Enhanced debugging - check if session ID exists with different formatting
-                for sid in self.session_connections.keys():
-                    logger.error(f"🚨 DETAILED Self comparing '{session_id}' == '{sid}': {session_id == sid} (types: {type(session_id)} vs {type(sid)})")
-                
-                # Enhanced debugging for global connections
-                global_connections = getattr(tool_manager, 'session_connections', {}) if tool_manager else {}
-                for sid in global_connections.keys():
-                    logger.error(f"� DETAILED Global comparing '{session_id}' == '{sid}': {session_id == sid} (types: {type(session_id)} vs {type(sid)})")
-                
-                logger.error(f"🚨 CRITICAL: Analysis blocked despite session connection existing - investigating session ID mismatch!")
-                
-                return {
-                    "status": "connection_required",
-                    "message": "⚠️ **Dataset Connection Required**\n\nYou need to connect to a Power BI dataset before running analysis. Please use the connection panel above to connect to your dataset first.",
-                    "thought_process": [],
-                    "workflow_results": [],
-                    "requires_connection": True,
-                    "session_id": session_id,
-                    "total_time": 0.0
-                }
             else:
                 # Analysis validation passed - log success
                 logger.info(f"✅ ANALYSIS VALIDATION SUCCESS - session {session_id} connected to dataset: {session_connection.get('dataset')} in workspace: {session_connection.get('workspace')}")
@@ -1763,10 +1806,10 @@ class MCPToolManager:
                                     # CSV metadata is at the innermost level
                                     if "csv_download_url" in result["result"]["result"]:
                                         safe_result["csv_download_url"] = result["result"]["result"]["csv_download_url"]
-                                        logger.info(f"📤 Streaming CSV download URL: {result['result']['result']['csv_download_url']}")
+                                        logger.info(f"📁 Streaming CSV download URL: {result['result']['result']['csv_download_url']}")
                                     if "csv_filename" in result["result"]["result"]:
                                         safe_result["csv_filename"] = result["result"]["result"]["csv_filename"]
-                                        logger.info(f"📤 Streaming CSV filename: {result['result']['result']['csv_filename']}")
+                                        logger.info(f"📁 Streaming CSV filename: {result['result']['result']['csv_filename']}")
                             
                             # Check if this result includes a high-level summary
                             high_level_summary = None
@@ -2007,7 +2050,7 @@ class MCPToolManager:
                         "workflow_update"
                     )
             else:
-                logger.info("🚫 SUPPRESSING SYNTHESIS COMPLETION MESSAGE (sub-analysis or disabled)")    
+                logger.info("🔄 SUPPRESSING SYNTHESIS COMPLETION MESSAGE (sub-analysis or disabled)")    
                 
                 # Send workflow complete signal to close the stream
                 StreamingManager.send_update(
@@ -2318,18 +2361,18 @@ class MCPToolManager:
         This method is called when the user clicks the Stop Analysis button.
         """
         try:
-            logger.info(f"🛑 STOPPING ALL EXECUTIONS for session {session_id}")
+            logger.info(f"⚠️ STOPPING ALL EXECUTIONS for session {session_id}")
             
             # Set stop flag for this session to interrupt ongoing operations
             if session_id:
                 self.stop_flags[session_id] = True
-                logger.info(f"🛑 Set stop flag for session {session_id}")
+                logger.info(f"🔄 Set stop flag for session {session_id}")
                 
                 # Set cancellation event to signal running threads to stop
                 if session_id not in self.cancellation_events:
                     self.cancellation_events[session_id] = threading.Event()
                 self.cancellation_events[session_id].set()  # Signal cancellation
-                logger.info(f"🛑 Set cancellation event for session {session_id}")
+                logger.info(f"🔄 Set cancellation event for session {session_id}")
                 
                 # Interrupt any running processes for this session
                 if session_id in self.running_processes:
@@ -2337,18 +2380,18 @@ class MCPToolManager:
                     for process_info in processes:
                         try:
                             if 'thread' in process_info and process_info['thread'].is_alive():
-                                logger.info(f"🛑 Found running thread: {process_info.get('name', 'unknown')}")
+                                logger.info(f"🔍 Found running thread: {process_info.get('name', 'unknown')}")
                                 # For Python threads, we can't forcefully kill them, but we can signal them to stop
                                 # The threads should check the cancellation event
                             if 'process' in process_info:
-                                logger.info(f"🛑 Found running process: {process_info.get('name', 'unknown')}")
+                                logger.info(f"🔍 Found running process: {process_info.get('name', 'unknown')}")
                                 process_info['process'].terminate()
                         except Exception as e:
                             logger.warning(f"Error stopping process: {e}")
                     
                     # Clear the running processes
                     del self.running_processes[session_id]
-                    logger.info(f"🛑 Cleared running processes for session {session_id}")
+                    logger.info(f"✅ Cleared running processes for session {session_id}")
             
             # Signal analysis tools to stop (but don't disconnect)
             if self.copilot_evaluator:
@@ -2364,7 +2407,7 @@ class MCPToolManager:
                     elif hasattr(self.copilot_evaluator, 'cancel'):
                         self.copilot_evaluator.cancel()
                     
-                    logger.info("🛑 Set stop signal on copilot evaluator")
+                    logger.info("🔄 Set stop signal on copilot evaluator")
                 except Exception as e:
                     logger.warning(f"Error signaling copilot evaluator: {e}")
             
@@ -2382,7 +2425,7 @@ class MCPToolManager:
                     elif hasattr(self.tabular_editor, 'cancel'):
                         self.tabular_editor.cancel()
                     
-                    logger.info("🛑 Set stop signal on tabular editor (keeping connection)")
+                    logger.info("🔄 Set stop signal on tabular editor (keeping connection)")
                 except Exception as e:
                     logger.warning(f"Error signaling tabular editor: {e}")
             
@@ -2533,7 +2576,7 @@ class MCPToolManager:
         """
         try:
             if not isinstance(result, dict):
-                logger.warning(f"🚫 _handle_csv_download: result is not a dict, type={type(result)}")
+                logger.warning(f"⚠️ _handle_csv_download: result is not a dict, type={type(result)}")
                 return
             
             # Check if result contains file data (prioritize Excel content for download)
@@ -2566,7 +2609,7 @@ class MCPToolManager:
                 
                 # Log appropriate message based on file type
                 file_type = "Excel" if cleaned_filename.lower().endswith('.xlsx') else "CSV"
-                logger.info(f"📥 {file_type} file ready for download: {cleaned_filename}")
+                logger.info(f"📁 {file_type} file ready for download: {cleaned_filename}")
                 
                 # Keep csv_content as text for UI parsing (even if we have Excel content for download)
                 if result.get('excel_content') and not result.get('csv_content'):
@@ -2640,7 +2683,7 @@ class MCPToolManager:
                 current_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 clean_filename = f"{analysis_type}_{current_timestamp}{file_extension}"
                 
-            logger.info(f"📝 Cleaned filename: '{original_filename}' → '{clean_filename}'")
+            logger.info(f"🔄 Cleaned filename: '{original_filename}' → '{clean_filename}'")
             return clean_filename
             
         except Exception as e:
@@ -2651,11 +2694,11 @@ class MCPToolManager:
         """Send connection status update to UI via streaming"""
         try:
             if session_id and session_id in workflow_updates_queue:
-                logger.info(f"📡 Sending UI connection status update for session {session_id}: {workspace} -> {dataset}")
+                logger.info(f"📊 Sending UI connection status update for session {session_id}: {workspace} -> {dataset}")
                 StreamingManager.send_update(
                     workflow_updates_queue[session_id],
                     {
-                        "message": f"🔗 Connection established: {workspace} → {dataset}",
+                        "message": f"✅ Connection established: {workspace} → {dataset}",
                         "session_id": session_id,
                         "workspace": workspace,
                         "dataset": dataset,
@@ -2694,7 +2737,7 @@ class MCPToolManager:
                 
                 # Check for cancellation before starting
                 if cancellation_event.is_set():
-                    logger.info(f"🛑 Tool execution cancelled before start for session {session_id}")
+                    logger.info(f"⚠️ Tool execution cancelled before start for session {session_id}")
                     return
                 
                 # Execute the tool function
@@ -2729,19 +2772,19 @@ class MCPToolManager:
         while worker_thread.is_alive():
             if cancellation_event.is_set():
                 if cancel_wait_time == 0.0:
-                    logger.info(f"🛑 Tool execution cancellation requested for session {session_id}")
+                    logger.info(f"⚠️ Tool execution cancellation requested for session {session_id}")
                     
                     # Set _should_stop on all tool objects immediately
                     if hasattr(tool_function, '__self__'):
                         tool_obj = tool_function.__self__
                         setattr(tool_obj, '_should_stop', True)
-                        logger.info(f"🛑 Set _should_stop=True on tool object")
+                        logger.info(f"🔄 Set _should_stop=True on tool object")
                 
                 cancel_wait_time += check_interval
                 
                 # If thread doesn't stop within reasonable time, return cancellation
                 if cancel_wait_time >= max_wait_after_cancel:
-                    logger.warning(f"🛑 Tool thread didn't stop within {max_wait_after_cancel}s, returning cancellation result")
+                    logger.warning(f"⚠️ Tool thread didn't stop within {max_wait_after_cancel}s, returning cancellation result")
                     
                     # Clean up from tracking before returning
                     if session_id in self.running_processes:
@@ -2764,7 +2807,7 @@ class MCPToolManager:
         
         # If we were cancelled but thread completed, still return cancellation
         if cancellation_event.is_set():
-            logger.info(f"🛑 Tool execution completed but was cancelled for session {session_id}")
+            logger.info(f"⚠️ Tool execution completed but was cancelled for session {session_id}")
             return {"success": False, "error": "Analysis stopped by user", "cancelled": True}
         
         # Return result or raise exception
@@ -2851,7 +2894,7 @@ def safe_serialize(obj):
     else:
         return str(obj)
 
-# Token counting function for GPT-4.1
+# Token counting function for GPT-4o
 def count_tokens(text):
     """Count the number of tokens in a string using tiktoken"""
     if encoding is None:
@@ -2932,7 +2975,7 @@ def get_enhanced_chat_response(message: str, user_id: str, conversation_id: str,
         input_tokens = 0
         output_tokens = 0
         
-        # Always provide tools context - let GPT-4.1 decide when to use them
+        # Always provide tools context - let GPT-4o decide when to use them
         if progress_callback:
             progress_callback("Preparing tools context...")
         
@@ -3146,7 +3189,7 @@ def get_enhanced_chat_response(message: str, user_id: str, conversation_id: str,
                         # Add original error
                         debug_summary += f"**Original Error**: `{last_error}`\n\n"
                         
-                        # Look for GPT-4.1 reasoning in the debug context
+                        # Look for GPT-4o reasoning in the debug context
                         reasoning_found = False
                         all_reasoning = []
                         
@@ -3273,7 +3316,7 @@ def get_enhanced_chat_response(message: str, user_id: str, conversation_id: str,
                     if progress_callback:
                         progress_callback(f"Tool execution failed: {last_error}")
                 
-                        # If we have a failure, send the error to GPT-4.1 for autonomous debugging
+                        # If we have a failure, send the error to GPT-4o for autonomous debugging
                         if has_failures:
                             logger.info(f"AUTONOMOUS DEBUG - Initiating autonomous debugging for error: {last_error}")
                             autonomous_debugging_active = True
@@ -3283,7 +3326,7 @@ def get_enhanced_chat_response(message: str, user_id: str, conversation_id: str,
                             debug_actions_taken.append(f"Original error: {last_error}")
                             
                             if progress_callback:
-                                progress_callback("Initiating autonomous debugging with GPT-4.1 reasoning...")
+                                progress_callback("Initiating autonomous debugging with GPT-4o reasoning...")
                             
                             # Create an error analysis entry for the debug context
                             debug_context_info["error_type"] = "general"
@@ -3291,9 +3334,9 @@ def get_enhanced_chat_response(message: str, user_id: str, conversation_id: str,
                             debug_context_info["failed_tool"] = tool_name
                             debug_context_info["failed_parameters"] = parameters
                             
-                            # Don't pre-analyze or gather diagnostic info - let GPT-4.1 decide what it needs
-                            # Just log the error and proceed to let GPT-4.1 handle the debugging entirely
-                            logger.info(f"AUTONOMOUS DEBUG - Passing error to GPT-4.1 for analysis: {last_error}")
+                            # Don't pre-analyze or gather diagnostic info - let GPT-4o decide what it needs
+                            # Just log the error and proceed to let GPT-4o handle the debugging entirely
+                            logger.info(f"AUTONOMOUS DEBUG - Passing error to GPT-4o for analysis: {last_error}")
                             debug_actions_taken.append(f"Detected error: {last_error}")
                     
                     # Prepare debug context with execution history and error details
@@ -3346,7 +3389,7 @@ def get_enhanced_chat_response(message: str, user_id: str, conversation_id: str,
                     if progress_callback:
                         progress_callback("Generating autonomous fix...")
                     
-                    # Get the autonomous fix response from GPT-4.1
+                    # Get the autonomous fix response from GPT-4o
                     debug_response = client.chat.completions.create(
                         model=azure_deployment,
                         messages=debug_messages,
@@ -3383,14 +3426,14 @@ def get_enhanced_chat_response(message: str, user_id: str, conversation_id: str,
                             if "REASONING:" in reasoning_part:
                                 reasoning = reasoning_part.split("REASONING:", 1)[1].strip()
                                 if progress_callback:
-                                    progress_callback(f"GPT-4.1 reasoning: {reasoning}")
+                                    progress_callback(f"GPT-4o reasoning: {reasoning}")
                                 
                                 # Add reasoning to debug logs for transparency
                                 autonomous_debugging_logs.append(f"Reasoning: {reasoning}")
                                 debug_actions_taken.append(f"Analysis: {reasoning}")
                             
                             # Log the reasoning for debugging
-                            logger.info(f"GPT-4.1 reasoning: {reasoning}")
+                            logger.info(f"GPT-4o reasoning: {reasoning}")
                             
                             # Store reasoning in execution history
                             execution_history.append({
@@ -3640,8 +3683,9 @@ except Exception as e:
     }
 
 @app.route('/')
+@require_auth
 def index():
-    """Render the chat interface"""
+    """Render the chat interface - requires authentication"""
     print(f"DEBUG: ANALYZER_TOOLS count: {len(ANALYZER_TOOLS)}")
     print(f"DEBUG: ANALYZER_TOOLS keys: {list(ANALYZER_TOOLS.keys())}")
     print(f"DEBUG: AI_TOOLS count: {len(AI_TOOLS)}")
@@ -3652,10 +3696,14 @@ def index():
         display_name = info.get('display_name', 'NO DISPLAY NAME')
         print(f"DEBUG: AI_TOOL '{name}' -> display_name: '{display_name}'")
     
+    # Get user info for display
+    user_info = auth_manager.get_user_info()
+    
     return render_template('index.html', 
                          tools=MCP_TOOLS, 
                          analyzer_tools=ANALYZER_TOOLS, 
-                         ai_tools=AI_TOOLS)
+                         ai_tools=AI_TOOLS,
+                         user=user_info)
 
 # Global dictionary to store conversation history by session_id
 conversation_sessions = {}
@@ -3667,11 +3715,15 @@ token_usage = {}
 csv_downloads = {}
 
 @app.route('/api/sessions/create', methods=['POST'])
+@require_auth
 def create_secure_session():
-    """Create a new secure session with proper isolation"""
+    """Create a new secure session with proper isolation - requires authentication"""
     try:
+        # Get authenticated user info
+        user_info = auth_manager.get_user_info()
+        user_identifier = user_info['username'] if user_info else 'anonymous'
+        
         data = request.get_json() or {}
-        user_identifier = data.get('user_identifier', 'anonymous')
         
         # Generate secure session ID
         session_id = session_security.generate_secure_session_id(user_identifier)
@@ -3714,6 +3766,7 @@ def create_secure_session():
         }), 500
 
 @app.route('/api/chat', methods=['POST', 'GET'])
+@require_auth
 @secure_chat_endpoint
 def chat():
     """API endpoint for chat"""
@@ -4316,8 +4369,9 @@ def chat():
         return jsonify({'error': f"Unexpected error: {str(e)}"}), 500
 
 @app.route('/api/tools', methods=['GET'])
+@require_auth
 def get_tools():
-    """API endpoint to get the list of available tools"""
+    """API endpoint to get the list of available tools - requires authentication"""
     if tool_manager is None:
         logger.warning("Tool manager is not initialized, returning empty tools list")
         return jsonify({})
@@ -4412,7 +4466,7 @@ def check_dataset_connection(session_id: str = "default_session") -> tuple[bool,
     global tool_manager
     
     if not tool_manager:
-        logger.error(f"🚨 Connection check failed for session {session_id}: Tool manager not available")
+        logger.error(f"❌ Connection check failed for session {session_id}: Tool manager not available")
         return False, "Tool manager not available"
     
     # DEBUG: Log both tracking systems for comparison
@@ -4431,18 +4485,18 @@ def check_dataset_connection(session_id: str = "default_session") -> tuple[bool,
     # Check session connection state
     logger.info(f"🔍 Connection check for session {session_id}: Checking session_connections...")
     if not hasattr(tool_manager, 'session_connections'):
-        logger.error(f"🚨 No session_connections attribute on tool_manager")
+        logger.error(f"❌ No session_connections attribute on tool_manager")
         return False, "No dataset connection found. Please connect to a Power BI dataset first."
         
     if session_id not in tool_manager.session_connections:
-        logger.error(f"🚨 Session {session_id} not found in session_connections. Available sessions: {list(tool_manager.session_connections.keys())}")
+        logger.error(f"❌ Session {session_id} not found in session_connections. Available sessions: {list(tool_manager.session_connections.keys())}")
         return False, "No dataset connection found. Please connect to a Power BI dataset first."
     
     session_connection = tool_manager.session_connections[session_id]
     logger.info(f"🔍 Connection check for session {session_id}: Connection state = {session_connection}")
     
     if not session_connection.get("dataset"):
-        logger.error(f"🚨 No dataset found in connection state for session {session_id}")
+        logger.error(f"❌ No dataset found in connection state for session {session_id}")
         return False, "No dataset connection found. Please connect to a Power BI dataset first."
     
     # Verify actual connection status using session-specific instances
@@ -4460,20 +4514,20 @@ def check_dataset_connection(session_id: str = "default_session") -> tuple[bool,
                 
                 if hasattr(tabular_editor, 'connected') and not tabular_editor.connected:
                     # Connection is stale, clear it
-                    logger.warning(f"🚨 TabularEditor connection is stale for session {session_id}, clearing session connection state")
+                    logger.warning(f"⚠️ TabularEditor connection is stale for session {session_id}, clearing session connection state")
                     if session_id in tool_manager.session_connections:
                         del tool_manager.session_connections[session_id]
                     return False, "Dataset connection is no longer active. Please reconnect to a Power BI dataset."
                 else:
                     logger.info(f"✅ TabularEditor connection appears active for session {session_id}")
             else:
-                logger.error(f"🚨 No tabular_editor found in session instances for session {session_id}")
+                logger.error(f"❌ No tabular_editor found in session instances for session {session_id}")
                 return False, "TabularEditor instance not available. Please reconnect to a Power BI dataset."
         else:
-            logger.error(f"🚨 No session instances found for session {session_id}")
+            logger.error(f"❌ No session instances found for session {session_id}")
             return False, "Session instances not available. Please reconnect to a Power BI dataset."
     except Exception as e:
-        logger.error(f"🚨 Error verifying connection state for session {session_id}: {e}")
+        logger.error(f"❌ Error verifying connection state for session {session_id}: {e}")
         return False, f"Error verifying dataset connection: {str(e)}"
     
     logger.info(f"✅ Connection check passed for session {session_id}")
@@ -4668,8 +4722,9 @@ def stop_analysis():
         }), 500
 
 @app.route('/api/init-session', methods=['POST'])
+@require_auth
 def init_session():
-    """Initialize a new session for the client."""
+    """Initialize a new session for the client - requires authentication."""
     try:
         data = request.json or {}
         session_id = data.get('session_id')
@@ -5883,8 +5938,8 @@ def get_certificate_from_keyvault():
                     private_keys.append((key_start, key_end))
                     key_start = None
         
-        logger.info(f"📋 Certificate markers found: {cert_markers}")
-        logger.info(f"🔑 Private key markers found: {key_markers}")
+        logger.info(f"📁 Certificate markers found: {cert_markers}")
+        logger.info(f"🔍 Private key markers found: {key_markers}")
         logger.info(f"🔍 Found {len(certificates)} certificate(s) and {len(private_keys)} private key(s)")
         
         if not certificates:
@@ -5918,8 +5973,8 @@ def get_certificate_from_keyvault():
         cert_content = '\n'.join(pem_lines[cert_start:cert_end])
         key_content = '\n'.join(pem_lines[key_start:key_end])
         
-        logger.info(f"📄 Certificate section: lines {cert_start}-{cert_end-1} ({cert_end-cert_start} lines)")
-        logger.info(f"🔑 Private key section: lines {key_start}-{key_end-1} ({key_end-key_start} lines)")
+        logger.info(f"📁 Certificate section: lines {cert_start}-{cert_end-1} ({cert_end-cert_start} lines)")
+        logger.info(f"🔍 Private key section: lines {key_start}-{key_end-1} ({key_end-key_start} lines)")
         
         # Validate certificate and key content
         if len(cert_content.strip()) < 100:
@@ -5968,6 +6023,210 @@ def get_certificate_from_keyvault():
         logger.error(f"Error retrieving certificate from Key Vault: {e}")
         return None, None
 
+# ===================================================================
+# AUTHENTICATION ROUTES
+# ===================================================================
+
+@app.route('/favicon.ico')
+def favicon():
+    """Serve favicon to prevent 404 errors"""
+    from flask import send_from_directory
+    import os
+    # Return a simple response or serve from static folder if you add one later
+    return '', 204  # No Content response - browser will use default
+
+@app.route('/debug/headers')
+def debug_headers():
+    """Debug endpoint to check proxy headers"""
+    return jsonify({
+        'request_scheme': request.scheme,
+        'request_url': request.url,
+        'request_host': request.host,
+        'x_forwarded_proto': request.headers.get('X-Forwarded-Proto'),
+        'x_forwarded_host': request.headers.get('X-Forwarded-Host'),
+        'x_forwarded_port': request.headers.get('X-Forwarded-Port'),
+        'all_headers': dict(request.headers)
+    })
+
+@app.route('/debug/msal-test')
+def debug_msal_test():
+    """Test MSAL library and auth URL generation"""
+    try:
+        import msal
+        
+        # Test creating MSAL app
+        msal_app = msal.PublicClientApplication(
+            "1624d147-d626-4d7f-942d-bd8f58beeabb",
+            authority="https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47"
+        )
+        
+        # Test generating auth URL
+        redirect_uri = "https://aictdev.microsoft.com/auth/callback"
+        auth_url = msal_app.get_authorization_request_url(
+            scopes=["user.read"],
+            redirect_uri=redirect_uri
+        )
+        
+        return jsonify({
+            "status": "success",
+            "msal_imported": True,
+            "redirect_uri": redirect_uri,
+            "auth_url": auth_url[:200] + "...",
+            "auth_url_length": len(auth_url)
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({
+            "status": "error",
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
+
+@app.route('/debug/session')
+def debug_session():
+    """Debug endpoint to check session and cookie configuration"""
+    import os
+    session_dir = app.config.get('SESSION_FILE_DIR')
+    
+    # Check if session directory exists and is writable
+    session_dir_exists = os.path.exists(session_dir) if session_dir else False
+    session_dir_writable = False
+    if session_dir_exists:
+        try:
+            test_file = os.path.join(session_dir, '.write_test_debug')
+            with open(test_file, 'w') as f:
+                f.write('test')
+            os.remove(test_file)
+            session_dir_writable = True
+        except:
+            session_dir_writable = False
+    
+    # Count session files
+    session_file_count = 0
+    if session_dir_exists:
+        try:
+            session_file_count = len([f for f in os.listdir(session_dir) if not f.startswith('.')])
+        except:
+            pass
+    
+    return jsonify({
+        'session_config': {
+            'SESSION_TYPE': app.config.get('SESSION_TYPE'),
+            'SESSION_PERMANENT': app.config.get('SESSION_PERMANENT'),
+            'SESSION_COOKIE_SECURE': app.config.get('SESSION_COOKIE_SECURE'),
+            'SESSION_COOKIE_HTTPONLY': app.config.get('SESSION_COOKIE_HTTPONLY'),
+            'SESSION_COOKIE_SAMESITE': app.config.get('SESSION_COOKIE_SAMESITE'),
+            'SESSION_COOKIE_DOMAIN': app.config.get('SESSION_COOKIE_DOMAIN'),
+            'SESSION_FILE_DIR': session_dir,
+            'PERMANENT_SESSION_LIFETIME': str(app.config.get('PERMANENT_SESSION_LIFETIME')),
+        },
+        'session_storage': {
+            'directory_exists': session_dir_exists,
+            'directory_writable': session_dir_writable,
+            'session_file_count': session_file_count,
+        },
+        'current_session': {
+            'authenticated': flask_session.get('authenticated', False),
+            'has_user': 'user' in flask_session,
+            'session_cookie_present': 'session' in request.cookies,
+            'session_cookie_value': request.cookies.get('session', 'NOT_SET')[:20] + '...' if request.cookies.get('session') else 'NOT_SET',
+        },
+        'environment': {
+            'FLASK_ENV': os.getenv('FLASK_ENV'),
+            'PREFERRED_URL_SCHEME': os.getenv('PREFERRED_URL_SCHEME'),
+            'BEHIND_PROXY': os.getenv('BEHIND_PROXY'),
+            'FRONTEND_DOMAIN': os.getenv('FRONTEND_DOMAIN'),
+        }
+    })
+
+@app.route('/login_page')
+def login_page():
+    """Show the login page"""
+    return render_template('login.html')
+
+@app.route('/login')
+def login():
+    """Initiate MSAL authentication flow"""
+    try:
+        # Build redirect URI - use HTTP for development, HTTPS for production
+        is_development = os.getenv('FLASK_ENV', 'production') == 'development'
+        scheme = 'http' if is_development else 'https'
+        
+        redirect_uri = url_for('auth_callback', _external=True, _scheme=scheme)
+        
+        logger.info(f"🔍 Building auth URL with redirect_uri: {redirect_uri}")
+        
+        # Get authorization URL
+        auth_url = auth_manager.get_auth_url(redirect_uri)
+        
+        logger.info(f"🔍 Generated auth_url: {auth_url[:100]}...")
+        logger.info(f"🔍 Redirecting to Microsoft login")
+        return redirect(auth_url)
+        
+    except Exception as e:
+        import traceback
+        error_trace = traceback.format_exc()
+        logger.error(f"❌ Login error: {e}\n{error_trace}")
+        return redirect(url_for('login_page', error=f'Authentication setup failed: {str(e)}'))
+
+@app.route('/auth/callback')
+def auth_callback():
+    """Handle OAuth callback from Microsoft"""
+    try:
+        # Get authorization code from query parameters
+        auth_code = request.args.get('code')
+        
+        if not auth_code:
+            error_desc = request.args.get('error_description', 'No authorization code received')
+            logger.error(f"❌ Auth callback error: {error_desc}")
+            return redirect(url_for('login_page', error=error_desc))
+        
+        # Build redirect URI (must match the one used in login)
+        # Use HTTP for development, HTTPS for production
+        is_development = os.getenv('FLASK_ENV', 'production') == 'development'
+        scheme = 'http' if is_development else 'https'
+        
+        redirect_uri = url_for('auth_callback', _external=True, _scheme=scheme)
+        
+        logger.info(f"🔄 Processing auth callback with redirect_uri: {redirect_uri}")
+        
+        # Acquire token using auth code
+        token_response = auth_manager.acquire_token_by_auth_code(auth_code, redirect_uri)
+        
+        if not token_response:
+            logger.error("❌ Failed to acquire token")
+            return redirect(url_for('login_page', error='Failed to acquire authentication token'))
+        
+        # Store user session
+        auth_manager.store_user_session(token_response)
+        
+        user_info = auth_manager.get_user_info()
+        logger.info(f"✅ User authenticated: {user_info['username']}")
+        
+        # Debug session state
+        logger.info(f"🔍 Session after auth: authenticated={flask_session.get('authenticated')}, user={flask_session.get('user')}")
+        logger.info(f"🔍 Session ID: {request.cookies.get('session')}")
+        
+        # Redirect to main application
+        return redirect(url_for('index'))
+        
+    except Exception as e:
+        logger.error(f"❌ Auth callback error: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return redirect(url_for('login_page', error='Authentication failed'))
+
+@app.route('/logout')
+def logout():
+    """Logout and clear session"""
+    user_info = auth_manager.get_user_info()
+    username = user_info['username'] if user_info else 'Unknown'
+    
+    auth_manager.clear_session()
+    logger.info(f"✅ User logged out: {username}")
+    
+    return redirect(url_for('login_page'))
+
 if __name__ == '__main__':
     # Setup session-aware logging now that workflow_updates_queue is available
     setup_session_aware_logging()
@@ -5979,8 +6238,8 @@ if __name__ == '__main__':
     
     print("� Starting AI Compliance Tool (Beta) - HTTP Backend for Application Gateway")
     print(f"� Running on {host}:{port}")
-    print("🔒 SSL termination will be handled by Azure Application Gateway")
-    print("📋 Log output will appear below...")
+    print("⚠️ SSL termination will be handled by Azure Application Gateway")
+    print("📁 Log output will appear below...")
     
     # Run HTTP only - Application Gateway handles HTTPS
     app.run(debug=False, host=host, port=port, use_reloader=False)

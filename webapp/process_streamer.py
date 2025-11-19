@@ -98,7 +98,7 @@ class ProcessStreamer:
         except Exception as e:
             error_msg = f"Error running command: {str(e)}"
             logger.error(error_msg)
-            self._send_output_message(f"💥 {error_msg}", "command_error")
+            self._send_output_message(f"❌ {error_msg}", "command_error")
             return {
                 "success": False,
                 "error": str(e),
@@ -159,7 +159,7 @@ class ProcessStreamer:
                     self.process.kill()
                     self.process.wait()
                 
-                self._send_output_message("🛑 Process terminated by user", "command_terminated")
+                self._send_output_message("⚠️ Process terminated by user", "command_terminated")
                 
             except Exception as e:
                 logger.error(f"Error terminating process: {e}")

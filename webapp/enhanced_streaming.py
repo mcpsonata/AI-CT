@@ -66,7 +66,7 @@ class EnhancedStreamingManager:
         # Start cleanup thread for inactive streams
         self._start_cleanup_thread()
         
-        logger.info("🌊 EnhancedStreamingManager initialized")
+        logger.info("🚀 EnhancedStreamingManager initialized")
     
     def create_run_all_stream(self, main_session_id: str, 
                             analyzer_sessions: Dict[int, Dict[str, Any]]) -> StreamInfo:
@@ -108,7 +108,7 @@ class EnhancedStreamingManager:
             # Initialize message buffer
             self.message_buffer[main_session_id] = []
             
-            logger.info(f"📡 Created Run All stream for session {main_session_id} "
+            logger.info(f"📊 Created Run All stream for session {main_session_id} "
                        f"with {len(analyzer_sessions)} analyzers")
             
             return stream_info
@@ -137,7 +137,7 @@ class EnhancedStreamingManager:
             self.active_streams[session_id] = stream_info
             self.message_buffer[session_id] = []
             
-            logger.info(f"📱 Created individual stream for session {session_id}")
+            logger.info(f"📊 Created individual stream for session {session_id}")
             
             return stream_info
     
@@ -245,7 +245,7 @@ class EnhancedStreamingManager:
                         stream_info.main_queue.put(enhanced_message, timeout=1.0)
                     else:
                         # Message from inactive analyzer - buffer it or discard
-                        logger.debug(f"🔇 Discarding message from inactive analyzer {analyzer_idx} "
+                        logger.debug(f"🔄 Discarding message from inactive analyzer {analyzer_idx} "
                                    f"(current: {current_analyzer})")
                         # Could implement buffering here if needed
                         
@@ -289,7 +289,7 @@ class EnhancedStreamingManager:
             
             # Check if we've reached the end
             if stream_info.current_analyzer >= len(stream_info.analyzer_sessions):
-                logger.info(f"🏁 All analyzers complete for session {main_session_id}")
+                logger.info(f"✅ All analyzers complete for session {main_session_id}")
                 # Don't increment beyond available analyzers
                 stream_info.current_analyzer = len(stream_info.analyzer_sessions) - 1
                 return True
@@ -402,7 +402,7 @@ class EnhancedStreamingManager:
                 
                 # Check if this is a completion message
                 if message.get("type") in ["workflow_complete", "run_all_complete"]:
-                    logger.info(f"🏁 Workflow complete for session {main_session_id}, ending stream")
+                    logger.info(f"✅ Workflow complete for session {main_session_id}, ending stream")
                     break
                     
             except queue.Empty:
@@ -492,7 +492,7 @@ class EnhancedStreamingManager:
             if session_id in self.message_buffer:
                 del self.message_buffer[session_id]
             
-            logger.info(f"🧹 Cleaned up stream for session {session_id}")
+            logger.info(f"🔄 Cleaned up stream for session {session_id}")
     
     def _start_cleanup_thread(self) -> None:
         """Start background thread for cleaning up inactive streams."""
@@ -510,7 +510,7 @@ class EnhancedStreamingManager:
                     
                     # Clean up inactive sessions
                     for session_id in inactive_sessions:
-                        logger.info(f"🧹 Cleaning up inactive stream: {session_id}")
+                        logger.info(f"🔄 Cleaning up inactive stream: {session_id}")
                         self._cleanup_stream(session_id)
                     
                     time.sleep(300)  # Check every 5 minutes
@@ -521,7 +521,7 @@ class EnhancedStreamingManager:
         
         self.cleanup_thread = threading.Thread(target=cleanup_worker, daemon=True)
         self.cleanup_thread.start()
-        logger.info("🧹 Started cleanup thread for inactive streams")
+        logger.info("🚀 Started cleanup thread for inactive streams")
     
     def send_update(self, session_id: str, data: Dict[str, Any], 
                    event_type: str = "update") -> bool:
@@ -550,7 +550,7 @@ class EnhancedStreamingManager:
     
     def shutdown(self) -> None:
         """Shutdown the streaming manager and clean up all resources."""
-        logger.info("🛑 Shutting down EnhancedStreamingManager")
+        logger.info("✅ Shutting down EnhancedStreamingManager")
         
         self.is_running = False
         

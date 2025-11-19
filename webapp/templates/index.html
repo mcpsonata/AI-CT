@@ -796,7 +796,7 @@
         .input-area {
             padding: 6px 8px;
             background: linear-gradient(135deg, var(--neutral-50) 0%, white 100%);
-            display: flex;
+            display: none; /* Hidden from UI but elements still exist for JavaScript */
             gap: 4px;
             border-top: 1px solid var(--neutral-200);
         }
@@ -2500,6 +2500,11 @@
                     </button>
                 </div>
                 
+                <!-- AI Disclaimer Warning -->
+                <div style="background: #e5e7eb; border-radius: 6px; padding: 8px 12px; margin-bottom: 15px; font-size: 12px; color: #6b7280; text-align: center;">
+                    The insights and analysis presented in this report have been generated using AI models
+                </div>
+            
                 <!-- Completed Analyses Indicator -->
                 <div id="completed-analyses-indicator" style="display: none; margin-bottom: 20px;">
                     <div id="analyses-list" style="font-size: 14px; font-weight: 600; color: var(--primary-color); line-height: 1.4; padding: 8px 12px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 8px; border: 1px solid #93c5fd;"></div>
@@ -2838,16 +2843,40 @@
             }
             
             // Initialize the session with the backend
-            function initializeSession() {
-                return fetch('/api/init-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ session_id: sessionId })
-                })
-                .then(response => response.json())
-                .then(data => {
+            async function initializeSession() {
+                try {
+                    const response = await fetch('/api/init-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ session_id: sessionId })
+                    });
+                    
+                    // Check for unauthorized status
+                    if (response.status === 401 || response.status === 403) {
+                        console.log('🔐 Not authenticated - redirecting to login');
+                        const data = await response.json().catch(() => ({}));
+                        window.location.href = data.redirect_to || '/login_page';
+                        return false;
+                    }
+                    
+                    // Check for redirect
+                    if (response.status === 302 || response.redirected) {
+                        console.log('🔐 Authentication required - redirecting to login');
+                        window.location.href = '/login_page';
+                        return false;
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Check if response indicates authentication required
+                    if (data.authenticated === false) {
+                        console.log('🔐 Authentication required - redirecting to login');
+                        window.location.href = data.redirect_to || '/login_page';
+                        return false;
+                    }
+                    
                     if (data.success) {
                         console.log('✅ Session initialized successfully:', data.session_id);
                         return true;
@@ -2855,11 +2884,10 @@
                         console.error('❌ Failed to initialize session:', data.error);
                         return false;
                     }
-                })
-                .catch(error => {
+                } catch (error) {
                     console.error('❌ Error initializing session:', error);
                     return false;
-                });
+                }
             }
             
             // Initialize session on page load
@@ -2872,6 +2900,49 @@
             // Connection Controls Management
             let selectedWorkspace = null;
             let selectedDataset = null;
+            
+            // Load persisted selections from sessionStorage (tab-specific)
+            function loadPersistedSelections() {
+                const persistedWorkspace = sessionStorage.getItem('selectedWorkspace');
+                const persistedDataset = sessionStorage.getItem('selectedDataset');
+                
+                if (persistedWorkspace) {
+                    selectedWorkspace = persistedWorkspace;
+                    workspaceInput.value = persistedWorkspace;
+                    console.log('🔄 Restored workspace from sessionStorage:', persistedWorkspace);
+                }
+                
+                if (persistedDataset && persistedWorkspace) {
+                    selectedDataset = persistedDataset;
+                    datasetInput.value = persistedDataset;
+                    datasetInput.disabled = false;
+                    datasetDropdownBtn.disabled = false;
+                    console.log('🔄 Restored dataset from sessionStorage:', persistedDataset);
+                }
+                
+                updateConnectButtonState();
+            }
+            
+            // Save selections to sessionStorage (tab-specific)
+            function saveSelectionsToStorage() {
+                if (selectedWorkspace) {
+                    sessionStorage.setItem('selectedWorkspace', selectedWorkspace);
+                } else {
+                    sessionStorage.removeItem('selectedWorkspace');
+                }
+                if (selectedDataset) {
+                    sessionStorage.setItem('selectedDataset', selectedDataset);
+                } else {
+                    sessionStorage.removeItem('selectedDataset');
+                }
+            }
+            
+            // Clear persisted selections from sessionStorage (tab-specific)
+            function clearPersistedSelections() {
+                sessionStorage.removeItem('selectedWorkspace');
+                sessionStorage.removeItem('selectedDataset');
+                console.log('🗑️ Cleared persisted selections from sessionStorage');
+            }
             
             // Get input and dropdown elements
             const workspaceInput = document.getElementById('workspace-input');
@@ -2902,6 +2973,20 @@
             // Load workspaces on page load
             loadWorkspaces();
             
+            // Check if this is a brand new tab/window
+            const isNewTab = !sessionStorage.getItem('aict_session_id');
+            
+            if (isNewTab) {
+                // New tab - start with empty selections
+                console.log('🆕 New tab detected - starting with empty workspace/dataset selections');
+                // Don't load persisted selections for new tabs
+            } else {
+                // Existing tab - load persisted selections after elements are initialized
+                setTimeout(() => {
+                    loadPersistedSelections();
+                }, 500);
+            }
+            
             function initializeDropdowns() {
                 // Workspace input field functionality
                 workspaceInput.addEventListener('input', function() {
@@ -2923,6 +3008,8 @@
                         datasetDropdownBtn.disabled = true;
                     }
                     
+                    // Save to localStorage
+                    saveSelectionsToStorage();
                     updateConnectButtonState();
                     console.log('🔍 Workspace input:', value);
                 });
@@ -2931,6 +3018,9 @@
                 datasetInput.addEventListener('input', function() {
                     const value = this.value.trim();
                     selectedDataset = value || null;
+                    
+                    // Save to localStorage
+                    saveSelectionsToStorage();
                     updateConnectButtonState();
                     console.log('🔍 Dataset input:', value);
                 });
@@ -3156,15 +3246,25 @@
                     console.log('🔍 Dataset selected:', value);
                 }
                 
+                // Save selections to localStorage
+                saveSelectionsToStorage();
                 closeAllDropdowns();
             }
             
             function updateConnectButtonState() {
                 connectBtn.disabled = !(selectedWorkspace && selectedDataset);
             }
-            // Function to clear workspace and dataset selections for new sessions
-            function clearWorkspaceDatasetSelections() {
-                console.log('🔄 Clearing workspace and dataset selections for new session');
+            // Function to clear workspace and dataset selections ONLY when explicitly requested
+            function clearWorkspaceDatasetSelections(explicitClear = false) {
+                console.log('🔄 Clear workspace/dataset called, explicit:', explicitClear);
+                
+                // Only clear if explicitly requested (e.g., user disconnect or explicit new session)
+                if (!explicitClear) {
+                    console.log('⚠️ Skipping automatic clear - preserving workspace/dataset selections');
+                    return;
+                }
+                
+                console.log('🔄 Clearing workspace and dataset selections (explicit request)');
                 
                 // Reset selection variables
                 selectedWorkspace = null;
@@ -3197,7 +3297,7 @@
                     connectBtn.disabled = true;
                 }
                 
-                // Clear workspace options completely - this is the key fix!
+                // Clear workspace options completely only on explicit clear
                 if (workspaceOptions) {
                     workspaceOptions.innerHTML = '';
                     // Add loading state immediately
@@ -3217,13 +3317,16 @@
                     datasetDropdown.classList.remove('show');
                 }
                 
+                // Clear persisted selections from sessionStorage (tab-specific)
+                clearPersistedSelections();
+                
                 // Reload workspaces fresh for the new session
                 setTimeout(() => {
-                    console.log('🔄 Reloading workspaces for new conversation...');
+                    console.log('🔄 Reloading workspaces for cleared session...');
                     loadWorkspaces();
                 }, 200); // Small delay to show loading state
                 
-                console.log('✅ Workspace and dataset selections cleared completely');
+                console.log('✅ Workspace and dataset selections cleared completely (tab-specific)');
             }
             
             async function connectToWorkspaceAndDataset() {
@@ -3290,6 +3393,9 @@
                 // Clear local connection state immediately (tab-specific)
                 setConnectedModel(null);
                 updatePBIConnectionDisplay();
+                
+                // Clear workspace and dataset selections explicitly on disconnect
+                clearWorkspaceDatasetSelections(true);
                 
                 // Send disconnect request to the backend via chat
                 const useStreaming = false; // Use non-streaming for disconnect
@@ -3445,13 +3551,14 @@
                         
                         // Log if this was a new session with state reset
                         if (data.is_new_session && !data.connected) {
-                            console.log('🔄 New session detected - connection state cleared for this tab');
-                            // Clear workspace and dataset selections for new session
-                            clearWorkspaceDatasetSelections();
+                            console.log('🔄 New session detected - preserving workspace/dataset selections');
+                            // Don't clear workspace and dataset selections automatically
+                            // Only clear on explicit user request (disconnect or explicit new session)
+                            
                             // Optionally show a subtle notification
                             const statusSpan = document.getElementById('pbi-connection-status');
                             if (statusSpan) {
-                                statusSpan.title = 'Connection state cleared for new session';
+                                statusSpan.title = 'New session started - workspace/dataset preserved';
                             }
                         }
                     })
@@ -3918,7 +4025,7 @@
                     
                     // Keep progress visible briefly to show stop status
                     setTimeout(() => {
-                        hideIndividualProgress();
+                        hideIndividualProgress(true, 'user_stopped');
                     }, 2000);
                     
                     // Stop the analysis
@@ -3949,13 +4056,16 @@
                     currentStepDiv.textContent = 'Initializing analysis...';
                 }
                 
-                // Reset progress bar
+                // Reset progress bar with enhanced styling
                 const progressBar = document.getElementById('individual-progress-bar');
                 if (progressBar) {
                     progressBar.style.width = '0%';
                     progressBar.style.background = 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)';
+                    progressBar.style.transition = 'width 0.3s ease';
                 }
                 
+                // Mark progress as actively showing
+                progressDiv.setAttribute('data-active', 'true');
                 progressDiv.style.display = 'block';
                 
                 // Hide run-all progress if it's showing
@@ -3963,6 +4073,7 @@
                 if (runAllProgress) {
                     runAllProgress.style.display = 'none';
                 }
+                console.log(`✅ Individual progress display initialized for ${analyzerName}`);
             }
 
             function updateIndividualProgress(current, total, message) {
@@ -4012,8 +4123,14 @@
                 }
             }
 
-            function hideIndividualProgress() {
-                console.log('📊 Hiding individual progress dialog');
+            function hideIndividualProgress(forceHide = false, reason = 'manual') {
+                console.log(`📊 Hiding individual progress dialog - Force: ${forceHide}, Reason: ${reason}`);
+                
+                // SECURITY FIX: Only hide if explicitly forced or if no active analyzer
+                if (!forceHide && window.currentRunningAnalyzer && !window.currentRunningAnalyzer.completed) {
+                    console.log('⚠️ Preventing premature progress hide - analysis still running');
+                    return false;
+                }
                 
                 // Reset dynamic progress tracker when hiding progress
                 if (window.dynamicProgressTracker) {
@@ -4024,7 +4141,9 @@
                 const progressDiv = document.getElementById('individual-progress');
                 if (progressDiv) {
                     progressDiv.style.display = 'none';
+                    console.log('✅ Individual progress hidden successfully');
                 }
+                return true;
             }
 
             function parseProgressFromLog(logMessage) {
@@ -4339,21 +4458,31 @@
                 
                 const triggerCompletion = (reason) => {
                     if (!window.currentRunningAnalyzer || window.currentRunningAnalyzer.completed) {
+                        console.log(`⚠️ Completion already triggered or no active analyzer`);
                         return;
                     }
                     
-                    console.log(`✅ Individual analyzer completed: ${reason}`);
+                    console.log(`✅ Individual analyzer completing: ${reason}`);
                     window.currentRunningAnalyzer.completed = true;
                     
-                    // Reset the dynamic progress tracker
-                    window.dynamicProgressTracker.reset();
+                    // Show completion status in progress display
+                    const currentStep = document.getElementById('individual-current-step');
+                    if (currentStep) {
+                        currentStep.textContent = `✅ Analysis completed - ${reason}`;
+                        currentStep.style.color = '#047857';
+                        currentStep.style.fontWeight = '600';
+                    }
                     
-                    // Keep progress visible for 5 seconds to show completion status
-                    setTimeout(() => {
-                        hideIndividualProgress();
-                    }, 5000);
                     
-                    // Remove running state
+                    // Update progress to 100%
+                    const progressBar = document.getElementById('individual-progress-bar');
+                    const progressCounter = document.getElementById('individual-progress-counter');
+                    if (progressBar) {
+                        progressBar.style.width = '100%';
+                        progressBar.style.background = 'linear-gradient(90deg, #10b981 0%, #059669 100%)';
+                    }
+                    
+                    // Remove running state from UI
                     analyzerElement.classList.remove('running');
                     
                     // Clean up observers
@@ -4364,7 +4493,14 @@
                         window.currentRunningAnalyzer.scoreObserver.disconnect();
                     }
                     
-                    window.currentRunningAnalyzer = null;
+                    // Reset the dynamic progress tracker
+                    window.dynamicProgressTracker.reset();
+                    
+                    // IMPROVED: Keep progress visible longer to show completion, then force hide
+                    setTimeout(() => {
+                        hideIndividualProgress(true, 'completion_cleanup');
+                        window.currentRunningAnalyzer = null;
+                    }, 8000); // Increased from 5 to 8 seconds for better UX
                 };
                 
                 // Reset and prepare dynamic progress tracker for this analysis
@@ -4382,6 +4518,11 @@
                             return;
                         }
                         
+                        // Enhanced debouncing to prevent multiple rapid completions
+                        if (window.currentRunningAnalyzer.completionPending) {
+                            return;
+                        }
+  
                         mutations.forEach(mutation => {
                             mutation.addedNodes.forEach(node => {
                                 if (node.nodeType === 1) {
@@ -4413,6 +4554,7 @@
                                     if (isCompletionMessage) {
                                         console.log('🎯 ROBUST completion pattern detected:', text.substring(0, 150));
                                         console.log('🎯 Full completion text:', text);
+                                        window.currentRunningAnalyzer.completionPending = true;
                                         triggerCompletion('Robust completion pattern detected');
                                     }
                                     
@@ -4491,6 +4633,9 @@
                     window.currentRunningAnalyzer = null;
                 }
                 
+                // Force hide individual progress
+                hideIndividualProgress(true, 'stop_all_analyzers');
+
                 // Reset UI
                 runAllAnalyzersBtn.style.display = 'block';
                 runAllAnalyzersBtn.disabled = false;
@@ -5624,7 +5769,7 @@
                             
                             // Close dialog after brief delay to show completion
                             setTimeout(() => {
-                                hideIndividualProgress();
+                                hideIndividualProgress(true, 'log_completion');
                             }, 3000);
                             
                             window.currentRunningAnalyzer = null;
@@ -5843,7 +5988,7 @@
                                                     if (window.currentRunningAnalyzer && !window.currentRunningAnalyzer.completed) {
                                                         return; // Another completion handler already fired
                                                     }
-                                                    hideIndividualProgress();
+                                                    hideIndividualProgress(true, 'workflow_complete');
                                                 }, 5000);
                                             }
                                         }
@@ -6026,7 +6171,7 @@
                                                 window.currentRunningAnalyzer.completed = true;
                                                 
                                                 setTimeout(() => {
-                                                    hideIndividualProgress();
+                                                    hideIndividualProgress(true, 'dynamic_tracker');
                                                 }, 5000);
                                                 
                                                 // Clean up
@@ -6082,7 +6227,7 @@
                                 // Force hide progress dialog immediately
                                 if (typeof hideIndividualProgress === 'function') {
                                     console.log('🎯 Hiding progress dialog immediately');
-                                    hideIndividualProgress();
+                                    hideIndividualProgress(true, 'analysis_completion_event');
                                 } else {
                                     console.error('❌ hideIndividualProgress function not found');
                                 }
@@ -6137,7 +6282,7 @@
                                 // Emergency fallback - force hide dialog anyway
                                 console.log('🚨 EMERGENCY FALLBACK: Forcing dialog close due to error');
                                 if (typeof hideIndividualProgress === 'function') {
-                                    hideIndividualProgress();
+                                    hideIndividualProgress(true, 'emergency_fallback');
                                 }
                             }
                         });
@@ -7648,7 +7793,7 @@
 
             
             // Add event listener for new session button
-            document.getElementById('new-session').addEventListener('click', function() {
+            document.getElementById('new-session').addEventListener('click', async function() {
                 if (confirm('Start a new conversation? This will clear the current chat history.')) {
                     // Clear conversation history
                     conversationHistory = [];
@@ -7660,15 +7805,61 @@
                     setConnectedModel(null);
                     updatePBIConnectionDisplay();
 
-                     // Clear workspace and dataset selections for new session
-                    clearWorkspaceDatasetSelections();
+                     // Clear workspace and dataset selections for explicit new session
+                    clearWorkspaceDatasetSelections(true);
                     
-                    // Generate new session ID for the new session and clear tab storage
+                    // Clear session storage first
                     sessionStorage.removeItem('aict_session_id');
                     sessionStorage.removeItem('aict_connected_model');
-                    sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    sessionStorage.setItem('aict_session_id', sessionId);
-                    console.log('🔍 Generated new session ID for this tab:', sessionId);
+                    
+                    // Create new session via API (this will check authentication)
+                    try {
+                        const response = await fetch('/api/sessions/create', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({})
+                        });
+                        
+                        // Check for unauthorized status
+                        if (response.status === 401 || response.status === 403) {
+                            console.log('🔐 Not authenticated - redirecting to login');
+                            const data = await response.json().catch(() => ({}));
+                            window.location.href = data.redirect_to || '/login_page';
+                            return;
+                        }
+                        
+                        // Check for redirect
+                        if (response.status === 302 || response.redirected) {
+                            console.log('🔐 Authentication required - redirecting to login');
+                            window.location.href = '/login_page';
+                            return;
+                        }
+                        
+                        if (!response.ok) {
+                            throw new Error('Failed to create session');
+                        }
+                        
+                        const data = await response.json();
+                        
+                        // Check if response indicates authentication required
+                        if (data.authenticated === false) {
+                            console.log('🔐 Authentication required - redirecting to login');
+                            window.location.href = data.redirect_to || '/login_page';
+                            return;
+                        }
+                        
+                        sessionId = data.session_id;
+                        sessionStorage.setItem('aict_session_id', sessionId);
+                        console.log('✅ Created new authenticated session:', sessionId);
+                        
+                    } catch (error) {
+                        console.error('❌ Error creating new session:', error);
+                        alert('Failed to create new session. Please try logging in again.');
+                        window.location.href = '/login_page';
+                        return;
+                    }
                     
                     // Clear any active streams
                     if (activeEventSource) {
