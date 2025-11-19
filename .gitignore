@@ -79,5 +79,8 @@ htmlcov/
 
 # Documentation
 docs/_build/
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 webapp/flask_session/
